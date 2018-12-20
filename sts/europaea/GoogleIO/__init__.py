@@ -7,7 +7,7 @@ if os.getenv('GAE_APPLICATION', None):
     # from google.appengine.api import memcache
     from oauth2client.contrib import gce
     creds = gce.AppAssertionCredentials(scope='https://www.googleapis.com/auth/spreadsheets '
-                                          'https://www.googleapis.com/auth/drive')
+                                              'https://www.googleapis.com/auth/drive')
     http = creds.authorize(httplib2.Http())
 else:
     from oauth2client import file, client, tools
