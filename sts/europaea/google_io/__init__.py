@@ -16,9 +16,9 @@ else:
     store = file.Storage(f'{CURRENT_DIR}/token.json')
     creds = store.get()
     if not creds or creds.invalid:
-        flow = client.flow_from_clientsecrets(f'{CURRENT_DIR}/creds.json', scope=
-                                              'https://www.googleapis.com/auth/spreadsheets '
-                                              'https://www.googleapis.com/auth/drive')
+        flow = client.flow_from_clientsecrets(f'{CURRENT_DIR}/creds.json',
+                                              scope='https://www.googleapis.com/auth/spreadsheets '
+                                                    'https://www.googleapis.com/auth/drive')
         creds = tools.run_flow(flow, store)
     proxy_info = httplib2.ProxyInfo(httplib2.socks.PROXY_TYPE_SOCKS5, '127.0.0.1', 1080)
     http = creds.authorize(httplib2.Http(proxy_info=proxy_info, cache='R:/cache'))

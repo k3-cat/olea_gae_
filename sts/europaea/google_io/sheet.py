@@ -5,41 +5,42 @@ class Path:
     def __init__(self, id_=None, table=None):
         self.id_ = id_
         self.table = table
-        self._col = ('', '')
-        self._row = ('', '')
+        self.col_ = ('', '')
+        self.row_ = ('', '')
 
     @property
     def col(self):
-        return ':'.join(self._col)
+        return ':'.join(self.col_)
 
     @property
     def row(self):
-        return ':'.join(self._row)
+        return ':'.join(self.row_)
 
     @col.setter
     def col(self, col):
         if ':' in col:
-            self._col = col.split(':')
+            self.col_ = col.split(':')
         else:
-            self._col = (col, col)
+            self.col_ = (col, col)
 
     @row.setter
     def row(self, row):
         if ':' in row:
-            self._row = row.split(':')
+            self.row_ = row.split(':')
         else:
-            self._row = (row, row)
+            self.row_ = (row, row)
 
     @property
     def range(self):
-        return f'{self.table}!{self._col[0]}{self._row[0]}:{self._col[1]}{self._row[1]}'
+        return f'{self.table}!{self.col_[0]}{self.row_[0]}:{self.col_[1]}{self.row_[1]}'
 
     @property
     def sheet_id(self):
-        for table in service_sheet.get(spreadsheetId=self.id_,
-                                       fields='properties/title,'
-                                              'properties/sheetId').execute():
-            if table['properties']['title'] == table:
+        sheet_metadata = service_sheet.get(spreadsheetId=self.id_,
+                                           fields='sheets/properties/title,'
+                                                  'sheets/properties/sheetId').execute()
+        for table in sheet_metadata['sheets']:
+            if table['properties']['title'] == self.table:
                 return table['properties']['sheetId']
         return None
 
@@ -80,14 +81,16 @@ def del_line(path):
             'range': {
                 'sheetId': path.sheet_id,
                 'dimension': 'ROWS',
-                'startIndex': path.row[0],
-                'endIndex': path.row[1]}}}
+                'startIndex': str(int(path.row_[0])-1),
+                'endIndex': path.row_[1]}}}
     ]}
     service_sheet.batchUpdate(spreadsheetId=path.id_, body=body).execute()
     return True
 
-def count_rows(path):
-    sheet_metadata = service_sheet.get(spreadsheetId=path.id_).execute()
+def countrow_s(path):
+    sheet_metadata = service_sheet.get(spreadsheetId=path.id_,
+                                       fields='sheets/properties/title,'
+                                              'sheets/properties/gridProperties/rowCount').execute()
     for table in sheet_metadata['sheets']:
         if table['properties']['title'] == path.table:
             return table['properties']['gridProperties']['rowCount']
