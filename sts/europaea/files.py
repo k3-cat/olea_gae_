@@ -9,11 +9,11 @@ MAP = {
     'HQ': ('1J6OD7L0kt_c8eqV8cEN0C0dK2VApGIML', 'aep')
 }
 
-def create(sc, proj, row, folder):
+def create(sc, proj, row, is_folder):
     name = proj.name
     if '}' in name:
         return False
-    if folder:
+    if is_folder:
         id_ = drive.new(MAP[sc][0], name, type_='folder')
     else:
         id_ = drive.new(MAP[sc][0], name, type_='doc')
