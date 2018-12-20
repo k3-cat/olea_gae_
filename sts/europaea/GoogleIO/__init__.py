@@ -4,11 +4,11 @@ from googleapiclient import discovery
 
 
 if os.getenv('GAE_APPLICATION', None):
-    from google.appengine.api import memcache
+    # from google.appengine.api import memcache
     from oauth2client.contrib import gce
     creds = gce.AppAssertionCredentials(scope='https://www.googleapis.com/auth/spreadsheets '
                                           'https://www.googleapis.com/auth/drive')
-    http = creds.authorize(httplib2.Http(memcache))
+    http = creds.authorize(httplib2.Http())
 else:
     from oauth2client import file, client, tools
     store = file.Storage("D:/DPA/europaea_gae/europaea_gae/sts/europaea/GoogleIO/tooken.json")
