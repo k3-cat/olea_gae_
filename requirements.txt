@@ -2,3 +2,4 @@ django
 google-api-python-client
 oauth2client
 firebase_admin
+google-cloud-firestore
