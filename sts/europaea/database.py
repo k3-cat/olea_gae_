@@ -9,14 +9,14 @@ from firebase_admin import firestore
 if os.getenv('GAE_APPLICATION', None):
     cred = credentials.ApplicationDefault()
     firebase_admin.initialize_app(cred, {
-        'projectId': 'europaea-224803',
+        'projectId': 'olea-0',
     })
 else:
-    cred = credentials.Certificate('D:/DPA/europaea_gae/europaea_gae/sts/europaea/cert.json')
+    cred = credentials.Certificate(f'{os.path.dirname(__file__)}/cert.json')
     firebase_admin.initialize_app(cred)
 
-db = firestore.client()
 
+db = firestore.client()
 
 class DDict:
     def __init__(self, Idict=None):

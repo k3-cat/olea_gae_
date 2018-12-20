@@ -3,6 +3,8 @@ import httplib2
 from googleapiclient import discovery
 
 
+CURRENT_DIR = os.path.dirname(__file__)
+
 if os.getenv('GAE_APPLICATION', None):
     # from google.appengine.api import memcache
     from oauth2client.contrib import gce
@@ -11,10 +13,10 @@ if os.getenv('GAE_APPLICATION', None):
     http = creds.authorize(httplib2.Http())
 else:
     from oauth2client import file, client, tools
-    store = file.Storage("D:/DPA/europaea_gae/europaea_gae/sts/europaea/GoogleIO/tooken.json")
+    store = file.Storage(f'{CURRENT_DIR}/tooken.json')
     creds = store.get()
     if not creds or creds.invalid:
-        flow = client.flow_from_clientsecrets("D:/DPA/europaea_gae/europaea_gae/sts/europaea/GoogleIO/cerds.json", scope=
+        flow = client.flow_from_clientsecrets(f'{CURRENT_DIR}/cerds.json', scope=
                                               'https://www.googleapis.com/auth/spreadsheets '
                                               'https://www.googleapis.com/auth/drive')
         creds = tools.run_flow(flow, store)
