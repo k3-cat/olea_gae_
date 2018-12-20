@@ -1,4 +1,4 @@
-from .GoogleIO import sheet
+from . import sheet
 from . import get_path, hyperlink, append
 
 
@@ -46,7 +46,7 @@ def ms(proj, row):
         proj.ssc = 'H'
 
         path = get_path('HQ')
-        path.col('D')
+        path.col = 'D'
         path.row = '2:'
         for i, pid_ in enumerate(sheet.get_values(path), 2):
             if pid == pid_:
@@ -55,7 +55,7 @@ def ms(proj, row):
         else:
             return False
 
-        path.col('K')
+        path.col = 'K'
         sheet.set_values(path, [[hyperlink(proj.urls['pic'], 'MS')]])
     sheet.del_line(path)
     return True

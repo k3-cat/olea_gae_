@@ -1,6 +1,6 @@
 import time
 
-from .GoogleIO import sheet
+from .google_io import sheet, drive
 
 
 PATH_MAP = {'LB': ('1UAD7PSiVtuWazMakg7jDtHXu9PqC5CQBcx8YZ4H4o7U', '配音'),

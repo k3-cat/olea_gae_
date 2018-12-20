@@ -1,4 +1,4 @@
-from .GoogleIO import sheet
+from . import sheet
 from . import get_path, hyperlink
 
 

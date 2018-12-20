@@ -1,4 +1,4 @@
-from .GoogleIO import drive
+from . import drive
 from .records import set_hyperlink
 
 
