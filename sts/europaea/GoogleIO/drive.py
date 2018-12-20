@@ -1,0 +1,21 @@
+from . import service_drive
+
+
+TYPE_MAP = {'folder': 'application/vnd.google-apps.folder',
+            'doc': 'application/vnd.google-apps.document'}
+
+def new(root_folder_id, name, type_):
+    file_metadata = {
+        'name': name,
+        'mimeType': TYPE_MAP[type_],
+        'parents': [root_folder_id]
+    }
+    file_ = service_drive.files().create(body=file_metadata,
+                                         fields='id').execute()
+    return file_.id
+
+def delete(file_id):
+    service_drive.files().update(fileId=file_id,
+                                 body={'trashed': True},
+                                 fields='id').execute()
+    return True
