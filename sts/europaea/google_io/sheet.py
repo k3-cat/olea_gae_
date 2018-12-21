@@ -87,7 +87,7 @@ def del_line(path):
     service_sheet.batchUpdate(spreadsheetId=path.id_, body=body).execute()
     return True
 
-def countrow_s(path):
+def count_rows(path):
     sheet_metadata = service_sheet.get(spreadsheetId=path.id_,
                                        fields='sheets/properties/title,'
                                               'sheets/properties/gridProperties/rowCount').execute()
