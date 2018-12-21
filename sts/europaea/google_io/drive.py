@@ -12,10 +12,10 @@ def new(root_folder_id, name, type_):
     }
     file_ = service_drive.files().create(body=file_metadata,
                                          fields='id').execute()
-    return file_.id
+    return file_['id']
 
-def delete(file_id):
-    service_drive.files().update(fileId=file_id,
+def delete(id_):
+    service_drive.files().update(fileId=id_,
                                  body={'trashed': True},
                                  fields='id').execute()
     return True
