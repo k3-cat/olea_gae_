@@ -7,6 +7,9 @@ from .europaea import records, files, push, new, append
 from .europaea.database import Project
 
 
+def hello(request):
+    return HttpResponse("hello")
+
 def do_push(request):
     body = json.loads(request.body)
     sc = body['sc']
@@ -25,9 +28,6 @@ def do_push(request):
     proj.save()
     records.update_process_info(proj)
     return HttpResponse('True')
-
-def hello(request):
-    return HttpResponse("hello")
 
 def edit_staff(request):
     body = json.loads(request.body)
@@ -57,7 +57,13 @@ def create(request):
     row = body['row']
     proj = Project(pid=body['pid'])
     if sc == 'KP':
-        responce = files.create(sc, proj, row, folder=False)
+        responce = files.create(sc, proj, row, is_folder=False)
     elif sc in ('MS', 'PY', 'HQ'):
-        responce = files.create(sc, proj, row, folder=True)
+        responce = files.create(sc, proj, row, is_folder=True)
+    return HttpResponse(responce)
+
+
+def debug(request):
+    body = json.loads(request.body)
+    responce = body['debug']
     return HttpResponse(responce)

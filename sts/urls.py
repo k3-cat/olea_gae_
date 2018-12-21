@@ -8,6 +8,7 @@ urlpatterns = [
     path('dp', views.do_push, name='do_push'),
     path('es', views.edit_staff, name='edit_staff'),
     path('np', views.new_projs, name='new_projs'),
+    path('debug', views.debug, name='debug'),
 
     path('c', views.create, name='create'),
 ]
