@@ -6,10 +6,14 @@ from googleapiclient import discovery
 CURRENT_DIR = os.path.dirname(__file__)
 
 if os.getenv('GAE_APPLICATION', None):
-    # from google.appengine.api import memcache
-    from oauth2client.contrib import gce
-    creds = gce.AppAssertionCredentials(scope='https://www.googleapis.com/auth/spreadsheets '
-                                              'https://www.googleapis.com/auth/drive')
+    from oauth2client import file, client, tools
+    store = file.Storage(f'{CURRENT_DIR}/token.json')
+    creds = store.get()
+    if not creds or creds.invalid:
+        flow = client.flow_from_clientsecrets(f'{CURRENT_DIR}/creds.json',
+                                              scope='https://www.googleapis.com/auth/spreadsheets '
+                                                    'https://www.googleapis.com/auth/drive')
+        creds = tools.run_flow(flow, store)
     http = creds.authorize(httplib2.Http())
 else:
     from oauth2client import file, client, tools
