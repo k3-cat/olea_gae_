@@ -1,5 +1,7 @@
-from . import sheet
-from . import get_path, hyperlink
+import time
+
+from . import sheets
+from .common import get_path, hyperlink
 
 
 def set_hyperlink(sc, row, id_):
@@ -11,15 +13,31 @@ def set_hyperlink(sc, row, id_):
     elif sc in ('HQ', 'MS'):
         path.col = 'J'
     path.row = row
-    sheet.set_values(path, [[hyperlink(id_, sc)]])
+    sheets.set_values(path, [[hyperlink(id_, sc)]])
     return True
 
+class LbLineCache:
+    cache = dict()
+    time = 0
+
+    @classmethod
+    def update(cls):
+        now = time.time()
+        if now - cls.time > 120:
+            cls.cache.clear()
+            path = get_path('LB')
+            path.col = 'C'
+            path.row = '2:'
+            for k, line in enumerate(sheets.get_values(path), 2):
+                cls.cache[line[0]] = k
+
 def get_LB_line(pid):
-    return Cache.title.cache(pid)[3]
+    LbLineCache.update()
+    return LbLineCache.cache[pid]
 
 def update_process_info(proj):
     path = get_path('LB')
     path.col = 'B:C'
     path.row = get_LB_line(proj.pid)
-    sheet.set_values(path, [[proj.ssc_display, proj.all_staff]])
+    sheets.set_values(path, [[proj.ssc_display, proj.all_staff]])
     return True

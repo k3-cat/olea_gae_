@@ -6,17 +6,10 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 
-if os.getenv('GAE_APPLICATION', None):
-    cred = credentials.ApplicationDefault()
-    firebase_admin.initialize_app(cred, {
-        'projectId': 'olea-0',
-    })
-else:
-    cred = credentials.Certificate(f'{os.path.dirname(__file__)}/cert.json')
-    firebase_admin.initialize_app(cred)
-
-
+cred = credentials.Certificate(f'{os.path.dirname(__file__)}/sa_cerds.json')
+firebase_admin.initialize_app(cred)
 db = firestore.client()
+
 
 class DDict:
     def __init__(self, Idict=None):
