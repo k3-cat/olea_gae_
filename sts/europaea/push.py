@@ -56,7 +56,7 @@ def ms(proj, row):
             return False
 
         path.col = 'K'
-        sheets.set_values(path, [[hyperlink(proj.urls['pic'], 'MS')]])
+        sheets.set_values(path, [[hyperlink(proj.urls['pic'], 'SJ')]])
     sheets.del_line(path)
     return True
 

@@ -4,14 +4,15 @@ from . import sheets
 from .common import get_path, hyperlink
 
 
+HL_COL_MAP = {
+    'KP': 'K',
+    'SJ': 'K',
+    'PY': 'K',
+    'HQ': 'K'}
+
 def set_hyperlink(sc, row, id_):
     path = get_path(sc)
-    if sc == 'PY':
-        path.col = 'K'
-    elif sc == 'KP':
-        path.col = 'L'
-    elif sc in ('HQ', 'MS'):
-        path.col = 'J'
+    path.col = HL_COL_MAP[sc]
     path.row = row
     sheets.set_values(path, [[hyperlink(id_, sc)]])
     return True

@@ -29,7 +29,7 @@ def kp(projs):
     return True
 
 def ms(proj):
-    path = get_path('MS')
+    path = get_path('SJ')
     k = sheets.count_rows(path) + 1
     path.col = 'A:M'
     path.row = k
@@ -62,7 +62,7 @@ def hq(proj, pic_url): # the url may not be the real url
             hyperlink(proj.urls['doc'], 'GG'),
             hyperlink(proj.urls['ext'], 'KP'),
             hyperlink(proj.urls['mic'], 'PY'),
-            hyperlink(pic_url, 'MS'),
+            hyperlink(pic_url, 'SJ'),
             f'=IF(E{k}="","",createForder(C{k},ROW()))',
             f'=IF(F{k},push(C{k},ROW()),"")']]
     sheets.append(path, row)
