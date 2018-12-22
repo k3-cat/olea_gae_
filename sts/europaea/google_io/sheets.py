@@ -61,7 +61,7 @@ def set_values(path, value, row_from=True):
     request = service_sheets.values().update(
         spreadsheetId=path.id_,
         range=path.range,
-        valueInputOption='RAW',
+        valueInputOption='USER_ENTERED',
         body=body)
     return request.execute()
 
@@ -74,7 +74,7 @@ def append(path, value, row_from=True):
     request = service_sheets.values().append(
         spreadsheetId=path.id_,
         range=path.range,
-        valueInputOption='RAW',
+        valueInputOption='USER_ENTERED',
         body=body)
     return request.execute()
 
