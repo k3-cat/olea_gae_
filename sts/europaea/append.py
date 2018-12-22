@@ -9,8 +9,8 @@ def fy(projs):
     path.row = f'k:{k+len(projs)}'
     rows = list()
     for i, proj in enumerate(projs, k):
-        rows.append([[proj.ino, proj.title, proj.pid, '2 - 缺人', '', '', '人员',
-                      hyperlink(proj.urls['doc'], 'FY'), '']])
+        rows.append([proj.ino, proj.title, proj.pid, '2 - 缺人', '', '', '人员',
+                      hyperlink(proj.urls['doc'], 'FY'), ''])
     sheets.append(path, rows)
     return True
 
@@ -21,10 +21,10 @@ def kp(projs):
     path.row = f'k:{k+len(projs)}'
     rows = list()
     for i, proj in enumerate(projs, k):
-        rows.append([[proj.ino, proj.title, proj.pid, '5 - 未知', '0/0', '', '', False, '人员',
+        rows.append([proj.ino, proj.title, proj.pid, '5 - 未知', '0/0', '', '', False, '人员',
                       hyperlink(proj.urls['doc'], 'GG'),
                       f'=IF(D{i}="1 - 施工中",createDoc(C{i},ROW()),"")',
-                      f'=IF(H{i},push(C{i},D{i},ROW()),"")']])
+                      f'=IF(H{i},push(C{i},D{i},ROW()),"")'])
     sheets.append(path, rows)
     return True
 
