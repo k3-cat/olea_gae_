@@ -23,11 +23,11 @@ def kp(proj, row):
         return False
     proj.ssc = 'P'
     append.py(proj)
-    append.ms(proj)
+    append.sj(proj)
     sheets.del_line(path)
     return True
 
-def ms(proj, row):
+def sj(proj, row):
     pid = proj.pid
 
     path = get_path('PY')
