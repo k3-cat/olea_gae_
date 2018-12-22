@@ -48,7 +48,7 @@ class StaffGroup(DDict):
             temp_dict[key] = temp_dict[key].to_dict()
         return temp_dict
 
-class Staff:
+class PDict:
     def __init__(self, dict_=None):
         if not dict_:
             dict_ = dict()
@@ -71,6 +71,10 @@ class Staff:
     def clear_temp(self):
         self.temp.clear()
 
+    def to_dict(self):
+        return self.dict_
+
+class Staff(PDict):
     def complete(self):
         if not self.not_empty():
             return False
@@ -86,9 +90,6 @@ class Staff:
         if self.dict_:
             return True
         return False
-
-    def to_dict(self):
-        return self.dict_
 
 
 class Project(DDict):
@@ -120,20 +121,8 @@ class Project(DDict):
             'title': info[1],
             'ssc': '',
             'p_c': False,               # pic_checked
-            'urls': {
-                'doc': info[2],
-                'ext': None,
-                'mic': None,
-                'aep': None
-                },
-            'staff': {
-                't': {},
-                'T': {},
-                'C': {},
-                'P': {},
-                'D': {},
-                'F': {}
-            }
+            'urls': {'doc': info[2], 'ext': None, 'mic': None, 'aep': None},
+            'staff': {'t': {}, 'T': {}, 'C': {}, 'P': {}, 'D': {}, 'F': {}}
         }
 
     def __init__(self, pid, info=None):
@@ -145,7 +134,7 @@ class Project(DDict):
         self.Itemp = dict()
         if info:
             self.Irec.set(Project.get_empty_proj(info))
-        self.update(self.Irec.get().to_dict())
+        self._update(self.Irec.get().to_dict())
 
     def __setattr__(self, name, value):
         super().__setattr__(name, value)
@@ -154,16 +143,19 @@ class Project(DDict):
 
     def save(self):
         temp = self.Itemp.copy()
+        for change in self.urls.temp:
+            temp[f'urls.{change}'] = self.urls.temp[change]
         for group in self.staff:
             for change in self.staff[group].temp:
                 temp[f'staff.{group}.{change}'] = self.staff[group].temp[change]
             self.staff[group].clear_temp()
         self.Irec.update(temp)
-        self.update(self.Irec.get().to_dict())
+        self._update(self.Irec.get().to_dict())
         self.clear_temp()
 
-    def update(self, dict_):
+    def _update(self, dict_):
         dict_['staff'] = StaffGroup(dict_['staff'])
+        dict_['urls'] = PDict(dict_['urls'])
         self.Idict = dict_
 
     def clear_temp(self):
