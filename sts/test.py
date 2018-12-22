@@ -1,3 +1,3 @@
-from europaea import new
+import europaea
 
-new.new_proj(('inos'), ('titles'), ('urls'))
+print('123')

@@ -1,4 +1,4 @@
-from . import service_sheet
+from . import service_sheets
 
 
 class Path:
@@ -36,9 +36,10 @@ class Path:
 
     @property
     def sheet_id(self):
-        sheet_metadata = service_sheet.get(spreadsheetId=self.id_,
-                                           fields='sheets/properties/title,'
-                                                  'sheets/properties/sheetId').execute()
+        sheet_metadata = service_sheets.get(
+            spreadsheetId=self.id_,
+            fields='sheets/properties/title,'
+                   'sheets/properties/sheetId').execute()
         for table in sheet_metadata['sheets']:
             if table['properties']['title'] == self.table:
                 return table['properties']['sheetId']
@@ -46,7 +47,9 @@ class Path:
 
 
 def get_values(path):
-    request = service_sheet.values().get(spreadsheetId=path.id_, range=path.range)
+    request = service_sheets.values().get(
+        spreadsheetId=path.id_,
+        range=path.range)
     return request.execute()['values']
 
 def set_values(path, value, row_from=True):
@@ -55,7 +58,7 @@ def set_values(path, value, row_from=True):
         body['majorDimension'] = 'ROWS'
     else:
         body['majorDimension'] = 'COLUMNS'
-    request = service_sheet.values().update(
+    request = service_sheets.values().update(
         spreadsheetId=path.id_,
         range=path.range,
         valueInputOption='RAW',
@@ -68,7 +71,7 @@ def append(path, value, row_from=True):
         body['majorDimension'] = 'ROWS'
     else:
         body['majorDimension'] = 'COLUMNS'
-    request = service_sheet.values().append(
+    request = service_sheets.values().append(
         spreadsheetId=path.id_,
         range=path.range,
         valueInputOption='RAW',
@@ -84,13 +87,16 @@ def del_line(path):
                 'startIndex': str(int(path.row_[0])-1),
                 'endIndex': path.row_[1]}}}
     ]}
-    service_sheet.batchUpdate(spreadsheetId=path.id_, body=body).execute()
+    service_sheets.batchUpdate(
+        spreadsheetId=path.id_,
+        body=body).execute()
     return True
 
 def count_rows(path):
-    sheet_metadata = service_sheet.get(spreadsheetId=path.id_,
-                                       fields='sheets/properties/title,'
-                                              'sheets/properties/gridProperties/rowCount').execute()
+    sheet_metadata = service_sheets.get(
+        spreadsheetId=path.id_,
+        fields='sheets/properties/title,'
+               'sheets/properties/gridProperties/rowCount').execute()
     for table in sheet_metadata['sheets']:
         if table['properties']['title'] == path.table:
             return table['properties']['gridProperties']['rowCount']
@@ -101,8 +107,9 @@ TABLES_NAME = dict()
 def list_tables(path):
     id_ = path.id_
     if id_ not in TABLES_NAME.keys():
-        sheet_metadata = service_sheet.get(spreadsheetId=id_,
-                                           fields='sheets/properties/title').execute()
+        sheet_metadata = service_sheets.get(
+            spreadsheetId=id_,
+            fields='sheets/properties/title').execute()
         tables = list()
         for table in sheet_metadata['sheets']:
             tables.append(table['properties']['title'])
