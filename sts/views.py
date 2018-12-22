@@ -41,8 +41,6 @@ def new_projs(request):
     inos = body['inos']
     titles = body['titles']
     urls = body['urls']
-    if not urls:
-        urls = [None]*len(titles)
     projs = new.new_proj(inos, titles, urls)
     if type_ == 'T':
         append.fy(projs)
