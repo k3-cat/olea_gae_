@@ -1,4 +1,3 @@
-import os
 import random
 
 import firebase_admin
@@ -6,8 +5,10 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 
-cred = credentials.Certificate(f'{os.path.dirname(__file__)}/sa_cerds.json')
-firebase_admin.initialize_app(cred)
+cred = credentials.ApplicationDefault()
+firebase_admin.initialize_app(cred, {
+    'projectId': 'olea-0',
+})
 db = firestore.client()
 
 
