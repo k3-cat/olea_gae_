@@ -11,26 +11,29 @@ def hello(request):
     response = f'hello\n\n{str(request.body)}'
     return HttpResponse(response)
 
-def do_push(request):
+
+def push_(request):
     body = json.loads(request.body)
     proj = Project(pid=body['pid'])
     sc = body['sc']
     row = body['row']
-    if sc == 'FY':
-        push.fy(proj, row)
-    elif sc == 'KP':
-        push.kp(proj, row)
-    elif sc == 'MS':
-        push.sj(proj, row)
-    elif sc == 'PY':
-        push.py(proj, row)
-    elif sc == 'HQ':
-        push.hq(proj, row)
-    elif sc == 'LB':
-        push.lb(proj, row, body['vid_url'])
+    push_map = {
+        'FY': push.fy,
+        'KP': push.kp,
+        'SJ': push.sj,
+        'PY': push.py,
+        'HQ': push.hq
+    }
+    push_map[sc](proj, row)
     proj.save()
     records.update_process_info(proj)
     return HttpResponse(True)
+
+def finish(request):
+    proj = Project(pid=request.GET.get('pid'))
+    row = request.GET.get('row')
+    push.lb(proj, row, request.GET.get('vid_url'))
+    return True
 
 def edit_staff(request):
     proj = Project(pid=request.GET.get('pid'))
@@ -45,7 +48,7 @@ def new_projs(request):
     inos = body['inos']
     titles = body['titles']
     urls = body['urls']
-    projs = new.new_proj(inos, titles, urls)
+    projs = new.proj(inos, titles, urls)
     if type_ == 'T':
         append.fy(projs)
     elif type_ in ('G', 'K'):

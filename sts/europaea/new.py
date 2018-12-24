@@ -2,7 +2,7 @@ from .common import sheets, get_path
 from .database import Project
 
 
-def new_proj(inos, titles, doc_urls):
+def proj(inos, titles, doc_urls):
     path = get_path('LB')
     k = sheets.count_rows(path) + 1
     path.col = 'A:C'

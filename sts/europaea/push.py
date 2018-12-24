@@ -82,5 +82,5 @@ def lb(proj, row, vid_url):
     path.col = 'F'
     path.row = row
     sheets.set_values(path, [[vid_url]])
-    files.finish(proj)
+    files.clean(proj)
     return True

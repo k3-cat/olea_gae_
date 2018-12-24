@@ -24,13 +24,16 @@ class LbLineCache:
     @classmethod
     def update(cls):
         now = time.time()
-        if now - cls.time > 120:
-            cls.cache.clear()
-            path = get_path('LB')
-            path.col = 'C'
-            path.row = '2:'
-            for k, line in enumerate(sheets.get_values(path), 2):
-                cls.cache[line[0]] = k
+        if now - cls.time < 120:
+            return
+        cls.cache.clear()
+        path = get_path('LB')
+        path.col = 'C'
+        path.row = '2:'
+        for k, line in enumerate(sheets.get_values(path), 2):
+            if not line:
+                continue
+            cls.cache[line[0]] = k
 
 def get_LB_line(pid):
     LbLineCache.update()

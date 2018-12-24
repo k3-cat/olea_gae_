@@ -22,7 +22,7 @@ def create(proj, sc, row, type_):
     set_hyperlink(sc, row, id_)
     return True
 
-def finish(proj):
+def clean(proj):
     drive.move(proj.urls[URLS_MAP['KP'][1]], URLS_MAP['KP'][2])
     drive.move(proj.urls[URLS_MAP['SJ'][1]], URLS_MAP['SJ'][2])
     drive.delete(proj.urls[URLS_MAP['PY'][1]])
