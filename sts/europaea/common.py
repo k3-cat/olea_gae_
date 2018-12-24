@@ -20,7 +20,7 @@ HL_MAP = {'GG': ('http://scp-wiki-cn.wikidot.com/', '='),
           'HQ': ('https://drive.google.com/drive/folders/', '#')}
 
 def hyperlink(url_, type_):
-    if url_ == '':
+    if not url_:
         return ''
     if '{' in url_:
         return url_
