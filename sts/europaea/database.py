@@ -3,6 +3,7 @@ import random
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+import google.cloud.exceptions
 
 
 cred = credentials.ApplicationDefault()
@@ -151,9 +152,12 @@ class Project(DDict):
         self.Ipid = pid
         self.Irec = db.collection('projects').document(pid)
         self.Itemp = dict()
-        if info:
-            self.Irec.set(Project.get_empty_proj(info))
-        self._update(self.Irec.get().to_dict())
+        try:
+            self._refresh(self.Irec.get().to_dict())
+        except google.cloud.exceptions.NotFound:
+            empty_proj = Project.get_empty_proj(info)
+            self.Irec.set(empty_proj)
+            self._refresh(empty_proj)
 
     def __setattr__(self, name, value):
         super().__setattr__(name, value)
@@ -169,10 +173,10 @@ class Project(DDict):
                 temp[f'staff.{group}.{change}'] = self.staff[group].temp[change]
             self.staff[group].clear_temp()
         self.Irec.update(temp)
-        self._update(self.Irec.get().to_dict())
+        self._refresh(self.Irec.get().to_dict())
         self.clear_temp()
 
-    def _update(self, dict_):
+    def _refresh(self, dict_):
         dict_['staff'] = StaffGroup(dict_['staff'])
         dict_['urls'] = PDict(dict_['urls'])
         self.Idict = dict_
