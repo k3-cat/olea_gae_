@@ -8,7 +8,7 @@ from .europaea.database import Project
 
 
 def hello(request):
-    response = f'hello\n\n{request.body}'
+    response = f'hello\n\n{str(request.body)}'
     return HttpResponse(response)
 
 def do_push(request):
@@ -33,10 +33,9 @@ def do_push(request):
     return HttpResponse(True)
 
 def edit_staff(request):
-    body = json.loads(request.body)
-    proj = Project(pid=body['pid'])
-    sc = body['sc']
-    row = body['row']
+    proj = Project(pid=request.GET.get('pid'))
+    sc = request.GET.get('sc')
+    row = request.GET.get('row')
     records.update_state(proj, sc, row)
     return render(request, 'es.html', {'city': 'abbc'})
 
