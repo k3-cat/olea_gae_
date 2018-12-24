@@ -28,7 +28,7 @@ def kp(projs):
             f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '', False,
             '人员',
             hyperlink(proj.urls['doc'], 'GG'),
-            f'=IF(D{i}="1 - 施工中",createDoc(C{i},ROW()),"")',
+            f'=IF(D{i}="1 - 施工中",createD(C{i},ROW()),"")',
             f'=IF(H{i},push(C{i},D{i},ROW()),"")'
         ])
     sheets.append(path, rows)
@@ -43,7 +43,7 @@ def sj(proj):
         f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '', '', False, '人员',
         hyperlink(proj.urls['doc'], 'GG'),
         hyperlink(proj.urls['ext'], 'KP'),
-        f'=IF(D{k}="1 - 施工中",createDoc(C{k},ROW()),"")',
+        f'=IF(D{k}="1 - 施工中",createF(C{k},ROW()),"")',
         f'=IF(G{k}),push(C{k},D{k},ROW()),"")'
     ]]
     sheets.append(path, row)
@@ -58,7 +58,7 @@ def py(proj):
         f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '', '人员',
         hyperlink(proj.urls['doc'], 'GG'),
         hyperlink(proj.urls['ext'], 'KP'),
-        f'=IF(E{k}="0/0","",createForder(C{k},ROW()))'
+        f'=IF(E{k}="0/0","",createF(C{k},ROW()))'
     ]]
     sheets.append(path, row)
     return True
@@ -69,12 +69,14 @@ def hq(proj, pic_url): # the url may not be the real url
     path.col = 'A:L'
     path.row = k
     row = [[
-        f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", f'=IF(E{k},"1 - 施工中","2 - 缺人")', '', False,
+        f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}",
+        f'=IF(B2="","",status(E{k}))', '',
+        False,
         hyperlink(proj.urls['doc'], 'GG'),
         hyperlink(proj.urls['ext'], 'KP'),
         hyperlink(proj.urls['mic'], 'PY'),
         hyperlink(pic_url, 'SJ'),
-        f'=IF(E{k}="","",createForder(C{k},ROW()))',
+        f'=IF(E{k}="","",createF(C{k},ROW()))',
         f'=IF(F{k},push(C{k},ROW()),"")'
     ]]
     sheets.append(path, row)
