@@ -28,7 +28,7 @@ def kp(projs):
             f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '', False,
             '人员',
             hyperlink(proj.urls['doc'], 'GG'),
-            f'=IF(D{i}="1 - 施工中",createD(C{i},ROW()),"")',
+            f'=IF(D{i}="0/0","",createD(C{i},ROW()))',
             f'=IF(H{i},push(C{i},D{i},ROW()),"")'
         ])
     sheets.append(path, rows)
@@ -43,7 +43,7 @@ def sj(proj):
         f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '', '', False, '人员',
         hyperlink(proj.urls['doc'], 'GG'),
         hyperlink(proj.urls['ext'], 'KP'),
-        f'=IF(D{k}="1 - 施工中",createF(C{k},ROW()),"")',
+        f'=IF(E{k}="0/0","",createF(C{k},ROW()))',
         f'=IF(G{k}),push(C{k},D{k},ROW()),"")'
     ]]
     sheets.append(path, row)
