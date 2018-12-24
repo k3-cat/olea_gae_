@@ -19,5 +19,5 @@ else:
     http = creds.authorize(httplib2.Http(proxy_info=proxy_info, cache='R:/cache'))
 
 
-service_drive = discovery.build('drive', 'v3', http=http)
+service_drive = discovery.build('drive', 'v3', http=http).files()
 service_sheets = discovery.build('sheets', 'v4', http=http).spreadsheets()

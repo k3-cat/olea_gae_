@@ -20,11 +20,13 @@ def do_push(request):
     elif sc == 'KP':
         push.kp(proj, row)
     elif sc == 'MS':
-        push.ms(proj, row)
+        push.sj(proj, row)
     elif sc == 'PY':
         push.py(proj, row)
     elif sc == 'HQ':
         push.hq(proj, row)
+    elif sc == 'LB':
+        push.lb(proj, row, body['vid_url'])
     proj.save()
     records.update_process_info(proj)
     return HttpResponse('True')
@@ -48,20 +50,13 @@ def new_projs(request):
         append.kp(projs)
     return HttpResponse('True')
 
-
 def create(request):
     body = json.loads(request.body)
     sc = body['sc']
     row = body['row']
     proj = Project(pid=body['pid'])
     if sc == 'KP':
-        responce = files.create(sc, proj, row, is_folder=False)
+        responce = files.create(proj, sc, row, 'doc')
     elif sc in ('MS', 'PY', 'HQ'):
-        responce = files.create(sc, proj, row, is_folder=True)
-    return HttpResponse(responce)
-
-
-def debug(request):
-    body = json.loads(request.body)
-    responce = body['debug']
+        responce = files.create(proj, sc, row, 'folder')
     return HttpResponse(responce)

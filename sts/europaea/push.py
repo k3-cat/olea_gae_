@@ -1,4 +1,4 @@
-from . import sheets, append
+from . import sheets, append, files
 from .common import get_path, hyperlink
 
 
@@ -86,4 +86,12 @@ def hq(proj, row):
     proj.ssc = 'U'
     proj.staff.F = record
     sheets.del_line(path)
+    return True
+
+def lb(proj, row, vid_url):
+    path = get_path('LB')
+    path.col = 'F'
+    path.row = row
+    sheets.set_values(path, [[vid_url]])
+    files.finish(proj)
     return True
