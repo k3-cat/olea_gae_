@@ -24,7 +24,8 @@ class Path:
             self.col_ = (col, col)
 
     @row.setter
-    def row(self, row):
+    def row(self, row_):
+        row = str(row_)
         if ':' in row:
             self.row_ = row.split(':')
         else:
