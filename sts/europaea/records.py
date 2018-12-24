@@ -1,7 +1,7 @@
 import time
 
 from . import sheets
-from .common import get_path, hyperlink
+from .common import get_path, hyperlink, STATE_MAP
 
 
 HL_COL_MAP = {
@@ -41,4 +41,33 @@ def update_process_info(proj):
     path.col = 'B:C'
     path.row = get_LB_line(proj.pid)
     sheets.set_values(path, [[proj.ssc_display, proj.all_staff]])
+    return True
+
+S2S_MAP = {
+    'KP': 'C',
+    'SJ': 'P',
+    'PY': 'D',
+    'HQ': 'F'
+}
+
+def update_state(proj, sc, row):
+    path = get_path(sc)
+    path.col = 'D'
+    path.row = row
+    if sc == 'FY':
+        state_a = proj.staff.t.state
+        state_b = proj.staff.T.state
+        if state_a > state_b:
+            state = STATE_MAP[9]
+        elif state_a == 2:
+            state = '2 - 缺翻译'
+        elif state_a == 1:
+            state = '1 - 翻译中'
+        elif state_b == 2:
+            state = '2 - 缺校对'
+        elif state_b == 1:
+            state = '1 - 校对中'
+    else:
+        state = STATE_MAP[proj.staff[S2S_MAP[sc]].state]
+    sheets.set_values(path, [[state]])
     return True

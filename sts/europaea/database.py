@@ -75,21 +75,40 @@ class PDict:
         return self.dict_
 
 class Staff(PDict):
-    def complete(self):
-        if not self.not_empty():
-            return False
-        for people in self.dict_:
-            if not self.dict_[people]:
-                return False
-        return True
+    @property
+    def state(self):
+        if self.is_empty():
+            return 5
+        for member in self.dict_:
+            if member[0] == '':
+                return 2
+            if not member[2]:
+                return 1
+        return 0
 
-    def display(self):
+    @property
+    def all(self):
         return ', '.join(self.dict_.keys())
 
-    def not_empty(self):
+    def _part(self, finish):
+        result = list()
+        for member in self.dict_:
+            if member[2] == finish:
+                result.append(f'{member[0]}({member[1]})')
+        return ', '.join(result)
+
+    @property
+    def finished(self):
+        return self._part(True)
+
+    @property
+    def unfinished(self):
+        return self._part(False)
+
+    def is_empty(self):
         if self.dict_:
-            return True
-        return False
+            return False
+        return True
 
 
 class Project(DDict):
@@ -178,14 +197,14 @@ class Project(DDict):
     @property
     def all_staff(self):
         staff = list()
-        if self.staff.T.complete():
-            staff.append(f'T: {self.staff.t.display()}; {self.staff.T.display()}')
-        if self.staff.C.complete():
-            staff.append(f'C: {self.staff.C.display()}')
-        if self.staff.P.complete():
-            staff.append(f'P: {self.staff.P.display()}')
-        if self.staff.D.complete():
-            staff.append(f'D: {self.staff.D.display()}')
-        if self.staff.F.complete():
-            staff.append(f'F: {self.staff.F.display()}')
+        if self.staff.T.state == 0:
+            staff.append(f'T: {self.staff.t.all}; {self.staff.T.all}')
+        if self.staff.C.state == 0:
+            staff.append(f'C: {self.staff.C.all}')
+        if self.staff.P.state == 0:
+            staff.append(f'P: {self.staff.P.all}')
+        if self.staff.D.state == 0:
+            staff.append(f'D: {self.staff.D.all}')
+        if self.staff.F.state == 0:
+            staff.append(f'F: {self.staff.F.all}')
         return ' | '.join(staff)

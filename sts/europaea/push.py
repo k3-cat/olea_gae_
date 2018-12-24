@@ -16,11 +16,7 @@ def kp(proj, row):
     path = get_path('KP')
     path.col = 'G:I'
     path.row = row
-    records = sheets.get_values(path)[0]
-    if records[0] != '' or (records[1] != '' and records[2]):
-        path.col = 'I'
-        sheets.set_values(path, [[False]])
-        return False
+    # records = sheets.get_values(path)[0]
     proj.ssc = 'P'
     append.py(proj)
     append.sj(proj)
@@ -29,17 +25,10 @@ def kp(proj, row):
 
 def sj(proj, row):
     pid = proj.pid
-
     path = get_path('PY')
     path.col = 'F:H'
     path.row = row
-    records = sheets.get_values(path)[0]
-    if records[0] != '' or (records[1] != '' and records[2]):
-        path.col = 'H'
-        sheets.set_values(path, [[False]])
-        return False
-    if records[2]:
-        proj.urls['pic'] = ''
+    # records = sheets.get_values(path)[0]
     if proj.ssc == 'p':
         proj.ssc = 'P'
     elif proj.ssc == 'h':

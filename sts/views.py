@@ -8,13 +8,14 @@ from .europaea.database import Project
 
 
 def hello(request):
-    return HttpResponse("hello")
+    response = f'hello\n\n{request.body}'
+    return HttpResponse(response)
 
 def do_push(request):
     body = json.loads(request.body)
+    proj = Project(pid=body['pid'])
     sc = body['sc']
     row = body['row']
-    proj = Project(pid=body['pid'])
     if sc == 'FY':
         push.fy(proj, row)
     elif sc == 'KP':
@@ -29,13 +30,15 @@ def do_push(request):
         push.lb(proj, row, body['vid_url'])
     proj.save()
     records.update_process_info(proj)
-    return HttpResponse('True')
+    return HttpResponse(True)
 
 def edit_staff(request):
     body = json.loads(request.body)
-    row = body['row']
     proj = Project(pid=body['pid'])
-    return HttpResponse('empty')
+    sc = body['sc']
+    row = body['row']
+    records.update_state(proj, sc, row)
+    return render(request, 'es.html', {'city': 'abbc'})
 
 def new_projs(request):
     body = json.loads(request.body)
@@ -48,15 +51,15 @@ def new_projs(request):
         append.fy(projs)
     elif type_ in ('G', 'K'):
         append.kp(projs)
-    return HttpResponse('True')
+    return HttpResponse(True)
 
 def create(request):
     body = json.loads(request.body)
+    proj = Project(pid=body['pid'])
     sc = body['sc']
     row = body['row']
-    proj = Project(pid=body['pid'])
     if sc == 'KP':
-        responce = files.create(proj, sc, row, 'doc')
+        response = files.create(proj, sc, row, 'doc')
     elif sc in ('MS', 'PY', 'HQ'):
-        responce = files.create(proj, sc, row, 'folder')
-    return HttpResponse(responce)
+        response = files.create(proj, sc, row, 'folder')
+    return HttpResponse(response)

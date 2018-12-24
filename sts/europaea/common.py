@@ -25,3 +25,11 @@ def hyperlink(url_, type_):
     if '{' in url_:
         return url_
     return f'=HYPERLINK("{HL_MAP[type_][0]}{url_}","[{HL_MAP[type_][1]*4}]")'
+
+STATE_MAP = {
+    0: '0 - 完成',
+    1: '1 - 施工中',
+    2: '2 - 缺人',
+    5: '5 - 初始',
+    9: '9 - 错误',
+}
