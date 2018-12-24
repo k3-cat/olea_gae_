@@ -153,11 +153,11 @@ class Project(DDict):
         self.Irec = db.collection('projects').document(pid)
         self.Itemp = dict()
         try:
-            self._refresh(self.Irec.get().to_dict())
+            dict_ = self.Irec.get().to_dict()
         except google.cloud.exceptions.NotFound:
-            empty_proj = Project.get_empty_proj(info)
-            self.Irec.set(empty_proj)
-            self._refresh(empty_proj)
+            dict_ = Project.get_empty_proj(info)
+            self.Irec.set(dict_)
+        self._refresh(dict_)
 
     def __setattr__(self, name, value):
         super().__setattr__(name, value)
