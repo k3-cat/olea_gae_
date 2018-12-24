@@ -80,10 +80,12 @@ class Staff(PDict):
     def state(self):
         if self.is_empty():
             return 5
+        if len(self.dict_) - 1 < self.dict_['req']:
+            return 2
         for member in self.dict_:
-            if member[0] == '':
-                return 2
-            if not member[2]:
+            if member == 'req':
+                continue
+            if not self.dict_[member][1]:
                 return 1
         return 0
 
@@ -94,8 +96,10 @@ class Staff(PDict):
     def _part(self, finish):
         result = list()
         for member in self.dict_:
-            if member[2] == finish:
-                result.append(f'{member[0]}({member[1]})')
+            if member == 'req':
+                continue
+            if self.dict_[member][1] == finish:
+                result.append(f'{member}({self.dict_[member][0]})')
         return ', '.join(result)
 
     @property
@@ -107,7 +111,7 @@ class Staff(PDict):
         return self._part(False)
 
     def is_empty(self):
-        if self.dict_:
+        if len(self.dict_) > 1:
             return False
         return True
 
