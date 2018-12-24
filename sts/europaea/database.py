@@ -152,9 +152,8 @@ class Project(DDict):
         self.Ipid = pid
         self.Irec = db.collection('projects').document(pid)
         self.Itemp = dict()
-        try:
-            dict_ = self.Irec.get().to_dict()
-        except google.cloud.exceptions.NotFound:
+        dict_ = self.Irec.get().to_dict()
+        if not dict_:
             dict_ = Project.get_empty_proj(info)
             self.Irec.set(dict_)
         self._refresh(dict_)
