@@ -3,7 +3,6 @@ import random
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-import google.cloud.exceptions
 
 
 cred = credentials.ApplicationDefault()
@@ -124,7 +123,8 @@ class Project(DDict):
         'p': '配音+绘制插图',
         'H': '后期',
         'h': '后期+绘制插图',
-        'U': '上传'
+        'U': '上传',
+        'C': '完成'
     }
 
     PID_ALPHABET = (

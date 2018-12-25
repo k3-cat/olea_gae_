@@ -8,7 +8,7 @@ def fy(projs):
     path.col = 'A:K'
     path.row = f'{k}:{k+len(projs)}'
     rows = list()
-    for i, proj in enumerate(projs, k):
+    for proj in projs:
         rows.append([
             f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '', '',
             '人员',
@@ -69,9 +69,7 @@ def hq(proj, pic_url): # the url may not be the real url
     path.col = 'A:L'
     path.row = k
     row = [[
-        f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}",
-        f'=IF(B2="","",status(E{k}))', '',
-        False,
+        f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '', '人员',
         hyperlink(proj.urls['doc'], 'GG'),
         hyperlink(proj.urls['ext'], 'KP'),
         hyperlink(proj.urls['mic'], 'PY'),
