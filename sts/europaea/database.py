@@ -140,12 +140,16 @@ class Project(DDict):
 
     @staticmethod
     def get_empty_proj(info):
+        if info[2] == '':
+            doc_url = None
+        else:
+            doc_url = info[2]
         return {
             'ino': info[0],
             'title': info[1],
             'ssc': '',
             'p_c': False,               # pic_checked
-            'urls': {'doc': info[2], 'ext': None, 'mic': None, 'aep': None},
+            'urls': {'doc': doc_url, 'ext': None, 'mic': None, 'aep': None},
             'staff': {'t': {}, 'T': {}, 'C': {}, 'P': {}, 'D': {}, 'F': {}}
         }
 
