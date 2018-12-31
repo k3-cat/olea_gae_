@@ -150,7 +150,9 @@ class Project(DDict):
             'ssc': '',
             'p_c': False,               # pic_checked
             'urls': {'doc': doc_url, 'ext': None, 'mic': None, 'aep': None},
-            'staff': {'t': {}, 'T': {}, 'C': {}, 'P': {}, 'D': {}, 'F': {}}
+            'staff': {
+                't': {'req': 0}, 'T': {'req': 0}, 'C': {'req': 0},
+                'P': {'req': 0}, 'D': {'req': 0}, 'F': {'req': 0}}
         }
 
     def __init__(self, pid, info=None):

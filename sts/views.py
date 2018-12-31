@@ -3,6 +3,7 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse
 
+from .forms import GForm, TForm
 from .europaea import records, files, push, new, append
 from .europaea.database import Project
 
@@ -11,20 +12,20 @@ def hello(request):
     response = f'hello\n\n{str(request.body)}'
     return HttpResponse(response)
 
-
-def push_(request):
-    body = json.loads(request.body)
-    proj = Project(pid=body['pid'])
-    sc = body['sc']
-    row = body['row']
-    push_map = {
+PUSH_MAP = {
         'FY': push.fy,
         'KP': push.kp,
         'SJ': push.sj,
         'PY': push.py,
         'HQ': push.hq
     }
-    push_map[sc](proj, row)
+
+def push_(request):
+    body = json.loads(request.body)
+    proj = Project(pid=body['pid'])
+    sc = body['sc']
+    row = body['row']
+    PUSH_MAP[sc](proj, row)
     proj.save()
     records.update_process_info(proj)
     return HttpResponse(True)
@@ -36,10 +37,15 @@ def finish(request):
     return True
 
 def edit_staff(request):
-    proj = Project(pid=request.GET.get('pid'))
-    sc = request.GET.get('sc')
-    row = request.GET.get('row')
-    records.update_state(proj, sc, row)
+    if request.method == 'POST':
+        proj = Project(pid=request.GET.get('pid'))
+        sc = request.GET.get('sc')
+        row = request.GET.get('row')
+        if sc == 'FY':
+            form = TForm(request.POST)
+        elif sc in ('KP', 'PY', 'SJ', 'HQ'):
+            form = GForm(request.POST)
+        records.update_state(proj, sc, row)
     return render(request, 'es.html', {'city': 'abbc'})
 
 def new_projs(request):
