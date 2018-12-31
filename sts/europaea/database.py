@@ -151,8 +151,8 @@ class Project(DDict):
             'p_c': False,               # pic_checked
             'urls': {'doc': doc_url, 'ext': None, 'mic': None, 'aep': None},
             'staff': {
-                't': {'req': 0}, 'T': {'req': 0}, 'C': {'req': 0},
-                'P': {'req': 0}, 'D': {'req': 0}, 'F': {'req': 0}}
+                'T': {'req': 0}, 'C': {'req': 0}, 'P': {'req': 0},
+                'D': {'req': 0}, 'F': {'req': 0}}
         }
 
     def __init__(self, pid, info=None):
@@ -211,7 +211,7 @@ class Project(DDict):
     def all_staff(self):
         staff = list()
         if self.staff.T.state == 0:
-            staff.append(f'T: {self.staff.t.all}; {self.staff.T.all}')
+            staff.append(f'T: {self.staff.T.all}')
         if self.staff.C.state == 0:
             staff.append(f'C: {self.staff.C.all}')
         if self.staff.P.state == 0:

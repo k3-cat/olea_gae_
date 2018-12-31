@@ -71,9 +71,8 @@ def hq(proj, row):
     path = get_path('HQ')
     path.col = 'F'
     path.row = row
-    record = sheets.get_values(path)[0][0]
+    # record = sheets.get_values(path)[0][0]
     proj.ssc = 'U'
-    proj.staff.F = record
     sheets.del_line(path)
     return True
 

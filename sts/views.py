@@ -3,13 +3,13 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from .forms import GForm, TForm
+from .forms import SForm
 from .europaea import records, files, push, new, append
 from .europaea.database import Project
 
 
 def hello(request):
-    response = f'hello\n\n{str(request.body)}'
+    response = f'hello\n\n{request.body}'
     return HttpResponse(response)
 
 PUSH_MAP = {
@@ -21,39 +21,35 @@ PUSH_MAP = {
     }
 
 def push_(request):
-    body = json.loads(request.body)
-    proj = Project(pid=body['pid'])
-    sc = body['sc']
-    row = body['row']
+    proj = Project(pid=request.GET.get('p'))
+    sc = request.GET.get('s')
+    row = request.GET.get('r')
     PUSH_MAP[sc](proj, row)
     proj.save()
     records.update_process_info(proj)
     return HttpResponse(True)
 
 def finish(request):
-    proj = Project(pid=request.GET.get('pid'))
-    row = request.GET.get('row')
-    push.lb(proj, row, request.GET.get('vid_url'))
+    proj = Project(pid=request.GET.get('p'))
+    row = request.GET.get('r')
+    push.lb(proj, row, request.GET.get('vu'))
     return True
 
 def edit_staff(request):
     if request.method == 'POST':
-        proj = Project(pid=request.GET.get('pid'))
-        sc = request.GET.get('sc')
-        row = request.GET.get('row')
-        if sc == 'FY':
-            form = TForm(request.POST)
-        elif sc in ('KP', 'PY', 'SJ', 'HQ'):
-            form = GForm(request.POST)
+        proj = Project(pid=request.GET.get('p'))
+        sc = request.GET.get('s')
+        row = request.GET.get('r')
+        form = SForm(request.POST)
         records.update_state(proj, sc, row)
     return render(request, 'es.html', {'city': 'abbc'})
 
 def new_projs(request):
     body = json.loads(request.body)
-    type_ = body['type']
-    inos = body['inos']
-    titles = body['titles']
-    urls = body['urls']
+    type_ = body['t']
+    inos = body['is']
+    titles = body['ts']
+    urls = body['us']
     projs = new.proj(inos, titles, urls)
     if type_ == 'T':
         append.fy(projs)
@@ -63,9 +59,9 @@ def new_projs(request):
 
 def create(request):
     body = json.loads(request.body)
-    proj = Project(pid=body['pid'])
-    sc = body['sc']
-    row = body['row']
+    proj = Project(pid=body['p'])
+    sc = body['s']
+    row = body['r']
     if sc == 'KP':
         response = files.create(proj, sc, row, 'doc')
     elif sc in ('MS', 'PY', 'HQ'):
