@@ -110,7 +110,7 @@ class Staff:
     def finish_job(self, sc, name):
         self.D[name][f'{self.proj.pid}.{sc}.finish'] = True
 
-    def list_part(self, sc_range=Staff.STAFF_GROUP, not_finish=None):
+    def list_staff(self, sc_range=Staff.STAFF_GROUP, not_finish=None):
         result = list()
         for sc in sc_range:
             staff = list()

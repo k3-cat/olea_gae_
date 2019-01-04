@@ -3,7 +3,7 @@ import json
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from .europaea import append, files, new, push, records, staff
+from .europaea import append, files, new, push, records
 from .europaea.database import Project
 
 
@@ -60,13 +60,13 @@ def edit_staff(request):
         name = body.get('name', None)
         job = body.get('job', None)
         if req:
-            staff.edit_req(proj, sc, req)
+            proj[f'req.{sc}'] = int(req)
         else:
             if job:
-                staff.add(proj, sc, name, job)
+                proj['staff'].add_staff(sc, name, job)
             else:
-                staff.finish_job(proj, sc, name)
-                if proj.D[sc].state() == 0:
+                proj['staff'].finish_job(sc, name)
+                if proj['staff'].get_state(sc) == 0:
                     PUSH_MAP[sc](proj, row)
                     records.update_process_info(proj)
         records.update_state(proj, sc, row)
@@ -95,4 +95,5 @@ def create(request):
         response = files.create(proj, sc, row, 'doc')
     elif sc in ('MS', 'PY', 'HQ'):
         response = files.create(proj, sc, row, 'folder')
+    proj.save()
     return HttpResponse(response)

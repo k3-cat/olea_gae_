@@ -10,9 +10,9 @@ def fy(projs):
     rows = list()
     for proj in projs:
         rows.append([
-            f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
+            f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
             f'=HYPERLINK("{URL}/p?p={proj.pid}&s=FY&r="&ROW(),"[人员]")',
-            hyperlink(proj.urls['doc'], 'FY'), ''
+            hyperlink(proj['ids.doc'], 'FY'), ''
         ])
     sheets.append(path, rows)
     return True
@@ -25,10 +25,10 @@ def kp(projs):
     rows = list()
     for i, proj in enumerate(projs, k):
         rows.append([
-            f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
+            f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
             f'=IF(D11={STATE_MAP[5]},"",HYPERLINK("{URL}/p?p={proj.pid}&s=KP&r="&ROW(),"[跳过]"))',
             f'=HYPERLINK("{URL}/p?p={proj.pid}&s=KP&r="&ROW(),"[人员]")',
-            hyperlink(proj.urls['doc'], 'GG'),
+            hyperlink(proj['ids.doc'], 'GG'),
             f'=IF(D{i}="0/0","",createD(C{i},ROW()))'
         ])
     sheets.append(path, rows)
@@ -40,11 +40,11 @@ def sj(proj):
     path.col = 'A:L'
     path.row = k
     row = [[
-        f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
+        f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
         f'=IF(D11={STATE_MAP[5]},"",HYPERLINK("{URL}/p?p={proj.pid}&s=SJ&r="&ROW(),"[跳过]"))',
         f'=HYPERLINK("{URL}/p?p={proj.pid}&s=SJ&r="&ROW(),"[人员]")',
-        hyperlink(proj.urls['doc'], 'GG'),
-        hyperlink(proj.urls['ext'], 'KP'),
+        hyperlink(proj['ids.doc'], 'GG'),
+        hyperlink(proj['ids.ext'], 'KP'),
         f'=IF(E{k}="0/0","",createF(C{k},ROW()))'
     ]]
     sheets.append(path, row)
@@ -56,10 +56,10 @@ def py(proj):
     path.col = 'A:K'
     path.row = k
     row = [[
-        f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
+        f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
         f'=HYPERLINK("{URL}/p?p={proj.pid}&s=PY&r="&ROW(),"[人员]")',
-        hyperlink(proj.urls['doc'], 'GG'),
-        hyperlink(proj.urls['ext'], 'KP'),
+        hyperlink(proj['ids.doc'], 'GG'),
+        hyperlink(proj['ids.ext'], 'KP'),
         f'=IF(E{k}="0/0","",createF(C{k},ROW()))'
     ]]
     sheets.append(path, row)
@@ -71,11 +71,11 @@ def hq(proj, pic_url): # the url may not be the real url
     path.col = 'A:M'
     path.row = k
     row = [[
-        f"'{proj.ino}", f"'{proj.title}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
+        f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
         f'=HYPERLINK("{URL}/p?p={proj.pid}&s=HQ&r="&ROW(),"[人员]")',
-        hyperlink(proj.urls['doc'], 'GG'),
-        hyperlink(proj.urls['ext'], 'KP'),
-        hyperlink(proj.urls['mic'], 'PY'),
+        hyperlink(proj['ids.doc'], 'GG'),
+        hyperlink(proj['ids.ext'], 'KP'),
+        hyperlink(proj['ids.mic'], 'PY'),
         hyperlink(pic_url, 'SJ'),
         f'=IF(E{k}="","",createF(C{k},ROW()))'
     ]]

@@ -43,13 +43,13 @@ def update_process_info(proj):
     path = get_path('LB')
     path.col = 'B:C'
     path.row = get_LB_line(proj.pid)
-    sheets.set_values(path, [[proj.ssc_display, proj.all_staff]])
+    sheets.set_values(path, [[proj.ssc_display, proj['staff'].list_staff()]])
     return True
 
 def update_state(proj, sc, row):
     path = get_path(sc)
     path.col = 'D'
     path.row = row
-    state = STATE_MAP[proj.staff[sc].state]
+    state = STATE_MAP[proj['staff'].get_state(sc)]
     sheets.set_values(path, [[state]])
     return True

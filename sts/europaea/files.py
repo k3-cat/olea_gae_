@@ -13,18 +13,17 @@ def create(proj, sc, row, type_):
     name = proj.name
     if '}' in name:
         return False
-    if proj.urls[URLS_MAP[sc][1]]:
-        id_ = proj.urls[URLS_MAP[sc][1]]
+    if proj[f'ids.{URLS_MAP[sc][1]}']:
+        id_ = proj[f'ids.{URLS_MAP[sc][1]}']
     else:
         id_ = drive.new(name, type_, URLS_MAP[sc][0])
-        proj.urls[URLS_MAP[sc][1]] = id_
-        proj.save()
+        proj[f'ids.{URLS_MAP[sc][1]}'] = id_
     set_hyperlink(sc, row, id_)
     return True
 
 def clean(proj):
-    drive.move(proj.urls[URLS_MAP['KP'][1]], URLS_MAP['KP'][2])
-    drive.move(proj.urls[URLS_MAP['SJ'][1]], URLS_MAP['SJ'][2])
-    drive.delete(proj.urls[URLS_MAP['PY'][1]])
-    drive.delete(proj.urls[URLS_MAP['HQ'][1]])
+    drive.move(proj[f'ids.{URLS_MAP["KP"][1]}'], URLS_MAP['KP'][2])
+    drive.move(proj[f'ids.{URLS_MAP["SJ"][1]}'], URLS_MAP['SJ'][2])
+    drive.delete(proj[f'ids.{URLS_MAP["PY"][1]}'])
+    drive.delete(proj[f'ids.{URLS_MAP["HQ"][1]}'])
     return True
