@@ -1,0 +1,183 @@
+<html>
+
+<head>
+    <script type="text/javascript">
+        function post(message) {
+            var url = '127.0.0.1:8000';
+            message["p"] = document.getElementById("pid").innerHTML;
+            message["s"] = document.getElementById("sc").innerHTML;
+            message["r"] = document.getElementById("row").innerHTML;
+            xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            var data = JSON.stringify(message);
+            xhr.send(data);
+        }
+
+        function addStaff() {
+            var name, job;
+            name = prompt("名字?");
+            if (name === "") {
+                return;
+            }
+            job = prompt("分工?");
+            post({ "name": name, "job": job });
+            location.reload();
+        }
+
+        function finishJob(lineNo) {
+            post({ "name": document.getElementById(lineNo).innerHTML });
+            location.reload();
+        }
+
+        function setReq() {
+            post({ "req": prompt("所需人数:") });
+            location.reload();
+        }
+    </script>
+
+    <style type="text/css">
+        body {
+            font-size: 12pt;
+            margin: 0;
+            word-wrap: break-word;
+            color: #444;
+        }
+
+        table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        th {
+            height: 40pt;
+            color: #333;
+            font-size: 14pt;
+            font-weight: normal;
+        }
+
+        td {
+            vertical-align: middle;
+            padding: 4pt;
+        }
+
+        table,
+        th,
+        td {
+            border: 1pt solid #bbb;
+            border-collapse: collapse;
+        }
+
+        name {
+            color: #282828;
+            font-size: 19pt;
+        }
+
+        note {
+            margin: 15pt 0 24pt 0;
+        }
+
+        name,
+        note {
+            text-align: center;
+            display: block;
+        }
+
+        button {
+            border: 1.5pt solid lightskyblue;
+            border-radius: 10pt;
+            font-size: 16pt;
+            transition-duration: 0.7s;
+            cursor: pointer;
+            color: #444;
+            background-color: white;
+        }
+
+        button:hover {
+            background-color: lightskyblue;
+            color: white;
+        }
+
+        .fj {
+            font-size: 12pt;
+            border: 1.5pt solid lightsalmon;
+            transition-duration: 0.4s;
+        }
+
+        .fj:hover {
+            background-color: lightsalmon;
+        }
+
+        outer {
+            border: 2.4pt solid pink;
+            border-radius: 15pt;
+            width: 520pt;
+            padding: 18pt;
+            margin: 30pt auto;
+            display: block;
+        }
+
+        inner {
+            border: 1.2pt dashed #bbb;
+            border-radius: 8pt;
+            padding: 12pt;
+            display: block;
+        }
+
+        opt {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 10pt;
+            height: 35pt;
+            margin: 10pt 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <outer>
+        <name>{{name}}</name>
+        <note>{{note}}</note>
+        <inner>
+            <table>
+                <tr>
+                    <th style="width:100pt">人员({{req}}人)</th>
+                    <th style="width:350pt">分工</th>
+                    <th>交稿</th>
+                </tr>
+                {% for row in rows %}
+                <tr>
+                    {% for cell in row %}
+                    {% if not forloop.last %}
+                    <td id="{{forloop.parentloop.counter}}">{{cell}}</td>
+                    {% else %}
+                    {% if cell %}
+                    <td style="text-align:center">◯</td>
+                    {% else %}
+                    <td style="text-align:center"><button class='fj' onclick="finishJob({{forloop.parentloop.counter}})">✗</button></td>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                {% for i in empty %}
+                <tr>
+                    <td colspan="3" style="text-align:center;color:#aaa"><I>------　缺人　------</I></td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <opt>
+                <button onclick="addStaff()">接稿</button>
+                <button onclick="setReq()">设定人数</button>
+            </opt>
+        </inner>
+    </outer>
+
+    <p id="pid" hidden>{{pid}}</p>
+    <p id="sc" hidden>{{sc}}</p>
+    <p id="row" hidden>{{row}}</p>
+
+</body>
+
+</html>

@@ -1,10 +1,9 @@
 import json
 
-from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import render
 
-from .forms import SForm
-from .europaea import records, files, push, new, append
+from .europaea import append, files, new, push, records, staff
 from .europaea.database import Project
 
 
@@ -36,13 +35,43 @@ def finish(request):
     return True
 
 def edit_staff(request):
-    if request.method == 'POST':
-        proj = Project(pid=request.GET.get('p'))
+    if request.method == 'GET':
+        pid = request.GET.get('p')
+        proj = Project(pid)
         sc = request.GET.get('s')
         row = request.GET.get('r')
-        form = SForm(request.POST)
+        rows = proj.D[sc].detials()
+        req = proj.D[sc]['req']
+        return render(request, 'es.html', {
+            'pid': pid,
+            'sc': sc,
+            'row': row,
+            'req': req,
+            'rows': rows,
+            'empty': ['']*(req-len(rows)),
+            'name': proj.name,
+            'note': ''})
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        proj = Project(pid=body['p'])
+        sc = body['s']
+        row = body['r']
+        req = body.get('req', None)
+        name = body.get('name', None)
+        job = body.get('job', None)
+        if req:
+            staff.edit_req(proj, sc, req)
+        else:
+            if job:
+                staff.add(proj, sc, name, job)
+            else:
+                staff.finish_job(proj, sc, name)
+                if proj.D[sc].state() == 0:
+                    PUSH_MAP[sc](proj, row)
+                    records.update_process_info(proj)
         records.update_state(proj, sc, row)
-    return render(request, 'es.html', {'city': 'abbc'})
+        proj.save()
+    return True
 
 def new_projs(request):
     body = json.loads(request.body)
