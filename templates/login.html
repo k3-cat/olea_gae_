@@ -4,8 +4,9 @@
     <script type="text/javascript">
         function login() {
             var nickname = prompt("昵称:");
-            if (nickname == "")
+            if (nickname == "" || nickname == null || isNaN(nickname)){
                 return;
+            }
             document.getElementById("nickname").value = nickname;
             document.getElementById("form").submit();
         }

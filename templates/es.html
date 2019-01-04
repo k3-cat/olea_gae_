@@ -4,8 +4,7 @@
     <script type="text/javascript">
         function addStaff() {
             var job = prompt("分工:");
-            if (job === "") {
-                alert("! 无效数据 !")
+            if (job == "" || job == null || isNaN(job)) {
                 return;
             }
             document.getElementById("opt").value = "A";
@@ -14,14 +13,16 @@
         }
 
         function finishJob(lineNo) {
-            document.getElementById("opt").value = "F"+document.getElementById(lineNo).innerHTML;
+            document.getElementById("opt").value = "F" + document.getElementById(lineNo).innerHTML;
             document.getElementById("form").submit()
         }
 
         function setReq() {
             var req = parseInt(prompt("所需人数:"));
             if (isNaN(req) || req < document.getElementById('exist_req').innerHTML) {
-                alert("! 无效数据 !")
+                if (job != null) {
+                    alert("! 无效数据 !");
+                }
                 return;
             }
             document.getElementById("opt").value = req;
