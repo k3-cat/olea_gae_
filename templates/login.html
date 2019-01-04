@@ -20,13 +20,19 @@
             cursor: pointer;
             color: rgb(75, 186, 255);
             background-color: white;
-            width: 100%;
-            height: 100%;
         }
 
         button:hover {
             background-color: lightskyblue;
             color: white;
+        }
+
+        opt {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            grid-gap: 10pt;
+            height: 60pt;
+            margin: 10pt 0 0 0;
         }
     </style>
 
@@ -39,8 +45,13 @@
         {% csrf_token %}
         <input type="hidden" id="nickname" name="nickname">
     </form>
-    <div style="margin: 100pt auto; width: 120pt; height: 60pt;">
-        <button onclick="login()">登录</button>
+    <div style="margin: 100pt auto; width: 200pt">
+        {% if err %}
+        <p style="text-align: center; font-size: 18pt; color: red">! 无效用户 !</p>
+        {% endif %}
+        <opt>
+            <button onclick="login()">登录</button>
+        </opt>
     </div>
 
 </body>
