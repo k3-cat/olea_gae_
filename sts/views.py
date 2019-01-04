@@ -1,7 +1,7 @@
 import json
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 
 from .europaea import append, files, new, push, records
 from .europaea.database import Project
@@ -40,38 +40,39 @@ def edit_staff(request):
         proj = Project(pid)
         sc = request.GET.get('s')
         row = request.GET.get('r')
-        rows = proj.D[sc].detials()
-        req = proj.D[sc]['req']
+        rows = proj[f'staff'].detials(sc)
+        req = proj[f'req.{sc}']
         return render(request, 'es.html', {
             'pid': pid,
             'sc': sc,
             'row': row,
+            'user1': {
+                'uid': 'K3', # request.COOKIES.get('uid'),
+                'root': False},
             'req': req,
             'rows': rows,
             'empty': ['']*(req-len(rows)),
             'name': proj.name,
             'note': ''})
     if request.method == 'POST':
-        body = json.loads(request.body)
-        proj = Project(pid=body['p'])
-        sc = body['s']
-        row = body['r']
-        req = body.get('req', None)
-        name = body.get('name', None)
-        job = body.get('job', None)
-        if req:
-            proj[f'req.{sc}'] = int(req)
-        else:
-            if job:
-                proj['staff'].add_staff(sc, name, job)
-            else:
-                proj['staff'].finish_job(sc, name)
-                if proj['staff'].get_state(sc) == 0:
-                    PUSH_MAP[sc](proj, row)
-                    records.update_process_info(proj)
+        info = request.POST['info'].split(';')
+        proj = Project(info[0])
+        # 验证项目状态
+        opt = request.POST.get('opt', None) # finish & add & change req
+        job = request.POST.get('job', None)
+        if opt[0] == "F":
+            proj['staff'].finish_job(sc, name)
+            if proj['staff'].get_state(sc) == 0:
+                PUSH_MAP[sc](proj, row)
+                records.update_process_info(proj)
+        elif opt == 'A':
+            uid =
+            proj['staff'].add_staff(sc, uid, job)
+        elif opt:
+            proj[f'req.{sc}'] = int(opt)
         records.update_state(proj, sc, row)
         proj.save()
-    return True
+        return HttpResponseRedirect(f'/es?p={info[0]}&s={info[1]}&r={info[2]}')
 
 def new_projs(request):
     body = json.loads(request.body)

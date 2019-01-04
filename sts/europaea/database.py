@@ -30,17 +30,19 @@ class PDict:
 
     def __getitem__(self, key_g):
         kg = key_g.split('.')
-        obj = self.D[kg[0]]
+        obj = self.D
         for key in kg:
             obj = obj[key]
         return obj
 
     def __setitem__(self, key_g, value):
         kg = key_g.split('.')
-        obj = self.D[kg[0]]
-        for key in kg:
-            obj = obj[key]
-        obj = value
+        obj = self.D
+        for i, key in enumerate(kg, 1):
+            if i != len(kg):
+                obj = obj[key]
+            else:
+                obj[key] = value
         self.temp[key_g] = value
 
     def __iter__(self):
@@ -55,19 +57,17 @@ class PDict:
 
 class User(PDict):
     @staticmethod
-    def get_empty_user():
-        return {
-            'email': None,
-            'gmail': None,
-            'name': None
-        }
+    def generate_pid():
+        return ''.join(random.choices(PID_ALPHABET, k=3))
 
-    def __init__(self, name):
-        self.name = name
-        self.Irec = db.collection('users').document(name)
+    def __init__(self, uid, info=None):
+        if not uid:
+            uid = User.generate_pid()
+        self.uid = uid
+        self.Irec = db.collection('users').document(uid)
         dict_ = self.Irec.get().to_dict()
         if not dict_:
-            dict_ = User.get_empty_user()
+            dict_ = info
             self.Irec.set(dict_)
         super().__init__(dict_)
 
@@ -76,8 +76,11 @@ class User(PDict):
         self.clear_temp()
 
     def __setitem__(self, key, value):
-        super().__init__(key, value)
+        super().__setitem__(key, value)
         self._save()
+
+    def is_root(self):
+        return self['root']
 
 
 class Staff:
@@ -85,40 +88,54 @@ class Staff:
 
     def __init__(self, proj, dict_):
         self.proj = proj
+        self.users = dict()
         for sc in Staff.STAFF_GROUP:
-            for member in dict_[sc]:
-                dict_[sc][member] = User(dict_[sc][member])
+            for uid in dict_[sc]:
+                self.users[uid] = User(uid)
         self.D = dict_
 
+    def __getitem__(self, key):
+        return self.D[key]
+
     def set_req(self, sc, req):
-        self.proj[f'req.{sc}'] = req
+        self.proj[f'req.{sc}'] = int(req)
 
     def get_state(self, sc):
         if not self.D[sc]:
             return 5
         if len(self.D[sc]) < self.proj[f'req.{sc}']:
             return 2
-        for member in self.D:
-            if not self.D[member][f'{self.proj.pid}.{sc}.finish']:
+        for uid in self.D[sc]:
+            if not self.users[uid][f'{self.proj.pid}.{sc}.finish']:
                 return 1
         return 0
 
-    def add_staff(self, sc, name, job):
-        self.D[name] = User(name)
-        self.D[name][f'{self.proj.pid}.{sc}.job'] = job
+    def add_staff(self, sc, uid, job):
+        self.users[uid] = User(uid)
+        self.users[uid][f'{self.proj.pid}.{sc}.finish'] = False
+        self.proj[f'staff.{sc}.{uid}'] = job
 
-    def finish_job(self, sc, name):
-        self.D[name][f'{self.proj.pid}.{sc}.finish'] = True
+    def finish_job(self, sc, uid):
+        self.users[uid][f'{self.proj.pid}.{sc}.finish'] = True
 
-    def list_staff(self, sc_range=Staff.STAFF_GROUP, not_finish=None):
+    def list_staff(self, sc_range=STAFF_GROUP, not_finish=None):
         result = list()
         for sc in sc_range:
             staff = list()
-            for member in self.D:
-                if self.D[member][f'{self.proj.pid}.{sc}.finish'] != not_finish:
-                    staff.append(member)
+            for uid in self.D:
+                if self.users[uid][f'{self.proj.pid}.{sc}.finish'] != not_finish:
+                    staff.append(uid)
             result.append(f'{sc}: {", ".join(staff)}')
         return '| '.join(result)
+
+    def detials(self, sc):
+        result = list()
+        for uid in self.D[sc]:
+            result.append({
+                'u': self.users[uid]['nickname'],
+                'j': self.D[sc][uid],
+                'f': self.users[uid][f'{self.proj.pid}.{sc}.finish']})
+        return result
 
 class Project(PDict):
     SSC2D_MAP = {
@@ -163,16 +180,12 @@ class Project(PDict):
         if not dict_:
             dict_ = Project.get_empty_proj(info)
             self.Irec.set(dict_)
-        self._refresh(dict_)
+        dict_['staff'] = Staff(self, dict_['staff'])
+        self.D = dict_
 
     def save(self):
         self.Irec.update(self.temp)
-        self._refresh(self.Irec.get().to_dict())
         self.clear_temp()
-
-    def _refresh(self, dict_):
-        dict_['staff'] = Staff(self, dict_['staff'])
-        self.D = dict_
 
     @property
     def ssc_display(self):

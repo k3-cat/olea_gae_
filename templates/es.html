@@ -2,37 +2,30 @@
 
 <head>
     <script type="text/javascript">
-        function post(message) {
-            var url = '127.0.0.1:8000';
-            message["p"] = document.getElementById("pid").innerHTML;
-            message["s"] = document.getElementById("sc").innerHTML;
-            message["r"] = document.getElementById("row").innerHTML;
-            xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-type", "application/json");
-            var data = JSON.stringify(message);
-            xhr.send(data);
-        }
-
         function addStaff() {
-            var name, job;
-            name = prompt("名字?");
-            if (name === "") {
+            var job = prompt("分工:");
+            if (job === "") {
+                alert("! 无效数据 !")
                 return;
             }
-            job = prompt("分工?");
-            post({ "name": name, "job": job });
-            location.reload();
+            document.getElementById("opt").value = "A";
+            document.getElementById("job").value = job;
+            document.getElementById("form").submit()
         }
 
         function finishJob(lineNo) {
-            post({ "name": document.getElementById(lineNo).innerHTML });
-            location.reload();
+            document.getElementById("opt").value = "F"+document.getElementById(lineNo).innerHTML;
+            document.getElementById("form").submit()
         }
 
         function setReq() {
-            post({ "req": prompt("所需人数:") });
-            location.reload();
+            var req = parseInt(prompt("所需人数:"));
+            if (isNaN(req) || req < document.getElementById('exist_req').innerHTML) {
+                alert("! 无效数据 !")
+                return;
+            }
+            document.getElementById("req").value = req;
+            document.getElementById("form").submit()
         }
     </script>
 
@@ -147,17 +140,20 @@
                 </tr>
                 {% for row in rows %}
                 <tr>
-                    {% for cell in row %}
-                    {% if not forloop.last %}
-                    <td id="{{forloop.parentloop.counter}}">{{cell}}</td>
-                    {% else %}
-                    {% if cell %}
+                    <td id="{{forloop.counter}}">{{row.u}}</td>
+                    <td>{{row.j}}</td>
+                    {% if row.f %}
                     <td style="text-align:center">◯</td>
                     {% else %}
-                    <td style="text-align:center"><button class='fj' onclick="finishJob({{forloop.parentloop.counter}})">✗</button></td>
+                    {% if user1.uid == row.u or user1.root %}
+                    <td style="text-align:center"><button class='fj' onclick="finishJob({{forloop.counter}})">⌾</button></td>
+                    {% else %}
+                    <td style="text-align:center">✗</td>
                     {% endif %}
                     {% endif %}
-                    {% endfor %}
+                    {% if forloop.last %}
+                    <p id='exist_req' hidden>{{forloop.counter}}</p>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 {% for i in empty %}
@@ -174,9 +170,12 @@
         </inner>
     </outer>
 
-    <p id="pid" hidden>{{pid}}</p>
-    <p id="sc" hidden>{{sc}}</p>
-    <p id="row" hidden>{{row}}</p>
+    <form method='post' id="form">
+        {% csrf_token %}
+        <input type="hidden" name="info" value="{{pid}};{{sc}};{{row}}">
+        <input type="hidden" id="opt" name="opt">
+        <input type="hidden" id="job" name="job">
+    </form>
 
 </body>
 

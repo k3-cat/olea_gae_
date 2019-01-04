@@ -11,6 +11,6 @@ def proj(inos, titles, doc_urls):
     projs = list()
     for ino, title, doc_url in zip(inos, titles, doc_urls):
         projs.append(Project(pid=None, info=(ino, title, doc_url)))
-        rows.append([f"'{ino}", f"'{title}", f"'{projs[-1].pid}"])
+        rows.append([f"'{ino}", f"'{title}", f"'{projs[-1].pid}", '初始'])
     sheets.append(path, rows)
     return projs
