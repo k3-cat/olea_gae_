@@ -1,7 +1,7 @@
 from . import sheets
 
 
-URL = 'https://olea-0.appspot.com/'
+URL = 'https://olea-1.appspot.com/'
 
 PATH_MAP = {'LB': ('1UAD7PSiVtuWazMakg7jDtHXu9PqC5CQBcx8YZ4H4o7U', '配音'),
             'FY': ('1kSGUUmzjNk3NTuE8EU6LBuToz9NV3m430ZgxEkMnd7Q', '接稿'),
