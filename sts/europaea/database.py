@@ -60,15 +60,21 @@ class User(PDict):
     def generate_pid():
         return ''.join(random.choices(PID_ALPHABET, k=3))
 
-    def __init__(self, uid, info=None):
+    @staticmethod
+    def find_uid(nickname):
+        doc = db.collection(u'users').where('nickname', '==', nickname).get()[0]
+        return User(doc.id, dict_=doc.to_dict())
+
+    def __init__(self, uid, info=None, dict_=None):
         if not uid:
             uid = User.generate_pid()
         self.uid = uid
         self.Irec = db.collection('users').document(uid)
-        dict_ = self.Irec.get().to_dict()
         if not dict_:
-            dict_ = info
-            self.Irec.set(dict_)
+            dict_ = self.Irec.get().to_dict()
+            if not dict_:
+                dict_ = info
+                self.Irec.set(dict_)
         super().__init__(dict_)
 
     def _save(self):
@@ -106,24 +112,26 @@ class Staff:
         if len(self.D[sc]) < self.proj[f'req.{sc}']:
             return 2
         for uid in self.D[sc]:
-            if not self.users[uid][f'{self.proj.pid}.{sc}.finish']:
+            if not self.users[uid][f'proj.{self.proj.pid}.{sc}.finish']:
                 return 1
         return 0
 
     def add_staff(self, sc, uid, job):
+        if uid in self.proj[f'staff.{sc}']:
+            return
         self.users[uid] = User(uid)
-        self.users[uid][f'{self.proj.pid}.{sc}.finish'] = False
+        self.users[uid][f'proj.{self.proj.pid}.{sc}.finish'] = False
         self.proj[f'staff.{sc}.{uid}'] = job
 
     def finish_job(self, sc, uid):
-        self.users[uid][f'{self.proj.pid}.{sc}.finish'] = True
+        self.users[uid][f'proj.{self.proj.pid}.{sc}.finish'] = True
 
     def list_staff(self, sc_range=STAFF_GROUP, not_finish=None):
         result = list()
         for sc in sc_range:
             staff = list()
             for uid in self.D:
-                if self.users[uid][f'{self.proj.pid}.{sc}.finish'] != not_finish:
+                if self.users[uid][f'proj.{self.proj.pid}.{sc}.finish'] != not_finish:
                     staff.append(uid)
             result.append(f'{sc}: {", ".join(staff)}')
         return '| '.join(result)
@@ -134,8 +142,9 @@ class Staff:
             result.append({
                 'u': self.users[uid]['nickname'],
                 'j': self.D[sc][uid],
-                'f': self.users[uid][f'{self.proj.pid}.{sc}.finish']})
+                'f': self.users[uid][f'proj.{self.proj.pid}.{sc}.finish']})
         return result
+
 
 class Project(PDict):
     SSC2D_MAP = {

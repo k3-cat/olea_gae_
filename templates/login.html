@@ -1,0 +1,48 @@
+<html>
+
+<head>
+    <script type="text/javascript">
+        function login() {
+            var nickname = prompt("昵称:");
+            if (nickname == "")
+                return;
+            document.getElementById("nickname").value = nickname;
+            document.getElementById("form").submit();
+        }
+    </script>
+
+    <style type="text/css">
+        button {
+            border: 1.5pt solid lightskyblue;
+            border-radius: 10pt;
+            font-size: 20pt;
+            transition-duration: 0.7s;
+            cursor: pointer;
+            color: rgb(75, 186, 255);
+            background-color: white;
+            width: 100%;
+            height: 100%;
+        }
+
+        button:hover {
+            background-color: lightskyblue;
+            color: white;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <form method='post' id="form">
+        {% csrf_token %}
+        <input type="hidden" id="nickname" name="nickname">
+    </form>
+    <div style="margin: 100pt auto; width: 120pt; height: 60pt;">
+        <button onclick="login()">登录</button>
+    </div>
+
+</body>
+
+</html>

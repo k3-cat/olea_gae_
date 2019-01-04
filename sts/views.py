@@ -1,10 +1,10 @@
 import json
 
 from django.http import HttpResponse
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, redirect
 
 from .europaea import append, files, new, push, records
-from .europaea.database import Project
+from .europaea.database import Project, User
 
 
 def hello(request):
@@ -36,19 +36,24 @@ def finish(request):
 
 def edit_staff(request):
     if request.method == 'GET':
+        uid = request.COOKIES.get('uid', None)
+        if not uid:
+            root = False
+        else:
+            user = User(uid)
+            root = user.is_root()
         pid = request.GET.get('p')
         proj = Project(pid)
         sc = request.GET.get('s')
-        row = request.GET.get('r')
-        rows = proj[f'staff'].detials(sc)
         req = proj[f'req.{sc}']
+        rows = proj['staff'].detials(sc)
         return render(request, 'es.html', {
             'pid': pid,
             'sc': sc,
-            'row': row,
+            'row': request.GET.get('r'),
             'user1': {
-                'uid': 'K3', # request.COOKIES.get('uid'),
-                'root': False},
+                'uid': uid,
+                'root': root},
             'req': req,
             'rows': rows,
             'empty': ['']*(req-len(rows)),
@@ -59,20 +64,22 @@ def edit_staff(request):
         proj = Project(info[0])
         # 验证项目状态
         opt = request.POST.get('opt', None) # finish & add & change req
-        job = request.POST.get('job', None)
+        uid = request.COOKIES.get('uid', None)
+        if not uid:
+            return HttpResponseRedirect('/login')
         if opt[0] == "F":
-            proj['staff'].finish_job(sc, name)
-            if proj['staff'].get_state(sc) == 0:
-                PUSH_MAP[sc](proj, row)
+            proj['staff'].finish_job(info[1], uid)
+            if proj['staff'].get_state(info[1]) == 0:
+                PUSH_MAP[info[1]](proj, info[2])
                 records.update_process_info(proj)
         elif opt == 'A':
-            uid =
-            proj['staff'].add_staff(sc, uid, job)
+            proj['staff'].add_staff(info[1], uid, request.POST['job'])
         elif opt:
-            proj[f'req.{sc}'] = int(opt)
-        records.update_state(proj, sc, row)
+            proj[f'req.{info[1]}'] = int(opt)
+        records.update_state(proj, info[1], info[2])
         proj.save()
-        return HttpResponseRedirect(f'/es?p={info[0]}&s={info[1]}&r={info[2]}')
+        return HttpResponseRedirect(f'/r/es?p={info[0]}&s={info[1]}&r={info[2]}')
+    return HttpResponse(False)
 
 def new_projs(request):
     body = json.loads(request.body)
@@ -98,3 +105,16 @@ def create(request):
         response = files.create(proj, sc, row, 'folder')
     proj.save()
     return HttpResponse(response)
+
+def login(request):
+    if request.method == 'GET':
+        return render(request, 'login.html')
+    if request.method == 'POST':
+        nickname = request.POST['nickname']
+        user = User.find_uid(nickname)
+        if not user:
+            return render(request, 'login.html', {'err': True})
+        response = redirect('/')
+        response.set_cookie('uid', user.uid, max_age=366*86400)
+        return response
+    return HttpResponse(False)
