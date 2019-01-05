@@ -20,65 +20,58 @@ PUSH_MAP = {
     }
 
 def push_(request):
-    proj = Project(pid=request.GET.get('p'))
-    sc = request.GET.get('s')
-    row = request.GET.get('r')
-    PUSH_MAP[sc](proj, row)
+    i = request.GET['i'].split(';')
+    proj = Project(pid=i[0])
+    if i[1] not in ('KP', 'SJ', 'LB'):
+        return HttpResponse(False)
+    elif i[1] == 'LB':
+        push.lb(proj, row, request.GET.get('vu'))
+    if not PUSH_MAP[i[1]](proj, i[2]):
+        return HttpResponse(False)
     proj.save()
     records.update_process_info(proj)
     return HttpResponse(True)
 
-def finish(request):
-    proj = Project(pid=request.GET.get('p'))
-    row = request.GET.get('r')
-    push.lb(proj, row, request.GET.get('vu'))
-    return True
-
 def edit_staff(request):
+    uid = request.COOKIES.get('uid', None)
+    if not uid:
+        return HttpResponseRedirect('/login')
+    user = User(uid)
+    user_info = user.info()
     if request.method == 'GET':
-        uid = request.COOKIES.get('uid', None)
-        if not uid:
-            root = False
-        else:
-            user = User(uid)
-            root = user.is_root()
-        pid = request.GET.get('p')
-        proj = Project(pid)
-        sc = request.GET.get('s')
-        req = proj[f'req.{sc}']
-        rows = proj['staff'].detials(sc)
+        i = request.GET['i'].split(',')
+        proj = Project(i[0])
+        req = proj[f'req.{i[1]}']
+        rows = proj['staff'].detials(i[1])
         return render(request, 'es.html', {
-            'pid': pid,
-            'sc': sc,
-            'row': request.GET.get('r'),
-            'user1': {
-                'uid': uid,
-                'root': root},
+            'i': f'{i[0]},{i[1]},{i[2]}',
+            'user1': user_info,
+            'edit': i[1] in user_info['group'],
             'req': req,
             'rows': rows,
             'empty': ['']*(req-len(rows)),
             'name': proj.name,
             'note': ''})
     if request.method == 'POST':
-        info = request.POST['info'].split(';')
-        proj = Project(info[0])
+        i = request.POST['i'].split(',')
+        if i[1] not in user_info['group']:
+            return HttpResponseRedirect(f'/es?i={i[0]},{i[1]},{i[2]}')
+        proj = Project(i[0])
         # 验证项目状态
         opt = request.POST.get('opt', None) # finish & add & change req
-        uid = request.COOKIES.get('uid', None)
-        if not uid:
-            return HttpResponseRedirect('/login')
         if opt[0] == "F":
-            proj['staff'].finish_job(info[1], uid)
-            if proj['staff'].get_state(info[1]) == 0:
-                PUSH_MAP[info[1]](proj, info[2])
+            proj['staff'].finish_job(i[1], uid)
+            if proj['staff'].get_state(i[1]) == 0:
+                PUSH_MAP[i[1]](proj, i[2])
                 records.update_process_info(proj)
         elif opt == 'A':
-            proj['staff'].add_staff(info[1], uid, request.POST['job'])
+            proj['staff'].add_staff(i[1], uid, request.POST['job'])
         elif opt:
-            proj[f'req.{info[1]}'] = int(opt)
-        records.update_state(proj, info[1], info[2])
+            proj['staff'].set_req(i[1], opt)
+        records.update_state(proj, i[1], i[2])
+        records.update_req_display(proj, i[1], i[2])
         proj.save()
-        return HttpResponseRedirect(f'/r/es?p={info[0]}&s={info[1]}&r={info[2]}')
+        return HttpResponseRedirect(f'/es?i={i[0]},{i[1]},{i[2]}')
     return HttpResponse(False)
 
 def new_projs(request):

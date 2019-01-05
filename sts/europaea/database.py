@@ -85,8 +85,10 @@ class User(PDict):
         super().__setitem__(key, value)
         self._save()
 
-    def is_root(self):
-        return self['root']
+    def info(self):
+        user_info = self['info']
+        user_info['uid'] = self.uid
+        return user_info
 
 
 class Staff:
@@ -104,7 +106,11 @@ class Staff:
         return self.D[key]
 
     def set_req(self, sc, req):
-        self.proj[f'req.{sc}'] = int(req)
+        req = int(req)
+        if req < 0 or req < len(self.proj[f'staff.{sc}']):
+            return False
+        self.proj[f'req.{sc}'] = req
+        return True
 
     def get_state(self, sc):
         if not self.D[sc]:
@@ -140,6 +146,7 @@ class Staff:
         result = list()
         for uid in self.D[sc]:
             result.append({
+                'uid': uid,
                 'u': self.users[uid]['nickname'],
                 'j': self.D[sc][uid],
                 'f': self.users[uid][f'proj.{self.proj.pid}.{sc}.finish']})
@@ -148,14 +155,14 @@ class Staff:
 
 class Project(PDict):
     SSC2D_MAP = {
-        'F': '翻译',
-        'K': '编篡文案',
-        'P': '配音',
-        'p': '配音+绘制插图',
-        'H': '后期',
-        'h': '后期+绘制插图',
-        'U': '上传',
-        'C': '完成'
+        'FY': '翻译',
+        'KP': '编篡文案',
+        'PY': '配音',
+        'ps': '配音+绘制插图',
+        'HQ': '后期',
+        'hs': '后期+绘制插图',
+        'UP': '上传',
+        '00': '完成'
     }
 
     @staticmethod
@@ -172,8 +179,7 @@ class Project(PDict):
             'ino': info[0],
             'title': info[1],
             'ssc': '',
-            'p_c': False,               # pic_checked
-            'ids': {'doc_id': doc_id, 'ext_id': None, 'mic_id': None, 'aep_id': None},
+            'ids': {'doc': doc_id, 'ext': None, 'mic': None, 'pic': None, 'aep': None},
             'req': {'FY': 0, 'KP': 0, 'PY': 0, 'SJ': 0, 'HQ': 0},
             'staff': {'FY': {}, 'KP': {}, 'PY': {}, 'SJ': {}, 'HQ': {}}
         }

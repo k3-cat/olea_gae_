@@ -4,7 +4,7 @@
     <script type="text/javascript">
         function addStaff() {
             var job = prompt("分工:");
-            if (job == "" || job == null || isNaN(job)) {
+            if (job == "" || job == null) {
                 return;
             }
             document.getElementById("opt").value = "A";
@@ -12,14 +12,14 @@
             document.getElementById("form").submit()
         }
 
-        function finishJob(lineNo) {
-            document.getElementById("opt").value = "F" + document.getElementById(lineNo).innerHTML;
+        function finishJob() {
+            document.getElementById("opt").value = "F";
             document.getElementById("form").submit()
         }
 
         function setReq() {
             var req = parseInt(prompt("所需人数:"));
-            if (isNaN(req) || req < document.getElementById('exist_req').innerHTML) {
+            if (isNaN(req)) {
                 if (job != null) {
                     alert("! 无效数据 !");
                 }
@@ -142,19 +142,16 @@
                 </tr>
                 {% for row in rows %}
                 <tr>
-                    <td id="{{forloop.counter}}">{{row.u}}</td>
+                    <td>{{row.u}}</td>
                     <td>{{row.j}}</td>
                     {% if row.f %}
                     <td style="text-align:center">◯</td>
                     {% else %}
-                    {% if user1.uid == row.u or user1.root %}
-                    <td style="text-align:center"><button class='fj' onclick="finishJob({{forloop.counter}})">⌾</button></td>
+                    {% if user1.uid == row.uid %}
+                    <td style="text-align:center"><button class='fj' onclick="finishJob()">⌾</button></td>
                     {% else %}
                     <td style="text-align:center">✗</td>
                     {% endif %}
-                    {% endif %}
-                    {% if forloop.last %}
-                    <p id='exist_req' hidden>{{forloop.counter}}</p>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -164,21 +161,21 @@
                 </tr>
                 {% endfor %}
             </table>
-
+            {% if edit %}
             <opt>
                 <button onclick="addStaff()">接稿</button>
                 <button onclick="setReq()">设定人数</button>
             </opt>
+            {% endif %}
         </inner>
     </outer>
 
     <form method='post' id="form">
         {% csrf_token %}
-        <input type="hidden" name="info" value="{{pid}};{{sc}};{{row}}">
+        <input type="hidden" name="i" value="{{i}}">
         <input type="hidden" id="opt" name="opt">
         <input type="hidden" id="job" name="job">
     </form>
-
 </body>
 
 </html>

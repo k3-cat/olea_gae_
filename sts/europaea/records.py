@@ -8,7 +8,7 @@ HL_COL_MAP = {
     'KP': 'K',
     'SJ': 'K',
     'PY': 'K',
-    'HQ': 'K'}
+    'HQ': 'L'}
 
 def set_hyperlink(sc, row, id_):
     path = get_path(sc)
@@ -53,3 +53,6 @@ def update_state(proj, sc, row):
     state = STATE_MAP[proj['staff'].get_state(sc)]
     sheets.set_values(path, [[state]])
     return True
+
+def update_req_display(proj, sc, row):
+    pass
