@@ -24,8 +24,8 @@ def push_(request):
     proj = Project(pid=i[0])
     if i[1] not in ('KP', 'SJ', 'LB'):
         return HttpResponse(False)
-    elif i[1] == 'LB':
-        push.lb(proj, row, request.GET.get('vu'))
+    if i[1] == 'LB':
+        push.lb(proj, i[2], request.GET.get('vu'))
     if not PUSH_MAP[i[1]](proj, i[2]):
         return HttpResponse(False)
     proj.save()

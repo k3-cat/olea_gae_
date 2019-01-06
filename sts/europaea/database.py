@@ -32,13 +32,18 @@ class PDict:
         kg = key_g.split('.')
         obj = self.D
         for key in kg:
-            obj = obj[key]
+            try:
+                obj = obj[key]
+            except KeyError:
+                return None
         return obj
 
     def __setitem__(self, key_g, value):
         kg = key_g.split('.')
         obj = self.D
         for i, key in enumerate(kg, 1):
+            if key not in obj:
+                obj[key] = dict()
             if i != len(kg):
                 obj = obj[key]
             else:
@@ -86,12 +91,11 @@ class User(PDict):
         self._save()
 
     def info(self):
-        user_info = self['info']
+        user_info = self.D['info']
         user_info['uid'] = self.uid
         return user_info
 
-
-class Staff:
+class Staff(PDict):
     STAFF_GROUP = ('FY', 'KP', 'PY', 'SJ', 'HQ')
 
     def __init__(self, proj, dict_):
@@ -100,10 +104,7 @@ class Staff:
         for sc in Staff.STAFF_GROUP:
             for uid in dict_[sc]:
                 self.users[uid] = User(uid)
-        self.D = dict_
-
-    def __getitem__(self, key):
-        return self.D[key]
+        super().__init__(dict_)
 
     def set_req(self, sc, req):
         req = int(req)
@@ -115,9 +116,9 @@ class Staff:
     def get_state(self, sc):
         if not self.D[sc]:
             return 5
-        if len(self.D[sc]) < self.proj[f'req.{sc}']:
+        if len(self[sc]) < self.proj[f'req.{sc}']:
             return 2
-        for uid in self.D[sc]:
+        for uid in self[sc]:
             if not self.users[uid][f'proj.{self.proj.pid}.{sc}.finish']:
                 return 1
         return 0
@@ -136,7 +137,7 @@ class Staff:
         result = list()
         for sc in sc_range:
             staff = list()
-            for uid in self.D:
+            for uid in self[sc]:
                 if self.users[uid][f'proj.{self.proj.pid}.{sc}.finish'] != not_finish:
                     staff.append(uid)
             result.append(f'{sc}: {", ".join(staff)}')
@@ -144,14 +145,13 @@ class Staff:
 
     def detials(self, sc):
         result = list()
-        for uid in self.D[sc]:
+        for uid in self[sc]:
             result.append({
                 'uid': uid,
                 'u': self.users[uid]['nickname'],
-                'j': self.D[sc][uid],
+                'j': self[sc][uid],
                 'f': self.users[uid][f'proj.{self.proj.pid}.{sc}.finish']})
         return result
-
 
 class Project(PDict):
     SSC2D_MAP = {
