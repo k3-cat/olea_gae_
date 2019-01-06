@@ -9,7 +9,7 @@ URLS_MAP = {
     'HQ': ('1reTVn0P6iHAcTQV5GtRS3veBj_TmuF9q', 'aep')
 }
 
-def create(proj, sc, row, type_):
+def create(proj, sc, pos, type_):
     name = proj.name
     if '}' in name:
         return False
@@ -18,7 +18,7 @@ def create(proj, sc, row, type_):
     else:
         id_ = drive.new(name, type_, URLS_MAP[sc][0])
         proj[f'ids.{URLS_MAP[sc][1]}'] = id_
-    set_hyperlink(sc, row, id_)
+    set_hyperlink(sc, pos, id_)
     return True
 
 def clean(proj):

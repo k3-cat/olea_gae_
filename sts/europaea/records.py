@@ -10,10 +10,10 @@ HL_COL_MAP = {
     'PY': 'K',
     'HQ': 'L'}
 
-def set_hyperlink(sc, row, id_):
+def set_hyperlink(sc, pos, id_):
     path = get_path(sc)
     path.col = HL_COL_MAP[sc]
-    path.row = row
+    path.row = pos
     sheets.set_values(path, [[hyperlink(id_, sc)]])
     return True
 
@@ -46,13 +46,13 @@ def update_process_info(proj):
     sheets.set_values(path, [[proj.ssc_display, proj['staff'].list_staff()]])
     return True
 
-def update_state(proj, sc, row):
+def update_state(proj, sc, pos):
     path = get_path(sc)
     path.col = 'D'
-    path.row = row
+    path.row = pos
     state = STATE_MAP[proj['staff'].get_state(sc)]
     sheets.set_values(path, [[state]])
     return True
 
-def update_req_display(proj, sc, row):
+def update_req_display(proj, sc, pos):
     pass

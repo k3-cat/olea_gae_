@@ -26,9 +26,11 @@ def push_(request):
         return HttpResponse(False)
     if i[1] == 'LB':
         push.lb(proj, i[2], request.GET.get('vu'))
-    if not PUSH_MAP[i[1]](proj, i[2]):
-        return HttpResponse(False)
-    proj.save()
+    else:
+        response = PUSH_MAP[i[1]](proj, i[2])
+        if not response:
+            return HttpResponse(False)
+        proj.save()
     records.update_process_info(proj)
     return HttpResponse(True)
 
@@ -75,27 +77,32 @@ def edit_staff(request):
     return HttpResponse(False)
 
 def new_projs(request):
-    body = json.loads(request.body)
-    type_ = body['t']
-    inos = body['is']
-    titles = body['ts']
-    urls = body['us']
-    projs = new.proj(inos, titles, urls)
-    if type_ == 'T':
-        append.fy(projs)
-    elif type_ in ('G', 'K'):
-        append.kp(projs)
-    return HttpResponse(True)
+    uid = request.COOKIES.get('uid', None)
+    if not uid:
+        return HttpResponseRedirect('/login')
+    user = User(uid)
+    user_info = user.info()
+    if not user_info['root']:
+        return HttpResponse(False)
+    if request.method == 'GET':
+        return render(request, 'np.html')
+    if request.method == 'POST':
+        type_ = request.POST['t']
+        projs = new.proj(request.POST['data'])
+        if type_ == 'T':
+            append.fy(projs)
+        elif type_ in ('G', 'K'):
+            append.kp(projs)
+        return HttpResponse(True)
+    return HttpResponse(False)
 
 def create(request):
-    body = json.loads(request.body)
-    proj = Project(pid=body['p'])
-    sc = body['s']
-    row = body['r']
-    if sc == 'KP':
-        response = files.create(proj, sc, row, 'doc')
-    elif sc in ('MS', 'PY', 'HQ'):
-        response = files.create(proj, sc, row, 'folder')
+    i = request.POST['i'].split(',')
+    proj = Project(i[0])
+    if i[1] == 'KP':
+        response = files.create(proj, i[1], i[2], 'doc')
+    elif i[1] in ('MS', 'PY', 'HQ'):
+        response = files.create(proj, i[1], i[2], 'folder')
     proj.save()
     return HttpResponse(response)
 

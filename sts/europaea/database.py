@@ -3,12 +3,15 @@ import random
 import firebase_admin
 from firebase_admin import credentials, firestore
 
+from .files import clean
+
 
 cred = credentials.ApplicationDefault()
 firebase_admin.initialize_app(cred, {
     'projectId': 'olea-db',
 })
 db = firestore.client()
+
 
 PID_ALPHABET = (
     '0123456789aAbBcC'
@@ -201,6 +204,13 @@ class Project(PDict):
     def save(self):
         self.Irec.update(self.temp)
         self.clear_temp()
+
+    def finish(self):
+        clean(self)
+        for user in self['staff.users']:
+            user.temp[f'proj.{self.pid}'] = firestore.DELETE_FIELD
+            del(user.D['proj'][self.pid])
+            user.save()
 
     @property
     def ssc_display(self):
