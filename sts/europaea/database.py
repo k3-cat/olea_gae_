@@ -2,12 +2,14 @@ import random
 import time
 import os.path
 
+import firebase_admin
 from firebase_admin import firestore, credentials
 
 from .files import clean
 
 
 cred = credentials.Certificate(f'{os.path.dirname(__file__)}/sa_cerds.json')
+firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
