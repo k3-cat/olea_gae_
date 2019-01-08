@@ -29,7 +29,7 @@ def kp(projs):
             f'=IF(D11={STATE_MAP[5]},"",HYPERLINK("{URL}/p?i={proj.pid},KP,"&ROW(),"[跳过]"))',
             f'=HYPERLINK("{URL}/es?i={proj.pid},KP,"&ROW(),"[人员]")',
             hyperlink(proj['ids.doc'], 'GG'),
-            f'=IF(D{i}="0/0","",createD(C{i},ROW()))'
+            f'=IF(E{i}="0/0","",createD(C{i},ROW()))'
         ])
     sheets.append(path, rows)
     return True
@@ -77,7 +77,7 @@ def hq(proj, pic_url): # the url may not be the real url
         hyperlink(proj['ids.ext'], 'KP'),
         hyperlink(proj['ids.mic'], 'PY'),
         hyperlink(pic_url, 'UJ'),
-        f'=IF(E{k}="","",createF(C{k},ROW()))'
+        f'=IF(E{k}="0/0","",createF(C{k},ROW()))'
     ]]
     sheets.append(path, row)
     return True

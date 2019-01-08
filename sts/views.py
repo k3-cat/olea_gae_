@@ -18,7 +18,7 @@ PUSH_MAP = {
     }
 
 def push_(request):
-    i = request.GET['i'].split(';')
+    i = request.GET['i'].split(',')
     proj = Project(pid=i[0])
     if i[1] not in ('KP', 'UJ', 'LB'):
         return HttpResponse(False)
