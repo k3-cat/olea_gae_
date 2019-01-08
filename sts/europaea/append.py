@@ -41,7 +41,7 @@ def uj(proj):
     path.row = k
     row = [[
         f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
-        f'=IF(D11="{STATE_MAP[5]}",HYPERLINK("{URL}/p?i={proj.pid},KP,"&ROW(),"[跳过]"),"")',
+        f'=IF(D11="{STATE_MAP[5]}",HYPERLINK("{URL}/p?i={proj.pid},UJ,"&ROW(),"[跳过]"),"")',
         f'=HYPERLINK("{URL}/es?i={proj.pid},UJ,"&ROW(),"[人员]")',
         hyperlink(proj['ids.doc'], 'GG'),
         hyperlink(proj['ids.ext'], 'KP'),

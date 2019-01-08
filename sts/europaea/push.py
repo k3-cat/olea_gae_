@@ -39,7 +39,7 @@ def uj(proj, pos):
         sheets.set_values(path, [[hyperlink(proj['ids.pic'], 'UJ')]])
     else:
         return False
-    path = get_path('PY')
+    path = get_path('UJ')
     path.row = pos
     sheets.del_line(path)
     return True
