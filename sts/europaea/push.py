@@ -11,7 +11,7 @@ def fy(proj, pos):
     return True
 
 def kp(proj, pos):
-    proj['ssc'] = 'PY'
+    proj['ssc'] = 'ps'
     path = get_path('KP')
     path.row = pos
     append.py(proj)
