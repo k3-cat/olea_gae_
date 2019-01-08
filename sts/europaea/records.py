@@ -41,7 +41,7 @@ def get_LB_line(pid):
 
 def update_process_info(proj):
     path = get_path('LB')
-    path.col = 'B:C'
+    path.col = 'D:E'
     path.row = get_LB_line(proj.pid)
     sheets.set_values(path, [[proj.ssc_display, proj['staff'].list_staff()]])
     return True
