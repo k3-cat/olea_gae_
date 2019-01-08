@@ -75,6 +75,7 @@ def edit_staff(request):
         return HttpResponseRedirect(f'/es?i={i[0]},{i[1]},{i[2]}')
     return HttpResponse(False)
 
+
 def new_projs(request):
     uid = request.COOKIES.get('uid', None)
     if not uid:
@@ -96,12 +97,58 @@ def new_projs(request):
         return HttpResponse(True)
     return HttpResponse(False)
 
+def manage_staff(request):
+    uid = request.COOKIES.get('uid', None)
+    if not uid:
+        return HttpResponseRedirect('/login')
+    user = User(uid)
+    user_info = user.info()
+    if 'nimda' not in user_info['groups']:
+        return HttpResponse(False)
+    if request.method == 'GET':
+        i = request.GET['i'].split(',')
+        proj = Project(i[0])
+        req = proj[f'req.{i[1]}']
+        rows = proj['staff'].detials(i[1])
+        return render(request, 'es.html', {
+            'i': f'{i[0]},{i[1]},{i[2]}',
+            'user1': user_info,
+            'edit': i[1] in user_info['groups'],
+            'req': req,
+            'rows': rows,
+            'empty': ['']*(req-len(rows)),
+            'name': proj.name,
+            'note': ''})
+    if request.method == 'POST':
+        i = request.POST['i'].split(',')
+        if i[1] not in user_info['group']:
+            return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
+        proj = Project(i[0])
+        # 验证项目状态
+        opt = request.POST.get('opt', None) # finish & add & change req
+        if opt[0] == "F":
+            proj['staff'].finish_job(i[1], request.POST['uid'])
+            if proj['staff'].get_state(i[1]) == 0:
+                PUSH_MAP[i[1]](proj, i[2])
+                records.update_process_info(proj)
+        elif opt == 'A':
+            proj['staff'].add_staff(i[1], request.POST['uid'], request.POST['job'])
+        elif opt:
+            proj['staff'].set_req(i[1], opt)
+            records.update_req_display(proj, i[1], i[2])
+        proj.save()
+        records.update_state(proj, i[1], i[2])
+        records.update_nickname_display(proj, i[1], i[2])
+        return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
+    return HttpResponse(False)
+
+
 def create(request):
     i = request.POST['i'].split(',')
     proj = Project(i[0])
     if i[1] == 'KP':
         response = files.create(proj, i[1], i[2], 'doc')
-    elif i[1] in ('MS', 'PY', 'HQ'):
+    elif i[1] in ('UJ', 'PY', 'HQ'):
         response = files.create(proj, i[1], i[2], 'folder')
     proj.save()
     return HttpResponse(response)
@@ -115,6 +162,6 @@ def login(request):
         if not user:
             return render(request, 'login.html', {'err': True})
         response = redirect('/')
-        response.set_cookie('uid', user.uid, max_age=366*86400)
+        response.set_cookie('uid', user.uid, max_age=90*86400)
         return response
     return HttpResponse(False)

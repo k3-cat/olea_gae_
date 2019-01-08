@@ -3,17 +3,23 @@
 <head>
     <script type="text/javascript">
         function addStaff() {
+            var uid = prompt("uid:");
+            if (uid == "" || uid == null) {
+                return;
+            }
             var job = prompt("分工:");
             if (job == "" || job == null) {
                 return;
             }
             document.getElementById("opt").value = "A";
+            document.getElementById("uid").value = uid;
             document.getElementById("job").value = job;
             document.getElementById("form").submit()
         }
 
-        function finishJob() {
+        function finishJob(lineNo) {
             document.getElementById("opt").value = "F";
+            document.getElementById("uid").value = document.getElementById(lineNo).innerHTML;
             document.getElementById("form").submit()
         }
 
@@ -106,7 +112,7 @@
         outer {
             border: 2.4pt solid pink;
             border-radius: 15pt;
-            width: 520pt;
+            width: 530pt;
             padding: 18pt;
             margin: 30pt auto;
             display: block;
@@ -136,22 +142,20 @@
         <inner>
             <table>
                 <tr>
+                    <th style="width:10pt">uid</th>
                     <th style="width:100pt">人员({{req}}人)</th>
                     <th style="width:350pt">分工</th>
                     <th>交稿</th>
                 </tr>
                 {% for row in rows %}
                 <tr>
+                    <td id="{{forloop.counter}}">{{user1.uid}}</td>
                     <td>{{row.u}}</td>
                     <td>{{row.j}}</td>
                     {% if row.f %}
                     <td style="text-align:center">◯</td>
                     {% else %}
-                    {% if user1.uid == row.uid %}
-                    <td style="text-align:center"><button class='fj' onclick="finishJob()">⌾</button></td>
-                    {% else %}
-                    <td style="text-align:center">✗</td>
-                    {% endif %}
+                    <td style="text-align:center"><button class='fj' onclick="finishJob({{forloop.counter}})">⌾</button></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -174,6 +178,7 @@
         {% csrf_token %}
         <input type="hidden" name="i" value="{{i}}">
         <input type="hidden" id="opt" name="opt">
+        <input type="hidden" id="uid" name="uid">
         <input type="hidden" id="job" name="job">
     </form>
 </body>

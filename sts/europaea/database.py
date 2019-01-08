@@ -124,7 +124,7 @@ class Staff(PDict):
         return 0
 
     def add_staff(self, sc, uid, job):
-        if uid in self.proj[f'staff.{sc}']:
+        if len(self.proj[f'staff.{sc}']) >= self.proj[f'req.{sc}'] or uid in self.proj[f'staff.{sc}']:
             return
         self.users[uid] = User(uid)
         self.users[uid][f'proj.{sc}.{self.proj.pid}.start'] = time.time()
