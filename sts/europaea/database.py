@@ -147,7 +147,7 @@ class Staff(PDict):
                 if finished is None or finished == has_finished:
                     staff.append(self.users[uid]['name'])
             result.append(f'{sc}: {", ".join(staff)}')
-        return '| '.join(result)
+        return ' | '.join(result)
 
     def detials(self, sc):
         result = list()

@@ -87,9 +87,9 @@ def new_projs(request):
     if request.method == 'GET':
         return render(request, 'np.html')
     if request.method == 'POST':
-        datas = request.POST['d'].split('|')
+        items = request.POST['d'].split('\r\n')
         type_ = request.POST['t']
-        projs = new.proj(datas)
+        projs = new.proj(items)
         if type_ == 'T':
             append.fy(projs)
         elif type_ in ('G', 'K'):
