@@ -66,8 +66,9 @@ class PDict:
 class User(PDict):
     @staticmethod
     def find_uid(nickname):
-        doc = db.collection(u'users').where('nickname', '==', nickname).get()[0]
-        return User(doc.id, dict_=doc.to_dict())
+        docs = db.collection(u'users').where('nickname', '==', nickname).get() # return a generator
+        for doc in docs:
+            return User(doc.id, dict_=doc.to_dict())
 
     def __init__(self, uid, dict_=None):
         self.uid = uid
