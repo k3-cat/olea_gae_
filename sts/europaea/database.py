@@ -1,20 +1,13 @@
 import random
 import time
+import os.path
 
-import firebase_admin
-from firebase_admin import firestore
-from oauth2client.service_account import ServiceAccountCredentials
+from firebase_admin import firestore, credentials
 
 from .files import clean
-from .sa_cerds import SA_CREDS
 
 
-cred = ServiceAccountCredentials.from_json_keyfile_dict(
-    SA_CREDS,
-    scopes='https://www.googleapis.com/auth/datastore')
-firebase_admin.initialize_app(cred, {
-    'projectId': 'olea-db',
-})
+cred = credentials.Certificate(f'{os.path.dirname(__file__)}/sa_cerds.json')
 db = firestore.client()
 
 
