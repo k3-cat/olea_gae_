@@ -136,6 +136,8 @@ class Staff(PDict):
     def list_staff(self, sc_range=STAFF_GROUP, finished=None):
         result = list()
         for sc in sc_range:
+            if not self[sc]:
+                continue
             staff = list()
             for uid in self[sc]:
                 if self.users[uid][f'proj.{sc}.{self.proj.pid}.end']:
@@ -144,8 +146,7 @@ class Staff(PDict):
                     has_finished = False
                 if finished is None or finished == has_finished:
                     staff.append(uid)
-            if staff:
-                result.append(f'{sc}: {", ".join(staff)}')
+            result.append(f'{sc}: {", ".join(staff)}')
         return '| '.join(result)
 
     def detials(self, sc):
