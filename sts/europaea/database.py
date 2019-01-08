@@ -95,7 +95,7 @@ class User(PDict):
         return user_info
 
 class Staff(PDict):
-    STAFF_GROUP = ('FY', 'KP', 'PY', 'SJ', 'HQ')
+    STAFF_GROUP = ('FY', 'KP', 'PY', 'UJ', 'HQ')
 
     def __init__(self, proj, dict_):
         self.proj = proj
@@ -183,8 +183,8 @@ class Project(PDict):
             'title': info[1],
             'ssc': '',
             'ids': {'doc': doc_id, 'ext': None, 'mic': None, 'pic': None, 'aep': None},
-            'req': {'FY': 0, 'KP': 0, 'PY': 0, 'SJ': 0, 'HQ': 0},
-            'staff': {'FY': {}, 'KP': {}, 'PY': {}, 'SJ': {}, 'HQ': {}}
+            'req': {'FY': 0, 'KP': 0, 'PY': 0, 'UJ': 0, 'HQ': 0},
+            'staff': {'FY': {}, 'KP': {}, 'PY': {}, 'UJ': {}, 'HQ': {}}
         }
 
     def __init__(self, pid, info=None):

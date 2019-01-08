@@ -6,7 +6,7 @@ from .common import STATE_MAP, get_path, hyperlink
 
 HL_COL_MAP = {
     'KP': 'K',
-    'SJ': 'K',
+    'UJ': 'K',
     'PY': 'K',
     'HQ': 'L'}
 

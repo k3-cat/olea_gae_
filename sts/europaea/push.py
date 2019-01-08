@@ -15,11 +15,11 @@ def kp(proj, pos):
     path = get_path('KP')
     path.row = pos
     append.py(proj)
-    append.sj(proj)
+    append.uj(proj)
     sheets.del_line(path)
     return True
 
-def sj(proj, pos):
+def uj(proj, pos):
     if proj['ssc'] == 'ps':
         proj['ssc'] = 'PY'
     elif proj['ssc'] == 'hs':
@@ -36,7 +36,7 @@ def sj(proj, pos):
             return False
 
         path.col = 'K'
-        sheets.set_values(path, [[hyperlink(proj['ids.pic'], 'SJ')]])
+        sheets.set_values(path, [[hyperlink(proj['ids.pic'], 'UJ')]])
     else:
         return False
     path = get_path('PY')
