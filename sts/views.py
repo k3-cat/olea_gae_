@@ -1,5 +1,3 @@
-import json
-
 from django.http import HttpResponse
 from django.shortcuts import render, HttpResponseRedirect, redirect
 
@@ -83,7 +81,7 @@ def new_projs(request):
         return HttpResponseRedirect('/login')
     user = User(uid)
     user_info = user.info()
-    if 'admin' not in user_info['group']:
+    if 'nimda' not in user_info['group']:
         return HttpResponse(False)
     if request.method == 'GET':
         return render(request, 'np.html')
@@ -112,8 +110,8 @@ def login(request):
     if request.method == 'GET':
         return render(request, 'login.html')
     if request.method == 'POST':
-        nickname = request.POST['nickname']
-        user = User.find_uid(nickname)
+        name = request.POST['name']
+        user = User.find_uid(name)
         if not user:
             return render(request, 'login.html', {'err': True})
         response = redirect('/')

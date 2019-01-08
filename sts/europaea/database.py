@@ -67,8 +67,8 @@ class PDict:
 
 class User(PDict):
     @staticmethod
-    def find_uid(nickname):
-        docs = db.collection(u'users').where('nickname', '==', nickname).get() # return a generator
+    def find_uid(name):
+        docs = db.collection(u'users').where('name', '==', name).get() # return a generator
         for doc in docs:
             return User(doc.id, dict_=doc.to_dict())
 
@@ -151,7 +151,7 @@ class Staff(PDict):
         for uid in self[sc]:
             result.append({
                 'uid': uid,
-                'u': self.users[uid]['nickname'],
+                'u': self.users[uid]['name'],
                 'j': self[sc][uid],
                 'f': self.users[uid][f'proj.{sc}.{self.proj.pid}.end']})
         return result
