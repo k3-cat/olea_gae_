@@ -70,9 +70,10 @@ def edit_staff(request):
             proj['staff'].add_staff(i[1], uid, request.POST['job'])
         elif opt:
             proj['staff'].set_req(i[1], opt)
-        records.update_state(proj, i[1], i[2])
-        records.update_req_display(proj, i[1], i[2])
+            records.update_req_display(proj, i[1], i[2])
         proj.save()
+        records.update_state(proj, i[1], i[2])
+        records.update_nickname_display(proj, i[1], i[2])
         return HttpResponseRedirect(f'/es?i={i[0]},{i[1]},{i[2]}')
     return HttpResponse(False)
 

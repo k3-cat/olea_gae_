@@ -55,4 +55,22 @@ def update_state(proj, sc, pos):
     return True
 
 def update_req_display(proj, sc, pos):
-    pass
+    path = get_path(sc)
+    path.col = 'E'
+    path.row = pos
+    req_display = f'{len(proj[f"staff.{sc}"])}/{proj[f"req.{sc}"]}'
+    sheets.set_values(path, [[req_display]])
+    return True
+
+def update_nickname_display(proj, sc, pos):
+    path = get_path(sc)
+    path.row = pos
+    path.col = 'F'
+    sheets.set_values(path, [[proj['staff'].list_staff(sc_range=sc, not_finish=True)]])
+    path.col = 'G'
+    sheets.set_values(path, [[proj['staff'].list_staff(sc_range=sc, not_finish=False)]])
+    path_ = get_path('LB')
+    path_.row = get_LB_line(proj.pid)
+    path_.col = 'E'
+    sheets.set_values(path_, [[proj['staff'].list_staff()]])
+    return True
