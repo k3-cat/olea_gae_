@@ -12,7 +12,7 @@ def hello(request):
 PUSH_MAP = {
         'FY': push.fy,
         'KP': push.kp,
-        'SJ': push.sj,
+        'UJ': push.uj,
         'PY': push.py,
         'HQ': push.hq
     }
@@ -20,7 +20,7 @@ PUSH_MAP = {
 def push_(request):
     i = request.GET['i'].split(';')
     proj = Project(pid=i[0])
-    if i[1] not in ('KP', 'SJ', 'LB'):
+    if i[1] not in ('KP', 'UJ', 'LB'):
         return HttpResponse(False)
     if i[1] == 'LB':
         push.lb(proj, i[2], request.GET.get('vu'))
@@ -46,7 +46,7 @@ def edit_staff(request):
         return render(request, 'es.html', {
             'i': f'{i[0]},{i[1]},{i[2]}',
             'user1': user_info,
-            'edit': i[1] in user_info['group'],
+            'edit': i[1] in user_info['groups'],
             'req': req,
             'rows': rows,
             'empty': ['']*(req-len(rows)),
@@ -81,7 +81,7 @@ def new_projs(request):
         return HttpResponseRedirect('/login')
     user = User(uid)
     user_info = user.info()
-    if 'nimda' not in user_info['group']:
+    if 'nimda' not in user_info['groups']:
         return HttpResponse(False)
     if request.method == 'GET':
         return render(request, 'np.html')

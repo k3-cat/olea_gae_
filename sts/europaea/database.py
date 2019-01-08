@@ -90,7 +90,8 @@ class User(PDict):
         self._save()
 
     def info(self):
-        user_info = self.D['info']
+        user_info = dict()
+        user_info['groups'] = self.D['groups']
         user_info['uid'] = self.uid
         return user_info
 

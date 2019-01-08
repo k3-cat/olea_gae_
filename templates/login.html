@@ -3,11 +3,11 @@
 <head>
     <script type="text/javascript">
         function login() {
-            var nickname = prompt("昵称:");
-            if (nickname == "" || nickname == null){
+            var name = prompt("昵称:");
+            if (name == "" || name == null){
                 return;
             }
-            document.getElementById("nickname").value = nickname;
+            document.getElementById("name").value = name;
             document.getElementById("form").submit();
         }
     </script>
@@ -44,7 +44,7 @@
 
     <form method='post' id="form">
         {% csrf_token %}
-        <input type="hidden" id="nickname" name="nickname">
+        <input type="hidden" id="name" name="name">
     </form>
     <div style="margin: 100pt auto; width: 180pt">
         {% if err %}
