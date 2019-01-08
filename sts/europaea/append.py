@@ -26,7 +26,7 @@ def kp(projs):
     for i, proj in enumerate(projs, k):
         rows.append([
             f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
-            f'=IF(D11="{STATE_MAP[5]}",HYPERLINK("{URL}/p?i={proj.pid},KP,"&ROW(),"[跳过]"),"")',
+            f'=IF(D{i}="{STATE_MAP[5]}",HYPERLINK("{URL}/p?i={proj.pid},KP,"&ROW(),"[跳过]"),"")',
             f'=HYPERLINK("{URL}/es?i={proj.pid},KP,"&ROW(),"[人员]")',
             hyperlink(proj['ids.doc'], 'GG'),
             f'=IF(E{i}="0/0","",createD(C{i},ROW()))'

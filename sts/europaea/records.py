@@ -66,9 +66,9 @@ def update_nickname_display(proj, sc, pos):
     path = get_path(sc)
     path.row = pos
     path.col = 'F'
-    sheets.set_values(path, [[proj['staff'].list_staff(sc_range=sc, finished=True)]])
+    sheets.set_values(path, [[proj['staff'].list_staff(sc_range=[sc], finished=True)]])
     path.col = 'G'
-    sheets.set_values(path, [[proj['staff'].list_staff(sc_range=sc, finished=False)]])
+    sheets.set_values(path, [[proj['staff'].list_staff(sc_range=[sc], finished=False)]])
     path_ = get_path('LB')
     path_.row = get_LB_line(proj.pid)
     path_.col = 'E'
