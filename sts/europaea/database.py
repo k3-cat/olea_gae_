@@ -65,24 +65,17 @@ class PDict:
 
 class User(PDict):
     @staticmethod
-    def generate_pid():
-        return ''.join(random.choices(PID_ALPHABET, k=3))
-
-    @staticmethod
     def find_uid(nickname):
         doc = db.collection(u'users').where('nickname', '==', nickname).get()[0]
         return User(doc.id, dict_=doc.to_dict())
 
-    def __init__(self, uid, info=None, dict_=None):
-        if not uid:
-            uid = User.generate_pid()
+    def __init__(self, uid, dict_=None):
         self.uid = uid
         self.Irec = db.collection('users').document(uid)
         if not dict_:
             dict_ = self.Irec.get().to_dict()
             if not dict_:
-                dict_ = info
-                self.Irec.set(dict_)
+                return
         super().__init__(dict_)
 
     def _save(self):

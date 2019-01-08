@@ -82,13 +82,14 @@ def new_projs(request):
         return HttpResponseRedirect('/login')
     user = User(uid)
     user_info = user.info()
-    if not user_info['root']:
+    if 'admin' not in user_info['group']:
         return HttpResponse(False)
     if request.method == 'GET':
         return render(request, 'np.html')
     if request.method == 'POST':
+        datas = request.POST['d'].split('|')
         type_ = request.POST['t']
-        projs = new.proj(request.POST['data'])
+        projs = new.proj(datas)
         if type_ == 'T':
             append.fy(projs)
         elif type_ in ('G', 'K'):

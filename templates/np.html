@@ -1,14 +1,18 @@
 <html>
 
 <body>
+    类型：<select name="t" form="from">
+        <option value="T">翻译</option>
+        <option value="G">普通</option>
+        <option value="K">原创</option>
+    </select>
+    <p></p>
     <form method='post' id="form">
         {% csrf_token %}
-        <input type="text" name="t">
-        <input type="text" name="is">
-        <input type="text" name="ts">
-        <input type="text" name="dis">
+        <textarea rows="20" name="d"></textarea>
         <input type="submit">
     </form>
+
 </body>
 
 </html>
