@@ -110,7 +110,7 @@ def manage_staff(request):
         proj = Project(i[0])
         req = proj[f'req.{i[1]}']
         rows = proj['staff'].detials(i[1])
-        return render(request, 'es.html', {
+        return render(request, 'ms.html', {
             'i': f'{i[0]},{i[1]},{i[2]}',
             'user1': user_info,
             'edit': i[1] in user_info['groups'],
