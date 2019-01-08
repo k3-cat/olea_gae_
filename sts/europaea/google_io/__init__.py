@@ -11,12 +11,12 @@ SCOPES = ('https://www.googleapis.com/auth/spreadsheets '
           'https://www.googleapis.com/auth/drive')
 
 
-creds = ServiceAccountCredentials.from_json_keyfile_dict(SA_CREDS, scopes=SCOPES)
+cred = ServiceAccountCredentials.from_json_keyfile_dict(SA_CREDS, scopes=SCOPES)
 if os.getenv('GAE_APPLICATION', None):
-    http = creds.authorize(httplib2.Http())
+    http = cred.authorize(httplib2.Http())
 else:
     proxy_info = httplib2.ProxyInfo(httplib2.socks.PROXY_TYPE_SOCKS5, '127.0.0.1', 1080)
-    http = creds.authorize(httplib2.Http(proxy_info=proxy_info, cache='R:/cache'))
+    http = cred.authorize(httplib2.Http(proxy_info=proxy_info, cache='R:/cache'))
 
 
 service_drive = discovery.build('drive', 'v3', http=http).files()

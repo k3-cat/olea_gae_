@@ -1,12 +1,17 @@
 import random
+import time
 
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import firestore
+from oauth2client.service_account import ServiceAccountCredentials
 
 from .files import clean
+from .sa_cerds import SA_CREDS
 
 
-cred = credentials.ApplicationDefault()
+cred = ServiceAccountCredentials.from_json_keyfile_dict(
+    SA_CREDS,
+    scopes='https://www.googleapis.com/auth/datastore')
 firebase_admin.initialize_app(cred, {
     'projectId': 'olea-db',
 })
@@ -116,7 +121,7 @@ class Staff(PDict):
         if len(self[sc]) < self.proj[f'req.{sc}']:
             return 2
         for uid in self[sc]:
-            if not self.users[uid][f'proj.{self.proj.pid}.{sc}.finish']:
+            if not self.users[uid][f'proj.{sc}.{self.proj.pid}.end']:
                 return 1
         return 0
 
@@ -124,18 +129,22 @@ class Staff(PDict):
         if uid in self.proj[f'staff.{sc}']:
             return
         self.users[uid] = User(uid)
-        self.users[uid][f'proj.{self.proj.pid}.{sc}.finish'] = False
+        self.users[uid][f'proj.{sc}.{self.proj.pid}.start'] = time.time()
         self.proj[f'staff.{sc}.{uid}'] = job
 
     def finish_job(self, sc, uid):
-        self.users[uid][f'proj.{self.proj.pid}.{sc}.finish'] = True
+        self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = time.time()
 
-    def list_staff(self, sc_range=STAFF_GROUP, not_finish=None):
+    def list_staff(self, sc_range=STAFF_GROUP, finished=None):
         result = list()
         for sc in sc_range:
             staff = list()
             for uid in self[sc]:
-                if self.users[uid][f'proj.{self.proj.pid}.{sc}.finish'] != not_finish:
+                if self.users[uid][f'proj.{sc}.{self.proj.pid}.end']:
+                    has_finished = True
+                else:
+                    has_finished = False
+                if finished is None or finished == has_finished:
                     staff.append(uid)
             result.append(f'{sc}: {", ".join(staff)}')
         return '| '.join(result)
@@ -147,7 +156,7 @@ class Staff(PDict):
                 'uid': uid,
                 'u': self.users[uid]['nickname'],
                 'j': self[sc][uid],
-                'f': self.users[uid][f'proj.{self.proj.pid}.{sc}.finish']})
+                'f': self.users[uid][f'proj.{sc}.{self.proj.pid}.end']})
         return result
 
 class Project(PDict):
@@ -201,10 +210,6 @@ class Project(PDict):
 
     def finish(self):
         clean(self)
-        for user in self['staff.users']:
-            user.temp[f'proj.{self.pid}'] = firestore.DELETE_FIELD
-            del(user.D['proj'][self.pid])
-            user.save()
 
     @property
     def ssc_display(self):
