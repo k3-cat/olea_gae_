@@ -110,9 +110,9 @@
         }
 
         outer {
-            border: 2.4pt solid pink;
+            border: 2.4pt solid plum;
             border-radius: 15pt;
-            width: 530pt;
+            width: 560pt;
             padding: 18pt;
             margin: 30pt auto;
             display: block;
@@ -136,20 +136,21 @@
 </head>
 
 <body>
+    <p style="text-align: center; font-size: 18pt; color: pink; margin: 30pt auto;"> 管理专用 ヾ(≧O≦)〃嗷~ </p>
     <outer>
         <name>{{name}}</name>
         <note>{{note}}</note>
         <inner>
             <table>
                 <tr>
-                    <th style="width:10pt">uid</th>
+                    <th style="width:35pt">uid</th>
                     <th style="width:100pt">人员({{req}}人)</th>
                     <th style="width:350pt">分工</th>
                     <th>交稿</th>
                 </tr>
                 {% for row in rows %}
                 <tr>
-                    <td id="{{forloop.counter}}">{{user1.uid}}</td>
+                    <td id="{{forloop.counter}}">{{row.uid}}</td>
                     <td>{{row.u}}</td>
                     <td>{{row.j}}</td>
                     {% if row.f %}
@@ -161,7 +162,7 @@
                 {% endfor %}
                 {% for i in empty %}
                 <tr>
-                    <td colspan="3" style="text-align:center;color:#aaa"><I>------　缺人　------</I></td>
+                    <td colspan="4" style="text-align:center;color:#aaa"><I>------　缺人　------</I></td>
                 </tr>
                 {% endfor %}
             </table>
