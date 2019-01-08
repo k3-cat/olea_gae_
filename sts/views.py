@@ -61,15 +61,15 @@ def edit_staff(request):
         opt = request.POST.get('opt', None) # finish & add & change req
         if opt[0] == "F":
             proj['staff'].finish_job(i[1], uid)
-            if proj['staff'].get_state(i[1]) == 0:
-                PUSH_MAP[i[1]](proj, i[2])
-                records.update_process_info(proj)
         elif opt == 'A':
             proj['staff'].add_staff(i[1], uid, request.POST['job'])
         elif opt:
             proj['staff'].set_req(i[1], opt)
-            records.update_req_display(proj, i[1], i[2])
         proj.save()
+        if proj['staff'].get_state(i[1]) == 0:
+            PUSH_MAP[i[1]](proj, i[2])
+            records.update_process_info(proj)
+        records.update_req_display(proj, i[1], i[2])
         records.update_state(proj, i[1], i[2])
         records.update_nickname_display(proj, i[1], i[2])
         return HttpResponseRedirect(f'/es?i={i[0]},{i[1]},{i[2]}')
@@ -126,15 +126,15 @@ def manage_staff(request):
         opt = request.POST.get('opt', None) # finish & add & change req
         if opt[0] == "F":
             proj['staff'].finish_job(i[1], request.POST['uid'])
-            if proj['staff'].get_state(i[1]) == 0:
-                PUSH_MAP[i[1]](proj, i[2])
-                records.update_process_info(proj)
         elif opt == 'A':
             proj['staff'].add_staff(i[1], request.POST['uid'], request.POST['job'])
         elif opt:
             proj['staff'].set_req(i[1], opt)
-            records.update_req_display(proj, i[1], i[2])
         proj.save()
+        if proj['staff'].get_state(i[1]) == 0:
+            PUSH_MAP[i[1]](proj, i[2])
+            records.update_process_info(proj)
+        records.update_req_display(proj, i[1], i[2])
         records.update_state(proj, i[1], i[2])
         records.update_nickname_display(proj, i[1], i[2])
         return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
