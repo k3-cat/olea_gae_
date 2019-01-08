@@ -165,12 +165,10 @@
                 </tr>
                 {% endfor %}
             </table>
-            {% if edit %}
             <opt>
                 <button onclick="addStaff()" {% if not empty %} disabled {% endif %}>接稿</button>
                 <button onclick="setReq()">设定人数</button>
             </opt>
-            {% endif %}
         </inner>
     </outer>
 
