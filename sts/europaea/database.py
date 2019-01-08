@@ -9,7 +9,7 @@ from .files import clean
 
 cred = credentials.ApplicationDefault()
 firebase_admin.initialize_app(cred, {
-  'projectId': 'olea-db',
+    'projectId': 'olea-db',
 })
 
 db = firestore.client()
