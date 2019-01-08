@@ -54,7 +54,7 @@ def edit_staff(request):
             'note': ''})
     if request.method == 'POST':
         i = request.POST['i'].split(',')
-        if i[1] not in user_info['group']:
+        if i[1] not in user_info['groups']:
             return HttpResponseRedirect(f'/es?i={i[0]},{i[1]},{i[2]}')
         proj = Project(i[0])
         # 验证项目状态
@@ -121,8 +121,6 @@ def manage_staff(request):
             'note': ''})
     if request.method == 'POST':
         i = request.POST['i'].split(',')
-        if i[1] not in user_info['group']:
-            return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
         proj = Project(i[0])
         # 验证项目状态
         opt = request.POST.get('opt', None) # finish & add & change req
