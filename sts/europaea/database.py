@@ -83,6 +83,8 @@ class User(PDict):
         super().__init__(dict_)
 
     def _save(self):
+        if not self.temp:
+            return
         self.Irec.update(self.temp)
         self.clear_temp()
 
@@ -209,6 +211,8 @@ class Project(PDict):
         self.D = dict_
 
     def save(self):
+        if not self.temp:
+            return
         self.Irec.update(self.temp)
         self.clear_temp()
 
