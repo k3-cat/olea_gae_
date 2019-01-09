@@ -1,7 +1,8 @@
 from django.http import HttpResponse
-from django.shortcuts import render, HttpResponseRedirect, redirect
+from django.shortcuts import HttpResponseRedirect, redirect, render
 
-from .europaea import append, files, new, push, records
+from .europaea import append, files, new, push, records, sheets
+from .europaea.common import get_path
 from .europaea.database import Project, User
 
 
@@ -17,9 +18,25 @@ PUSH_MAP = {
         'HQ': push.hq
     }
 
+SAFE_RANGE = {
+    'FY': ('FY'),
+    'KP': ('KP'),
+    'PY': ('pu', 'PY'),
+    'UJ': ('pu', 'hu'),
+    'HQ': ('hu', 'HQ'),
+    'LB': ('UP')
+}
+
 def push_(request):
     i = request.GET['i'].split(',')
     proj = Project(pid=i[0])
+    if proj['ssc'] not in SAFE_RANGE[i[1]]:
+        return HttpResponse('<script type="text/javascript">window.close()</script>')
+    path = get_path(i[1])
+    path.row = i[2]
+    path.col = 'C'
+    if sheets.get_values(path)[0][0] != proj.pid:
+        return HttpResponse('<script type="text/javascript">window.close()</script>')
     if i[1] not in ('KP', 'UJ', 'LB'):
         return HttpResponse(False)
     if i[1] == 'LB':
@@ -30,7 +47,7 @@ def push_(request):
             return HttpResponse(False)
         proj.save()
     records.update_process_info(proj)
-    return HttpResponse(True)
+    return HttpResponse('<script type="text/javascript">window.close()</script>')
 
 def edit_staff(request):
     uid = request.COOKIES.get('uid', None)
@@ -41,6 +58,8 @@ def edit_staff(request):
     if request.method == 'GET':
         i = request.GET['i'].split(',')
         proj = Project(i[0])
+        if proj['ssc'] not in SAFE_RANGE[i[1]]:
+            return HttpResponse('<script type="text/javascript">window.close()</script>')
         req = proj[f'req.{i[1]}']
         rows = proj['staff'].detials(i[1])
         return render(request, 'es.html', {
@@ -57,7 +76,11 @@ def edit_staff(request):
         if i[1] not in user_info['groups']:
             return HttpResponseRedirect(f'/es?i={i[0]},{i[1]},{i[2]}')
         proj = Project(i[0])
-        # 验证项目状态
+        path = get_path(i[1])
+        path.row = i[2]
+        path.col = 'C'
+        if sheets.get_values(path)[0][0] != proj.pid:
+            return HttpResponse('<script type="text/javascript">window.close()</script>')
         opt = request.POST.get('opt', None) # finish & add & change req
         if opt[0] == "F":
             proj['staff'].finish_job(i[1], uid)
@@ -73,7 +96,7 @@ def edit_staff(request):
         records.update_state(proj, i[1], i[2])
         records.update_nickname_display(proj, i[1], i[2])
         return HttpResponseRedirect(f'/es?i={i[0]},{i[1]},{i[2]}')
-    return HttpResponse(False)
+    return HttpResponse('<script type="text/javascript">window.close()</script>')
 
 
 def new_projs(request):
@@ -95,7 +118,7 @@ def new_projs(request):
         elif type_ in ('G', 'K'):
             append.kp(projs)
         return HttpResponse(True)
-    return HttpResponse(False)
+    return HttpResponse('<script type="text/javascript">window.close()</script>')
 
 def manage_staff(request):
     uid = request.COOKIES.get('uid', None)
@@ -108,6 +131,8 @@ def manage_staff(request):
     if request.method == 'GET':
         i = request.GET['i'].split(',')
         proj = Project(i[0])
+        if proj['ssc'] not in SAFE_RANGE[i[1]]:
+            return HttpResponse('<script type="text/javascript">window.close()</script>')
         req = proj[f'req.{i[1]}']
         rows = proj['staff'].detials(i[1])
         return render(request, 'ms.html', {
@@ -122,7 +147,11 @@ def manage_staff(request):
     if request.method == 'POST':
         i = request.POST['i'].split(',')
         proj = Project(i[0])
-        # 验证项目状态
+        path = get_path(i[1])
+        path.row = i[2]
+        path.col = 'C'
+        if sheets.get_values(path)[0][0] != proj.pid:
+            return HttpResponse('<script type="text/javascript">window.close()</script>')
         opt = request.POST.get('opt', None) # finish & add & change req
         if opt[0] == "F":
             proj['staff'].finish_job(i[1], request.POST['uid'])
@@ -138,7 +167,7 @@ def manage_staff(request):
         records.update_state(proj, i[1], i[2])
         records.update_nickname_display(proj, i[1], i[2])
         return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
-    return HttpResponse(False)
+    return HttpResponse('<script type="text/javascript">window.close()</script>')
 
 
 def create(request):
@@ -152,6 +181,9 @@ def create(request):
     return HttpResponse(response)
 
 def login(request):
+    uid = request.COOKIES.get('uid', None)
+    if uid:
+        return HttpResponseRedirect('/')
     if request.method == 'GET':
         return render(request, 'login.html')
     if request.method == 'POST':
@@ -162,4 +194,4 @@ def login(request):
         response = redirect('/')
         response.set_cookie('uid', user.uid, max_age=90*86400)
         return response
-    return HttpResponse(False)
+    return HttpResponse('<script type="text/javascript">window.close()</script>')

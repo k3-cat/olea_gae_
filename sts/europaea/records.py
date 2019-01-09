@@ -6,9 +6,9 @@ from .common import STATE_MAP, get_path, hyperlink
 
 HL_COL_MAP = {
     'KP': 'K',
-    'UJ': 'K',
     'PY': 'K',
-    'HQ': 'L'}
+    'UJ': 'L',
+    'HQ': 'M'}
 
 def set_hyperlink(sc, pos, id_):
     path = get_path(sc)
