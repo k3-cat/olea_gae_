@@ -31,11 +31,13 @@ def push_(request):
     i = request.GET['i'].split(',')
     proj = Project(pid=i[0])
     if proj['ssc'] not in SAFE_RANGE[i[1]]:
+        print('not in range')
         return HttpResponse('<script type="text/javascript">window.close()</script>')
     path = get_path(i[1])
     path.row = i[2]
     path.col = 'C'
     if sheets.get_values(path)[0][0] != proj.pid:
+        print(sheets.get_values(path)[0][0])
         return HttpResponse('<script type="text/javascript">window.close()</script>')
     if i[1] not in ('KP', 'UJ', 'LB'):
         return HttpResponse(False)
