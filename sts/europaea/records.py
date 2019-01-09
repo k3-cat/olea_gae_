@@ -39,44 +39,25 @@ def get_LB_line(pid):
     LbLineCache.update()
     return LbLineCache.cache[pid]
 
-def update_process_info(proj):
+def update_m_process_info(proj):
     path = get_path('LB')
     path.col = 'D:E'
     path.row = get_LB_line(proj.pid)
-    sheets.set_values(path, [[proj.ssc_display, proj['staff'].list_staff()]])
-    return True
-
-def update_state(proj, sc, pos):
-    path = get_path(sc)
-    path.col = 'D'
-    path.row = pos
-    state = STATE_MAP[proj['staff'].get_state(sc)]
-    sheets.set_values(path, [[state]])
-    return True
-
-def update_req_display(proj, sc, pos):
-    path = get_path(sc)
-    path.col = 'E'
-    path.row = pos
-    req_display = f'{len(proj[f"staff.{sc}"])}/{proj[f"req.{sc}"]}'
-    sheets.set_values(path, [[req_display]])
-    return True
-
-def update_finished_display(proj, sc, pos):
-    path = get_path(sc)
-    path.row = pos
-    path.col = 'F:G'
-    part_list_name = proj['staff'].list_staff(sc_range=[sc])[sc]
-    sheets.set_values(path, [[', '.join(part_list_name[0]), ', '.join(part_list_name[1])]])
-    return True
-
-def update_staff_display(proj):
-    path_ = get_path('LB')
-    path_.row = get_LB_line(proj.pid)
-    path_.col = 'E'
     list_name = proj['staff'].list_staff()
     staff_display = list()
     for sc in list_name:
         staff_display.append(f'{SC2D_MAP[sc]}: {", ".join(list_name[sc][0]+list_name[sc][1])}')
-    sheets.set_values(path_, [[' | '.join(staff_display)]])
+    sheets.set_values(path, [[proj.ssc_display, ' | '.join(staff_display)]])
+    return True
+
+def update_s_state(proj, sc, pos):
+    path = get_path(sc)
+    path.col = 'D:G'
+    path.row = pos
+    part_list_name = proj['staff'].list_staff(sc_range=[sc])[sc]
+    sheets.set_values(path, [[
+        STATE_MAP[proj['staff'].get_state(sc)],
+        f'{len(proj[f"staff.{sc}"])}/{proj[f"req.{sc}"]}',
+        ', '.join(part_list_name[0]),
+        ', '.join(part_list_name[1])]])
     return True

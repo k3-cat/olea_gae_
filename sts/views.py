@@ -46,7 +46,7 @@ def push_(request):
         if not response:
             return HttpResponse(False)
         proj.save()
-    records.update_process_info(proj)
+    records.update_m_process_info(proj)
     return HttpResponse('<script type="text/javascript">window.close()</script>')
 
 def edit_staff(request):
@@ -91,14 +91,11 @@ def edit_staff(request):
         proj.save()
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj, i[2])
-            records.update_process_info(proj)
-            records.update_state(proj, i[1], i[2])
-            records.update_staff_display(proj)
+            records.update_s_state(proj, i[1], i[2])
+            records.update_m_process_info(proj)
             return HttpResponse('<script type="text/javascript">window.close()</script>')
-        records.update_req_display(proj, i[1], i[2])
-        records.update_state(proj, i[1], i[2])
-        records.update_finished_display(proj, i[1], i[2])
-        records.update_staff_display(proj)
+        records.update_s_state(proj, i[1], i[2])
+        records.update_m_process_info(proj)
         return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
     return HttpResponse('<script type="text/javascript">window.close()</script>')
 
@@ -166,14 +163,10 @@ def manage_staff(request):
         proj.save()
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj, i[2])
-            records.update_process_info(proj)
-            records.update_state(proj, i[1], i[2])
-            records.update_staff_display(proj)
+            records.update_m_process_info(proj)
             return HttpResponse('<script type="text/javascript">window.close()</script>')
-        records.update_req_display(proj, i[1], i[2])
-        records.update_state(proj, i[1], i[2])
-        records.update_finished_display(proj, i[1], i[2])
-        records.update_staff_display(proj)
+        records.update_s_state(proj, i[1], i[2])
+        records.update_m_process_info(proj)
         return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
     return HttpResponse('<script type="text/javascript">window.close()</script>')
 
