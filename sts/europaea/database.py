@@ -5,7 +5,6 @@ import firebase_admin
 from firebase_admin import firestore, credentials
 
 from .files import clean
-from .common import SC2D_MAP
 
 
 cred = credentials.ApplicationDefault()
@@ -117,7 +116,7 @@ class Staff(PDict):
         return True
 
     def get_state(self, sc):
-        if not self.D[sc]:
+        if self.proj[f'req.{sc}'] == 0:
             return 5
         if len(self[sc]) < self.proj[f'req.{sc}']:
             return 2
@@ -136,24 +135,20 @@ class Staff(PDict):
     def finish_job(self, sc, uid):
         self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = time.time()
 
-    def list_staff(self, sc_range=STAFF_GROUP, finished=None):
-        result = list()
+    def list_staff(self, sc_range=STAFF_GROUP):
+        result = dict()
         for sc in sc_range:
             if not self[sc]:
                 continue
-            staff = list()
+            staff_f = list()
+            staff_uf = list()
             for uid in self[sc]:
                 if self.users[uid][f'proj.{sc}.{self.proj.pid}.end']:
-                    has_finished = True
+                    staff_f.append(self.users[uid]['name'])
                 else:
-                    has_finished = False
-                if finished is None or finished == has_finished:
-                    staff.append(self.users[uid]['name'])
-            if len(sc) == 1:
-                return ', '.join(staff)
-            if staff:
-                result.append(f'{SC2D_MAP[sc]}: {", ".join(staff)}')
-        return ' | '.join(result)
+                    staff_uf.append(self.users[uid]['name'])
+            result[sc] = [staff_f, staff_uf]
+        return result
 
     def detials(self, sc):
         result = list()

@@ -1,7 +1,7 @@
 import time
 
 from . import sheets
-from .common import STATE_MAP, get_path, hyperlink
+from .common import SC2D_MAP, STATE_MAP, get_path, hyperlink
 
 
 HL_COL_MAP = {
@@ -65,15 +65,18 @@ def update_req_display(proj, sc, pos):
 def update_finished_display(proj, sc, pos):
     path = get_path(sc)
     path.row = pos
-    path.col = 'F'
-    sheets.set_values(path, [[proj['staff'].list_staff(sc_range=[sc], finished=True)]])
-    path.col = 'G'
-    sheets.set_values(path, [[proj['staff'].list_staff(sc_range=[sc], finished=False)]])
+    path.col = 'F:G'
+    part_list_name = proj['staff'].list_staff(sc_range=[sc])[sc]
+    sheets.set_values(path, [[', '.join(part_list_name[0]), ', '.join(part_list_name[1])]])
     return True
 
 def update_staff_display(proj):
     path_ = get_path('LB')
     path_.row = get_LB_line(proj.pid)
     path_.col = 'E'
-    sheets.set_values(path_, [[proj['staff'].list_staff()]])
+    list_name = proj['staff'].list_staff()
+    staff_display = list()
+    for sc in list_name:
+        staff_display.append(f'{SC2D_MAP[sc]}: {", ".join(list_name[sc][0]+list_name[sc][1])}')
+    sheets.set_values(path_, [[' | '.join(staff_display)]])
     return True
