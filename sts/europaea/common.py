@@ -17,8 +17,8 @@ def get_path(code):
 HL_MAP = {'GG': ('http://scp-wiki-cn.wikidot.com/', '='),
           'FY': ('http://www.scp-wiki.net/', '-'),
           'KP': ('https://docs.google.com/document/d/', '~'),
-          'UJ': ('https://drive.google.com/drive/folders/', '+'),
           'PY': ('https://drive.google.com/drive/folders/', '<'),
+          'UJ': ('https://drive.google.com/drive/folders/', '+'),
           'HQ': ('https://drive.google.com/drive/folders/', '#')}
 
 def hyperlink(url_, type_):
@@ -34,4 +34,12 @@ STATE_MAP = {
     2: '2 - 缺人',
     5: '5 - 初始',
     9: '9 - 错误',
+}
+
+SC2D_MAP = {
+    'FY': '翻译',
+    'KP': '科普',
+    'PY': '配音',
+    'UJ': '设计',
+    'HQ': '后期'
 }

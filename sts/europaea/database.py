@@ -5,6 +5,7 @@ import firebase_admin
 from firebase_admin import firestore, credentials
 
 from .files import clean
+from .common import SC2D_MAP
 
 
 cred = credentials.ApplicationDefault()
@@ -149,7 +150,7 @@ class Staff(PDict):
             if len(sc) == 1:
                 return ', '.join(staff)
             if staff:
-                result.append(f'{sc}: {", ".join(staff)}')
+                result.append(f'{SC2D_MAP[sc]}: {", ".join(staff)}')
         return ' | '.join(result)
 
     def detials(self, sc):
