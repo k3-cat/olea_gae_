@@ -62,13 +62,16 @@ def update_req_display(proj, sc, pos):
     sheets.set_values(path, [[req_display]])
     return True
 
-def update_nickname_display(proj, sc, pos):
+def update_finished_display(proj, sc, pos):
     path = get_path(sc)
     path.row = pos
     path.col = 'F'
     sheets.set_values(path, [[proj['staff'].list_staff(sc_range=[sc], finished=True)]])
     path.col = 'G'
     sheets.set_values(path, [[proj['staff'].list_staff(sc_range=[sc], finished=False)]])
+    return True
+
+def update_staff_display(proj):
     path_ = get_path('LB')
     path_.row = get_LB_line(proj.pid)
     path_.col = 'E'
