@@ -93,11 +93,13 @@ def edit_staff(request):
             PUSH_MAP[i[1]](proj, i[2])
             records.update_process_info(proj)
             records.update_state(proj, i[1], i[2])
+            records.update_staff_display(proj)
             return HttpResponse('<script type="text/javascript">window.close()</script>')
         records.update_req_display(proj, i[1], i[2])
         records.update_state(proj, i[1], i[2])
         records.update_finished_display(proj, i[1], i[2])
-        return HttpResponseRedirect(f'/es?i={i[0]},{i[1]},{i[2]}')
+        records.update_staff_display(proj)
+        return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
     return HttpResponse('<script type="text/javascript">window.close()</script>')
 
 
