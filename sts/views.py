@@ -97,7 +97,7 @@ def edit_staff(request):
         proj.save()
         records.update_s_state(proj, i[1], i[2])
         records.update_m_process_info(proj)
-        return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
+        return HttpResponseRedirect(f'/es?i={i[0]},{i[1]},{i[2]}')
     return HttpResponse('<script type="text/javascript">window.close()</script>')
 
 
