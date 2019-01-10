@@ -173,7 +173,7 @@ def manage_staff(request):
 
 
 def create(request):
-    i = request.POST['i'].split(',')
+    i = request.GET['i'].split(',')
     proj = Project(i[0])
     if i[1] == 'KP':
         response = files.create(proj, i[1], i[2], 'doc')
