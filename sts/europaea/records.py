@@ -46,6 +46,8 @@ def update_m_process_info(proj):
     list_name = proj['staff'].list_staff()
     staff_display = list()
     for sc in list_name:
+        if not list_name[sc][0] and not list_name[sc][1]:
+            continue
         staff_display.append(f'{SC2D_MAP[sc]}: {", ".join(list_name[sc][0]+list_name[sc][1])}')
     sheets.set_values(path, [[proj.ssc_display, ' | '.join(staff_display)]])
     return True

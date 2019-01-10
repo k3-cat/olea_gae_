@@ -139,8 +139,6 @@ class Staff(PDict):
         result = dict()
         for sc in sc_range:
             if not self[sc]:
-                if len(sc) != 1:
-                    continue
                 result[sc] = [[], []]
             staff_f = list()
             staff_uf = list()
