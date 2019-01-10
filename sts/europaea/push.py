@@ -58,6 +58,8 @@ def py(proj, pos):
     elif proj['ssc'] == 'PY':
         proj['ssc'] = 'HQ'
         pic_id_ = proj['ids.pic']
+    else:
+        return False
     append.hq(proj, pic_id_)
     path = get_path('PY')
     path.row = pos

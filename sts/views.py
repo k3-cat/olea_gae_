@@ -45,7 +45,7 @@ def push_(request):
         response = PUSH_MAP[i[1]](proj, i[2])
         if not response:
             return HttpResponse(False)
-        proj.save()
+    proj.save()
     records.update_m_process_info(proj)
     return HttpResponse('<script type="text/javascript">window.close()</script>')
 
@@ -88,12 +88,13 @@ def edit_staff(request):
             proj['staff'].add_staff(i[1], uid, request.POST['job'])
         elif opt:
             proj['staff'].set_req(i[1], opt)
-        proj.save()
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj, i[2])
+            proj.save()
             records.update_s_state(proj, i[1], i[2])
             records.update_m_process_info(proj)
             return HttpResponse('<script type="text/javascript">window.close()</script>')
+        proj.save()
         records.update_s_state(proj, i[1], i[2])
         records.update_m_process_info(proj)
         return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
@@ -160,11 +161,13 @@ def manage_staff(request):
             proj['staff'].add_staff(i[1], request.POST['uid'], request.POST['job'])
         elif opt:
             proj['staff'].set_req(i[1], opt)
-        proj.save()
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj, i[2])
+            proj.save()
+            records.update_s_state(proj, i[1], i[2])
             records.update_m_process_info(proj)
             return HttpResponse('<script type="text/javascript">window.close()</script>')
+        proj.save()
         records.update_s_state(proj, i[1], i[2])
         records.update_m_process_info(proj)
         return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
