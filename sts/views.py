@@ -91,7 +91,6 @@ def edit_staff(request):
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj, i[2])
             proj.save()
-            records.update_s_state(proj, i[1], i[2])
             records.update_m_process_info(proj)
             return HttpResponse('<script type="text/javascript">window.close()</script>')
         proj.save()
@@ -164,7 +163,6 @@ def manage_staff(request):
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj, i[2])
             proj.save()
-            records.update_s_state(proj, i[1], i[2])
             records.update_m_process_info(proj)
             return HttpResponse('<script type="text/javascript">window.close()</script>')
         proj.save()
