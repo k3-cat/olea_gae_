@@ -171,6 +171,21 @@ def manage_staff(request):
         return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]},{i[2]}')
     return HttpResponse('<script type="text/javascript">window.close()</script>')
 
+def update_info(request):
+    uid = request.COOKIES.get('uid', None)
+    if not uid:
+        return HttpResponseRedirect('/login')
+    user = User(uid)
+    user_info = user.info()
+    if 'nimda' not in user_info['groups']:
+        return HttpResponse(False)
+    i = request.GET['i'].split(',')
+    proj = Project(i[0])
+    records.update_m_process_info(proj)
+    if i[1] != '':
+        records.update_s_state(proj, i[1], i[2])
+    return HttpResponse('<script type="text/javascript">window.close()</script>')
+
 
 def create(request):
     i = request.GET['i'].split(',')
