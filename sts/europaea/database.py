@@ -19,7 +19,7 @@ PID_ALPHABET = (
     '0123456789aAbBcC'
     'dDeEfFgGhHiIjJkK'
     'lLmMnNoOpPqQrRsS'
-    'tTuUvVwWxXyYzZ-_'
+    'tTuUvVwWxXyYzZ~_'
 )
 
 
@@ -34,7 +34,7 @@ class PDict:
         return len(self.D)
 
     def __getitem__(self, key_g):
-        kg = key_g.split('/')
+        kg = key_g.split('.')
         obj = self.D
         for key in kg:
             try:
@@ -44,7 +44,7 @@ class PDict:
         return obj
 
     def __setitem__(self, key_g, value):
-        kg = key_g.split('/')
+        kg = key_g.split('.')
         obj = self.D
         for i, key in enumerate(kg, 1):
             if key not in obj:
@@ -110,34 +110,34 @@ class Staff(PDict):
 
     def set_req(self, sc, req):
         req = int(req)
-        if req < 0 or req < len(self.proj[f'staff/{sc}']):
+        if req < 0 or req < len(self.proj[f'staff.{sc}']):
             return False
-        self.proj[f'req/{sc}'] = req
+        self.proj[f'req.{sc}'] = req
         return True
 
     def get_state(self, sc):
-        if self.proj[f'req/{sc}'] == 0:
+        if self.proj[f'req.{sc}'] == 0:
             return 5
-        if len(self[sc]) < self.proj[f'req/{sc}']:
+        if len(self[sc]) < self.proj[f'req.{sc}']:
             return 2
         for uid in self[sc]:
-            if not self.users[uid][f'proj/{sc}/{self.proj.pid}/end']:
+            if not self.users[uid][f'proj.{sc}.{self.proj.pid}.end']:
                 return 1
         return 0
 
     def add_staff(self, sc, uid, job):
-        if len(self[sc]) >= self.proj[f'req/{sc}'] or uid in self.proj[f'staff/{sc}']:
+        if len(self[sc]) >= self.proj[f'req.{sc}'] or uid in self.proj[f'staff.{sc}']:
             return False
         user = User(uid)
         if sc not in user.info()['groups']:
             return False
-        user[f'proj/{sc}/{self.proj.pid}/start'] = time.time()
+        user[f'proj.{sc}.{self.proj.pid}.start'] = time.time()
         self.users[uid] = user
-        self.proj[f'staff/{sc}/{uid}'] = job
+        self.proj[f'staff.{sc}.{uid}'] = job
         return True
 
     def finish_job(self, sc, uid):
-        self.users[uid][f'proj/{sc}/{self.proj.pid}/end'] = time.time()
+        self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = time.time()
 
     def list_staff(self, sc_range=STAFF_GROUP):
         result = dict()
@@ -147,7 +147,7 @@ class Staff(PDict):
             staff_f = list()
             staff_uf = list()
             for uid in self[sc]:
-                if self.users[uid][f'proj/{sc}/{self.proj.pid}/end']:
+                if self.users[uid][f'proj.{sc}.{self.proj.pid}.end']:
                     staff_f.append(self.users[uid]['name'])
                 else:
                     staff_uf.append(self.users[uid]['name'])
@@ -161,7 +161,7 @@ class Staff(PDict):
                 'uid': uid,
                 'u': self.users[uid]['name'],
                 'j': self[sc][uid],
-                'f': self.users[uid][f'proj/{sc}/{self.proj.pid}/end']})
+                'f': self.users[uid][f'proj.{sc}.{self.proj.pid}.end']})
         return result
 
 class Project(PDict):
