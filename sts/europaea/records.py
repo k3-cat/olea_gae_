@@ -59,7 +59,7 @@ def update_s_state(proj, sc, pos):
     part_list_name = proj['staff'].list_staff(sc_range=[sc])[sc]
     sheets.set_values(path, [[
         STATE_MAP[proj['staff'].get_state(sc)],
-        f'{len(proj[f"staff.{sc}"])}/{proj[f"req.{sc}"]}',
+        f"'{len(proj[f'staff.{sc}'])}/{proj[f'req.{sc}']}",
         ', '.join(part_list_name[0]),
         ', '.join(part_list_name[1])]])
     return True
