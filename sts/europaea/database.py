@@ -189,7 +189,7 @@ class Project(PDict):
             'ino': info[0],
             'title': info[1],
             'ssc': '',
-            'ids': {'doc': doc_id, 'ext': None, 'mic': None, 'pic': None, 'aep': None},
+            'ids': {'doc': doc_id},
             'req': {'FY': 0, 'KP': 0, 'PY': 0, 'UJ': 0, 'HQ': 0},
             'staff': {}
         }
