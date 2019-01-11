@@ -98,12 +98,10 @@ class User(PDict):
         return user_info
 
 class Staff(PDict):
-    STAFF_GROUP = ('FY', 'KP', 'PY', 'UJ', 'HQ')
-
     def __init__(self, proj, dict_):
         self.proj = proj
         self.users = dict()
-        for sc in Staff.STAFF_GROUP:
+        for sc in dict_:
             for uid in dict_[sc]:
                 self.users[uid] = User(uid)
         super().__init__(dict_)
@@ -139,7 +137,7 @@ class Staff(PDict):
     def finish_job(self, sc, uid):
         self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = time.time()
 
-    def list_staff(self, sc_range=STAFF_GROUP):
+    def list_staff(self, sc_range):
         result = dict()
         for sc in sc_range:
             if not self[sc]:
@@ -192,7 +190,7 @@ class Project(PDict):
             'ssc': '',
             'ids': {'doc': doc_id, 'ext': None, 'mic': None, 'pic': None, 'aep': None},
             'req': {'FY': 0, 'KP': 0, 'PY': 0, 'UJ': 0, 'HQ': 0},
-            'staff': {'FY': {}, 'KP': {}, 'PY': {}, 'UJ': {}, 'HQ': {}}
+            'staff': {}
         }
 
     def __init__(self, pid, info=None):

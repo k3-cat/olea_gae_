@@ -43,7 +43,7 @@ def update_m_process_info(proj):
     path = get_path('LB')
     path.col = 'D:E'
     path.row = get_LB_line(proj.pid)
-    list_name = proj['staff'].list_staff()
+    list_name = proj['staff'].list_staff(sc_range=['FY', 'KP', 'PY', 'UJ', 'HQ'])
     staff_display = list()
     for sc in list_name:
         if not list_name[sc][0] and not list_name[sc][1]:
