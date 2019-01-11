@@ -142,6 +142,7 @@ class Staff(PDict):
         for sc in sc_range:
             if not self[sc]:
                 result[sc] = [[], []]
+                continue
             staff_f = list()
             staff_uf = list()
             for uid in self[sc]:
