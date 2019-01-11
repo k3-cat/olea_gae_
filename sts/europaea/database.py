@@ -19,7 +19,7 @@ PID_ALPHABET = (
     '0123456789aAbBcC'
     'dDeEfFgGhHiIjJkK'
     'lLmMnNoOpPqQrRsS'
-    'tTuUvVwWxXyYzZ~_'
+    'tTuUvVwWxXyYzZ_'
 )
 
 
