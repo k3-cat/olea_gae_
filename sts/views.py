@@ -52,7 +52,7 @@ def push_(request):
 def edit_staff(request):
     uid = request.COOKIES.get('uid', None)
     if not uid:
-        return HttpResponseRedirect(f'/login?r={request.get_all_path()}')
+        return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
     user_info = user.info()
     if request.method == 'GET':
@@ -103,7 +103,7 @@ def edit_staff(request):
 def new_projs(request):
     uid = request.COOKIES.get('uid', None)
     if not uid:
-        return HttpResponseRedirect(f'/login?r={request.get_all_path()}')
+        return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
     user_info = user.info()
     if 'nimda' not in user_info['groups']:
@@ -124,7 +124,7 @@ def new_projs(request):
 def manage_staff(request):
     uid = request.COOKIES.get('uid', None)
     if not uid:
-        return HttpResponseRedirect(f'/login?r={request.get_all_path()}')
+        return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
     user_info = user.info()
     if 'ms' not in user_info['groups'] and 'nimda' not in user_info['groups']:
@@ -174,7 +174,7 @@ def manage_staff(request):
 def update_info(request):
     uid = request.COOKIES.get('uid', None)
     if not uid:
-        return HttpResponseRedirect(f'/login?r={request.get_all_path()}')
+        return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
     user_info = user.info()
     if 'nimda' not in user_info['groups']:
