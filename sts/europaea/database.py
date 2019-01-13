@@ -138,7 +138,6 @@ class Staff(PDict):
         now = time.time()
         if now - self.users[uid][f'proj.{sc}.{self.proj.pid}.start'] < 3600:
             self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = 0
-            self.users[uid][f'proj.{sc}.{self.proj.pid}.start'] = 0
         else:
             self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = now
         return True

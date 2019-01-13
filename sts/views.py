@@ -127,7 +127,7 @@ def manage_staff(request):
         return HttpResponseRedirect('/login')
     user = User(uid)
     user_info = user.info()
-    if 'nimda' not in user_info['groups']:
+    if 'ms' not in user_info['groups'] and 'nimda' not in user_info['groups']:
         return HttpResponse(False)
     if request.method == 'GET':
         i = request.GET['i'].split(',')
