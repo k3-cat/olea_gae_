@@ -45,6 +45,7 @@
     <form method='post' id="form">
         {% csrf_token %}
         <input type="hidden" id="name" name="name">
+        <input type="hidden" id="r" name="r" value="{{r}}">
     </form>
     <div style="margin: 100pt auto; width: 180pt">
         {% if err %}

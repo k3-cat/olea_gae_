@@ -52,7 +52,7 @@ def push_(request):
 def edit_staff(request):
     uid = request.COOKIES.get('uid', None)
     if not uid:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect(f'/login?r={request.get_all_path()}')
     user = User(uid)
     user_info = user.info()
     if request.method == 'GET':
@@ -103,7 +103,7 @@ def edit_staff(request):
 def new_projs(request):
     uid = request.COOKIES.get('uid', None)
     if not uid:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect(f'/login?r={request.get_all_path()}')
     user = User(uid)
     user_info = user.info()
     if 'nimda' not in user_info['groups']:
@@ -124,7 +124,7 @@ def new_projs(request):
 def manage_staff(request):
     uid = request.COOKIES.get('uid', None)
     if not uid:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect(f'/login?r={request.get_all_path()}')
     user = User(uid)
     user_info = user.info()
     if 'ms' not in user_info['groups'] and 'nimda' not in user_info['groups']:
@@ -174,7 +174,7 @@ def manage_staff(request):
 def update_info(request):
     uid = request.COOKIES.get('uid', None)
     if not uid:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect(f'/login?r={request.get_all_path()}')
     user = User(uid)
     user_info = user.info()
     if 'nimda' not in user_info['groups']:
@@ -202,13 +202,17 @@ def login(request):
     if uid:
         return HttpResponseRedirect('/')
     if request.method == 'GET':
-        return render(request, 'login.html')
+        return render(request, 'login.html', {'r': request.GET['r']})
     if request.method == 'POST':
         name = request.POST['name']
         user = User.find_uid(name)
         if not user:
             return render(request, 'login.html', {'err': True})
-        response = redirect('/')
+        url = request.POST.get('r', None)
+        if url:
+            response = redirect(url)
+        else:
+            response = redirect('/')
         response.set_cookie('uid', user.uid, max_age=90*86400)
         return response
     return HttpResponse('<script type="text/javascript">window.close()</script>')
