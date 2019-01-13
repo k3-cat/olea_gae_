@@ -135,7 +135,14 @@ class Staff(PDict):
         return True
 
     def finish_job(self, sc, uid):
-        self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = time.time()
+        now = time.time()
+        if now - self.users[uid][f'proj.{sc}.{self.proj.pid}.start'] < 3600:
+            self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = 0
+            self.users[uid][f'proj.{sc}.{self.proj.pid}.start'] = 0
+        else:
+            self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = now
+        return True
+
 
     def list_staff(self, sc_range):
         result = dict()
