@@ -149,14 +149,13 @@ class Staff(PDict):
             if not self[sc]:
                 result[sc] = [[], []]
                 continue
-            staff_f = list()
-            staff_uf = list()
+            staff = [[], []]
             for uid in self[sc]:
                 if self.users[uid][f'proj.{sc}.{self.proj.pid}.end']:
-                    staff_f.append(self.users[uid]['name'])
+                    staff[0].append(self.users[uid]['name'])
                 else:
-                    staff_uf.append(self.users[uid]['name'])
-            result[sc] = [staff_f, staff_uf]
+                    staff[1].append(self.users[uid]['name'])
+            result[sc] = staff
         return result
 
     def detials(self, sc):
@@ -166,7 +165,7 @@ class Staff(PDict):
                 'uid': uid,
                 'u': self.users[uid]['name'],
                 'j': self[sc][uid],
-                'f': self.users[uid][f'proj.{sc}.{self.proj.pid}.end']})
+                'f': self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] is not None})
         return result
 
 class Project(PDict):
