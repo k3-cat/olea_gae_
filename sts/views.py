@@ -29,6 +29,13 @@ SAFE_RANGE = {
 
 def push_(request):
     i = request.GET['i'].split(',')
+    if i[1] not in ('KP', 'UJ', 'LB'):
+        return HttpResponse(False)
+    uid = request.COOKIES.get('uid', None)
+    if not uid:
+        return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
+    user = User(uid)
+    user_info = user.info()
     proj = Project(pid=i[0])
     if proj['ssc'] not in SAFE_RANGE[i[1]]:
         return HttpResponse('<script type="text/javascript">window.close()</script>')
@@ -37,16 +44,13 @@ def push_(request):
     path.col = 'C'
     if sheets.get_values(path)[0][0] != proj.pid:
         return HttpResponse('<script type="text/javascript">window.close()</script>')
-    if i[1] not in ('KP', 'UJ', 'LB'):
-        return HttpResponse(False)
     if i[1] == 'LB':
-        uid = request.COOKIES.get('uid', None)
-        if not uid:
-            return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
-        if 'nimda' not in User(uid).info()['groups']:
+        if 'nimda' not in user_info['groups']:
             return HttpResponseRedirect('<script type="text/javascript">window.close()</script>')
         response = push.lb(proj, i[2], request.GET.get('vu'))
     else:
+        if i[1] not in user_info['groups']:
+            return HttpResponse('<script type="text/javascript">window.close()</script>')
         response = PUSH_MAP[i[1]](proj, i[2])
     if not response:
         return HttpResponse(False)

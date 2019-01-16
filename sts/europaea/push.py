@@ -74,8 +74,6 @@ def hq(proj, pos):
     return True
 
 def lb(proj, pos, vid_url):
-    if proj['ssc'] != 'UP':
-        return False
     proj['ssc'] = '00'
     proj.finish()
     path = get_path('LB')
