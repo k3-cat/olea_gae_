@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import HttpResponseRedirect, redirect, render
 
 from .europaea import append, files, new, push, records, sheets
-from .europaea.common import get_path
+from .europaea.common import STATE_MAP, get_path
 from .europaea.database import Project, User
 
 
@@ -41,15 +41,18 @@ def push_(request):
         return HttpResponse('<script type="text/javascript">window.close()</script>')
     path = get_path(i[1])
     path.row = i[2]
-    path.col = 'C'
-    if sheets.get_values(path)[0][0] != proj.pid:
+    path.col = 'C:D'
+    record = sheets.get_values(path)[0][0]
+    if record[0][0] != proj.pid:
         return HttpResponse('<script type="text/javascript">window.close()</script>')
     if i[1] == 'LB':
         if 'nimda' not in user_info['groups']:
             return HttpResponseRedirect('<script type="text/javascript">window.close()</script>')
         response = push.lb(proj, i[2], request.GET.get('vu'))
     else:
-        if i[1] not in user_info['groups']:
+        if i[1] not in user_info['groups'] and 'nimda' not in user_info['groups']:
+            return HttpResponse('<script type="text/javascript">window.close()</script>')
+        if record[0][1] != STATE_MAP[5]:
             return HttpResponse('<script type="text/javascript">window.close()</script>')
         response = PUSH_MAP[i[1]](proj, i[2])
     if not response:
