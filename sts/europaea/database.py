@@ -111,11 +111,17 @@ class Staff(PDict):
         if req < 0 or req < len(self.proj[f'staff.{sc}']):
             return False
         self.proj[f'req.{sc}'] = req
+        if sc not in self.proj['staff']:
+            self.proj[f'staff.{sc}'] = dict()
         return True
 
     def get_state(self, sc):
         if sc not in self.proj[f'req']:
             return 5
+        if self.proj[f'req'] == 0:
+            return 4
+        if sc not in self.D:
+            return 9
         if len(self[sc]) < self.proj[f'req.{sc}']:
             return 2
         for uid in self[sc]:
