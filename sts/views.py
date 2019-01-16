@@ -40,6 +40,11 @@ def push_(request):
     if i[1] not in ('KP', 'UJ', 'LB'):
         return HttpResponse(False)
     if i[1] == 'LB':
+        uid = request.COOKIES.get('uid', None)
+        if not uid:
+            return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
+        if 'nimda' not in User(uid).info()['groups']:
+            return HttpResponseRedirect('<script type="text/javascript">window.close()</script>')
         response = push.lb(proj, i[2], request.GET.get('vu'))
     else:
         response = PUSH_MAP[i[1]](proj, i[2])
