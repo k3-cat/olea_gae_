@@ -1,6 +1,5 @@
 from . import drive
 from .records import set_hyperlink
-from .common import CreateLock
 
 
 URLS_MAP = {
@@ -17,8 +16,6 @@ def create(proj, sc, pos, type_):
     if proj[f'ids.{URLS_MAP[sc][1]}']:
         id_ = proj[f'ids.{URLS_MAP[sc][1]}']
     else:
-        if not CreateLock.check(proj.pid):
-            return False
         id_ = drive.new(name, type_, URLS_MAP[sc][0])
         proj[f'ids.{URLS_MAP[sc][1]}'] = id_
         proj.save()
