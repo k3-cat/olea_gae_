@@ -1,0 +1,58 @@
+<html>
+
+<head>
+    <script type="text/javascript">
+        function finish() {
+            var vu = prompt("請輸入視頻的鏈接:");
+            if (vu == "" || vu == null){
+                return;
+            }
+            document.getElementById("vu").value = vu;
+            document.getElementById("form").submit();
+        }
+    </script>
+
+    <style type="text/css">
+        button {
+            border: 1.5pt solid lightcoral;
+            border-radius: 10pt;
+            font-size: 20pt;
+            transition-duration: 0.7s;
+            cursor: pointer;
+            color: rgb(243, 112, 112);
+            background-color: white;
+        }
+
+        button:hover {
+            background-color: lightcoral;
+            color: white;
+        }
+
+        opt {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            grid-gap: 10pt;
+            height: 60pt;
+            margin: 10pt 0 0 0;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <form method='post' id="form">
+        {% csrf_token %}
+        <input type="hidden" id="vu" name="vu">
+        <input type="hidden" id="i" name="i" value="{{i}}">
+    </form>
+    <div style="margin: 100pt auto; width: 180pt">
+        <opt>
+            <button onclick="finish()">完成</button>
+        </opt>
+    </div>
+
+</body>
+
+</html>

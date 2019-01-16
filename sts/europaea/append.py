@@ -81,3 +81,14 @@ def hq(proj, pic_url): # the url may not be the real url
     ]]
     sheets.append(path, row)
     return True
+
+def lb(proj_infos):
+    path = get_path('LB')
+    k = sheets.count_rows(path) + 1
+    path.col = 'A:C'
+    path.row = f'{k}:{k+len(proj_infos)}'
+    rows = list()
+    for pi in proj_infos:
+        rows.append([f"'{pi[0]}", f"'{pi[1]}", f"'{pi[2]}", '初始', '', f'=HYPERLINK("{URL}/p?i={pi[2]},LB,"&ROW(),"[设定链接]")'])
+    sheets.append(path, rows)
+    return True

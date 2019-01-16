@@ -28,38 +28,46 @@ SAFE_RANGE = {
 }
 
 def push_(request):
-    i = request.GET['i'].split(',')
-    if i[1] not in ('KP', 'UJ', 'LB'):
-        return HttpResponse(False)
     uid = request.COOKIES.get('uid', None)
     if not uid:
         return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
     user_info = user.info()
-    proj = Project(pid=i[0])
-    if proj['ssc'] not in SAFE_RANGE[i[1]]:
+    if request.method == 'GET':
+        i = request.GET['i'].split(',')
+        if i[1] not in ('KP', 'UJ', 'LB'):
+            return HttpResponse(False)
+        proj = Project(i[0])
+        if proj['ssc'] not in SAFE_RANGE[i[1]]:
+            return HttpResponse('<script type="text/javascript">window.close()</script>')
+        path = get_path(i[1])
+        path.row = i[2]
+        path.col = 'C:D'
+        record = sheets.get_values(path)[0][0]
+        if record[0][0] != proj.pid:
+            return HttpResponse('<script type="text/javascript">window.close()</script>')
+        if i[1] == 'LB':
+            return render('finish.html', {'i': i})
+        else:
+            if i[1] not in user_info['groups'] and 'nimda' not in user_info['groups']:
+                return HttpResponse('<script type="text/javascript">window.close()</script>')
+            if record[0][1] != STATE_MAP[5]:
+                return HttpResponse('<script type="text/javascript">window.close()</script>')
+            response = PUSH_MAP[i[1]](proj, i[2])
+        if not response:
+            return HttpResponse(False)
+        proj.save()
+        records.update_m_process_info(proj)
         return HttpResponse('<script type="text/javascript">window.close()</script>')
-    path = get_path(i[1])
-    path.row = i[2]
-    path.col = 'C:D'
-    record = sheets.get_values(path)[0][0]
-    if record[0][0] != proj.pid:
-        return HttpResponse('<script type="text/javascript">window.close()</script>')
-    if i[1] == 'LB':
+    if request.method == 'POST':
+        i = request.POST['i'].split(',')
         if 'nimda' not in user_info['groups']:
             return HttpResponseRedirect('<script type="text/javascript">window.close()</script>')
-        response = push.lb(proj, i[2], request.GET.get('vu'))
-    else:
-        if i[1] not in user_info['groups'] and 'nimda' not in user_info['groups']:
-            return HttpResponse('<script type="text/javascript">window.close()</script>')
-        if record[0][1] != STATE_MAP[5]:
-            return HttpResponse('<script type="text/javascript">window.close()</script>')
-        response = PUSH_MAP[i[1]](proj, i[2])
-    if not response:
-        return HttpResponse(False)
-    proj.save()
-    records.update_m_process_info(proj)
+        response = push.lb(Project(i[0]), i[2], request.POST.get('vu'))
+        records.update_m_process_info(proj)
+        return HttpResponse(True)
     return HttpResponse('<script type="text/javascript">window.close()</script>')
+
 
 def edit_staff(request):
     uid = request.COOKIES.get('uid', None)
