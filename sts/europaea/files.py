@@ -1,5 +1,6 @@
 from . import drive
 from .records import set_hyperlink
+from .common import CreateLock
 
 
 URLS_MAP = {
@@ -10,6 +11,8 @@ URLS_MAP = {
 }
 
 def create(proj, sc, pos, type_):
+    if not CreateLock.check(proj.pid):
+        return False
     name = proj.name
     if '}' in name:
         return False
@@ -22,8 +25,12 @@ def create(proj, sc, pos, type_):
     return True
 
 def clean(proj):
-    drive.move(proj[f'ids.{URLS_MAP["KP"][1]}'], URLS_MAP['KP'][2])
-    drive.move(proj[f'ids.{URLS_MAP["UJ"][1]}'], URLS_MAP['UJ'][2])
-    drive.delete(proj[f'ids.{URLS_MAP["PY"][1]}'])
-    drive.delete(proj[f'ids.{URLS_MAP["HQ"][1]}'])
+    if proj[f'ids.{URLS_MAP["KP"][1]}']:
+        drive.move(proj[f'ids.{URLS_MAP["KP"][1]}'], URLS_MAP['KP'][2])
+    if proj[f'ids.{URLS_MAP["UJ"][1]}']:
+        drive.move(proj[f'ids.{URLS_MAP["UJ"][1]}'], URLS_MAP['UJ'][2])
+    if proj[f'ids.{URLS_MAP["PY"][1]}']:
+        drive.delete(proj[f'ids.{URLS_MAP["PY"][1]}'])
+    if proj[f'ids.{URLS_MAP["HQ"][1]}']:
+        drive.delete(proj[f'ids.{URLS_MAP["HQ"][1]}'])
     return True

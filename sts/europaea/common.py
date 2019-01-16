@@ -1,3 +1,5 @@
+import time
+
 from . import sheets
 
 
@@ -43,3 +45,39 @@ SC2D_MAP = {
     'UJ': '设计',
     'HQ': '后期'
 }
+
+class LbLineCache:
+    cache = dict()
+    time = 0
+
+    @classmethod
+    def update(cls):
+        cls.cache.clear()
+        path = get_path('LB')
+        path.col = 'C'
+        path.row = '2:'
+        for k, line in enumerate(sheets.get_values(path), 2):
+            if not line:
+                continue
+            cls.cache[line[0]] = k
+
+    @classmethod
+    def get(cls, pid):
+        now = time.time()
+        if now - cls.time > 120:
+            LbLineCache.update()
+        return LbLineCache.cache[pid]
+
+class CreateLock:
+    create_time = dict()
+
+    @classmethod
+    def check(cls, pid):
+        now = time.time()
+        for pid_ in cls.create_time:
+            if now - cls.create_time[pid_] > 10:
+                del cls.create_time[pid_]
+        if pid in cls.create_time:
+            return False
+        cls.create_time[pid] = now
+        return True

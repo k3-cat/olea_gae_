@@ -1,7 +1,5 @@
-import time
-
 from . import sheets
-from .common import SC2D_MAP, STATE_MAP, get_path, hyperlink
+from .common import SC2D_MAP, STATE_MAP, LbLineCache, get_path, hyperlink
 
 
 HL_COL_MAP = {
@@ -17,32 +15,10 @@ def set_hyperlink(sc, pos, id_):
     sheets.set_values(path, [[hyperlink(id_, sc)]])
     return True
 
-class LbLineCache:
-    cache = dict()
-    time = 0
-
-    @classmethod
-    def update(cls):
-        now = time.time()
-        if now - cls.time < 120:
-            return
-        cls.cache.clear()
-        path = get_path('LB')
-        path.col = 'C'
-        path.row = '2:'
-        for k, line in enumerate(sheets.get_values(path), 2):
-            if not line:
-                continue
-            cls.cache[line[0]] = k
-
-def get_LB_line(pid):
-    LbLineCache.update()
-    return LbLineCache.cache[pid]
-
 def update_m_process_info(proj):
     path = get_path('LB')
     path.col = 'D:E'
-    path.row = get_LB_line(proj.pid)
+    path.row = LbLineCache.get(proj.pid)
     list_name = proj['staff'].list_staff(sc_range=['FY', 'KP', 'PY', 'UJ', 'HQ'])
     staff_display = list()
     for sc in list_name:
