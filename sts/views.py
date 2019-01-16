@@ -194,7 +194,6 @@ def create(request):
         response = files.create(proj, i[1], i[2], 'doc')
     elif i[1] in ('UJ', 'PY', 'HQ'):
         response = files.create(proj, i[1], i[2], 'folder')
-    proj.save()
     return HttpResponse(response)
 
 def login(request):

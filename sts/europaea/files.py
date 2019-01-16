@@ -21,6 +21,7 @@ def create(proj, sc, pos, type_):
             return False
         id_ = drive.new(name, type_, URLS_MAP[sc][0])
         proj[f'ids.{URLS_MAP[sc][1]}'] = id_
+        proj.save()
     set_hyperlink(sc, pos, id_)
     return True
 

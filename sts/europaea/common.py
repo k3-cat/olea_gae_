@@ -75,7 +75,7 @@ class CreateLock:
     def check(cls, pid):
         now = time.time()
         for pid_ in cls.create_time:
-            if now - cls.create_time[pid_] > 10:
+            if now - cls.create_time[pid_] > 5:
                 del cls.create_time[pid_]
         if pid in cls.create_time:
             return False
