@@ -47,6 +47,10 @@ class Path:
         return None
 
 
+class TableCache:
+    cache = dict()
+
+
 def get_values(path):
     request = service_sheets.values().get(
         spreadsheetId=path.id_,

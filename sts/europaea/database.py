@@ -119,7 +119,7 @@ class Staff(PDict):
         if len(self[sc]) < self.proj[f'req.{sc}']:
             return 2
         for uid in self[sc]:
-            if self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] is not None:
+            if self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] is None:
                 return 1
         return 0
 
