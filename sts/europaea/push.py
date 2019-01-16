@@ -79,5 +79,12 @@ def lb(proj, pos, vid_url):
     path = get_path('LB')
     path.col = 'F'
     path.row = pos
-    sheets.set_values(path, [[vid_url]])
+    if 'youtu.be' in vid_url:
+        site = 'YT'
+    elif 'youtube' in vid_url:
+        vid_url = f'https://youtu.be/{vid_url[32:43]}'
+        site = 'YT'
+    else:
+        site = 'BB'
+    sheets.set_values(path, [[hyperlink(vid_url, site)]])
     return True

@@ -40,11 +40,11 @@ def push_(request):
     if i[1] not in ('KP', 'UJ', 'LB'):
         return HttpResponse(False)
     if i[1] == 'LB':
-        push.lb(proj, i[2], request.GET.get('vu'))
+        response = push.lb(proj, i[2], request.GET.get('vu'))
     else:
         response = PUSH_MAP[i[1]](proj, i[2])
-        if not response:
-            return HttpResponse(False)
+    if not response:
+        return HttpResponse(False)
     proj.save()
     records.update_m_process_info(proj)
     return HttpResponse('<script type="text/javascript">window.close()</script>')

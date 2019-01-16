@@ -19,11 +19,12 @@
 
         function setReq() {
             var req = parseInt(prompt("所需人数:"));
-            if (isNaN(req)) {
-                if (job != null) {
-                    alert("! 无效数据 !");
-                }
+            if (job == "" || job == null) {
                 return;
+            }
+            var reg = /^[\d]+$/;
+            if (!reg.test(req)) {
+                alert("! 无效数据 !");
             }
             document.getElementById("opt").value = req;
             document.getElementById("form").submit()
