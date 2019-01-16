@@ -114,12 +114,12 @@ class Staff(PDict):
         return True
 
     def get_state(self, sc):
-        if self.proj[f'req.{sc}'] == 0:
+        if sc not in self.proj[f'req']:
             return 5
         if len(self[sc]) < self.proj[f'req.{sc}']:
             return 2
         for uid in self[sc]:
-            if not self.users[uid][f'proj.{sc}.{self.proj.pid}.end']:
+            if self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] is not None:
                 return 1
         return 0
 
@@ -195,7 +195,7 @@ class Project(PDict):
             'title': info[1],
             'ssc': '',
             'ids': {'doc': doc_id},
-            'req': {'FY': 0, 'KP': 0, 'PY': 0, 'UJ': 0, 'HQ': 0},
+            'req': {},
             'staff': {}
         }
 
