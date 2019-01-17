@@ -71,7 +71,7 @@ class PidLineCache:
     @classmethod
     def update(cls, sc):
         now = time.time()
-        if now - cls.time > 900:
+        if sc not in cls.time or now - cls.time[sc] > 900:
             cls.update_list(sc)
         cls.pid_list[sc] = dict()
         for k, pid in enumerate(cls.pid_list[sc], 2):
@@ -94,4 +94,4 @@ class PidLineCache:
 
 # actually, this is not a proper way
 for sc_ in PATH_MAP:
-    PidLineCache.update_list(sc_)
+    PidLineCache.update(sc_)
