@@ -73,7 +73,7 @@ class PidLineCache:
         now = time.time()
         if sc not in cls.time or now - cls.time[sc] > 900:
             cls.update_list(sc)
-        cls.pid_list[sc] = dict()
+        cls.pid_map[sc] = dict()
         for k, pid in enumerate(cls.pid_list[sc], 2):
             if pid:
                 cls.pid_map[sc][pid] = k
@@ -90,9 +90,6 @@ class PidLineCache:
 
     @classmethod
     def get(cls, sc, pid):
-        abbs = cls.pid_map.keys()
-        print(abbs)
-        print(cls.pid_map)
         return cls.pid_map[sc][pid]
 
 # actually, this is not a proper way
