@@ -90,6 +90,9 @@ class PidLineCache:
 
     @classmethod
     def get(cls, sc, pid):
+        abbs = cls.pid_map.keys()
+        print(abbs)
+        print(cls.pid_map)
         return cls.pid_map[sc][pid]
 
 # actually, this is not a proper way
