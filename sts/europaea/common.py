@@ -94,4 +94,5 @@ class PidLineCache:
 
 # actually, this is not a proper way
 for sc_ in PATH_MAP:
+    print(sc_)
     PidLineCache.update_list(sc_)
