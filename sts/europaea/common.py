@@ -57,13 +57,11 @@ class PidLineCache:
 
     @classmethod
     def update_list(cls, sc):
-        cls.pid_list[sc].clear()
         cls.time[sc] = time.time()
+        cls.pid_list[sc] = list()
         path = get_path(sc)
         path.col = 'C'
         path.row = '2:'
-        if sc not in cls.pid_list:
-            cls.pid_list[sc] = list()
         for line in sheets.get_values(path):
             if not line:
                 cls.pid_list[sc].append(None)
@@ -75,8 +73,7 @@ class PidLineCache:
         now = time.time()
         if now - cls.time > 900:
             cls.update_list(sc)
-        if sc not in cls.pid_list:
-            cls.pid_list[sc] = dict()
+        cls.pid_list[sc] = dict()
         for k, pid in enumerate(cls.pid_list[sc], 2):
             if pid:
                 cls.pid_map[sc][pid] = k
