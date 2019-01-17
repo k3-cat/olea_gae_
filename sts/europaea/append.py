@@ -1,5 +1,5 @@
+from .common import STATE_MAP, URL, PidLineCache, get_path, hyperlink
 from .google_io import sheets
-from .common import get_path, hyperlink, STATE_MAP, URL
 
 
 def fy(projs):
@@ -15,6 +15,8 @@ def fy(projs):
             hyperlink(proj['ids.doc'], 'FY'), ''
         ])
     sheets.append(path, rows)
+    for row in rows:
+        PidLineCache.append('FY', row[2])
     return True
 
 def kp(projs):
@@ -32,6 +34,8 @@ def kp(projs):
             f'=IF(E{i}="0/0","",createD(C{i},ROW()))'
         ])
     sheets.append(path, rows)
+    for row in rows:
+        PidLineCache.append('KP', row[2])
     return True
 
 def uj(proj):
@@ -48,6 +52,7 @@ def uj(proj):
         f'=IF(E{k}="0/0","",createF(C{k},ROW()))'
     ]]
     sheets.append(path, row)
+    PidLineCache.append('UJ', row[2])
     return True
 
 def py(proj):
@@ -63,6 +68,7 @@ def py(proj):
         f'=IF(E{k}="0/0","",createF(C{k},ROW()))'
     ]]
     sheets.append(path, row)
+    PidLineCache.append('PY', row[2])
     return True
 
 def hq(proj, pic_url): # the url may not be the real url
@@ -80,6 +86,7 @@ def hq(proj, pic_url): # the url may not be the real url
         f'=IF(E{k}="0/0","",createF(C{k},ROW()))'
     ]]
     sheets.append(path, row)
+    PidLineCache.append('HQ', row[2])
     return True
 
 def lb(proj_infos):
@@ -89,6 +96,10 @@ def lb(proj_infos):
     path.row = f'{k}:{k+len(proj_infos)}'
     rows = list()
     for pi in proj_infos:
-        rows.append([f"'{pi[0]}", f"'{pi[1]}", f"'{pi[2]}", '初始', '', f'=HYPERLINK("{URL}/p?i={pi[2]},LB,"&ROW(),"[设定链接]")'])
+        rows.append([
+            f"'{pi[0]}", f"'{pi[1]}", f"'{pi[2]}", '初始', '',
+            f'=HYPERLINK("{URL}/p?i={pi[2]},LB,"&ROW(),"[设定链接]")'])
     sheets.append(path, rows)
+    for row in rows:
+        PidLineCache.append('LB', row[2])
     return True

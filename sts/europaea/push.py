@@ -1,54 +1,41 @@
-from . import sheets, append
-from .common import get_path, hyperlink
+from . import append, sheets
+from .common import PidLineCache, get_path, hyperlink
 
 
-def fy(proj, pos):
+def fy(proj):
     proj['ssc'] = 'KP'
     append.kp((proj))
     path = get_path('FY')
-    path.row = pos
+    path.row = PidLineCache.get('FY', proj.pid)
     sheets.del_line(path)
     return True
 
-def kp(proj, pos):
+def kp(proj):
     proj['ssc'] = 'pu'
     append.py(proj)
     append.uj(proj)
     path = get_path('KP')
-    path.row = pos
+    path.row = PidLineCache.get('KP', proj.pid)
     sheets.del_line(path)
     return True
 
-def uj(proj, pos):
+def uj(proj):
     if proj['ssc'] == 'pu':
         proj['ssc'] = 'PY'
     elif proj['ssc'] == 'hu':
         proj['ssc'] = 'HQ'
-
         path_ = get_path('HQ')
-        path_.col = 'C'
-        path_.row = '2:'
-        for i, pid_ in enumerate(sheets.get_values(path_), 2):
-            try:
-                pid = pid_[0]
-            except ValueError:
-                continue
-            if proj.pid == pid:
-                path_.row = i
-                break
-        else:
-            return False
-
         path_.col = 'K'
+        path_.row = PidLineCache.get('HQ', proj.pid)
         sheets.set_values(path_, [[hyperlink(proj['ids.pic'], 'UJ')]])
     else:
         return False
     path = get_path('UJ')
-    path.row = pos
+    path.row = PidLineCache.get('UJ', proj.pid)
     sheets.del_line(path)
     return True
 
-def py(proj, pos):
+def py(proj):
     if proj['ssc'] == 'pu':
         proj['ssc'] = 'hu'
         if not proj['ids.pic']:  # 进度开始后一定会创建文件夹
@@ -62,23 +49,23 @@ def py(proj, pos):
         return False
     append.hq(proj, pic_id_)
     path = get_path('PY')
-    path.row = pos
+    path.row = PidLineCache.get('PY', proj.pid)
     sheets.del_line(path)
     return True
 
-def hq(proj, pos):
+def hq(proj):
     proj['ssc'] = 'UP'
     path = get_path('HQ')
-    path.row = pos
+    path.row = PidLineCache.get('HQ', proj.pid)
     sheets.del_line(path)
     return True
 
-def lb(proj, pos, vid_url):
+def lb(proj, vid_url):
     proj['ssc'] = '00'
     proj.finish()
     path = get_path('LB')
     path.col = 'F'
-    path.row = pos
+    path.row = PidLineCache.get('LB', proj.pid)
     if 'youtu.be' in vid_url:
         site = 'YT'
     elif 'youtube' in vid_url:

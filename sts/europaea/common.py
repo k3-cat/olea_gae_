@@ -49,24 +49,52 @@ SC2D_MAP = {
     'HQ': '后期'
 }
 
-class LbLineCache:
-    cache = dict()
-    time = 0
+
+class PidLineCache:
+    pid_map = dict()
+    pid_list = dict()
+    time = dict()
 
     @classmethod
-    def update(cls):
-        cls.cache.clear()
-        path = get_path('LB')
+    def update_list(cls, sc):
+        cls.pid_list[sc].clear()
+        cls.time[sc] = time.time()
+        path = get_path(sc)
         path.col = 'C'
         path.row = '2:'
-        for k, line in enumerate(sheets.get_values(path), 2):
+        if sc not in cls.pid_list:
+            cls.pid_list[sc] = list()
+        for line in sheets.get_values(path):
             if not line:
-                continue
-            cls.cache[line[0]] = k
+                cls.pid_list[sc].append(None)
+            else:
+                cls.pid_list[sc].append(line[0])
 
     @classmethod
-    def get(cls, pid):
+    def update(cls, sc):
         now = time.time()
-        if now - cls.time > 120:
-            LbLineCache.update()
-        return LbLineCache.cache[pid]
+        if now - cls.time > 900:
+            cls.update_list(sc)
+        if sc not in cls.pid_list:
+            cls.pid_list[sc] = dict()
+        for k, pid in enumerate(cls.pid_list[sc], 2):
+            if pid:
+                cls.pid_map[sc][pid] = k
+
+    @classmethod
+    def append(cls, sc, pid):
+        cls.pid_list[sc].append(pid)
+        cls.update(sc)
+
+    @classmethod
+    def delete(cls, sc, pid):
+        cls.pid_list[sc].remove(pid)
+        cls.update(sc)
+
+    @classmethod
+    def get(cls, sc, pid):
+        return cls.pid_map[sc][pid]
+
+# actually, this is not a proper way
+for sc_ in PATH_MAP:
+    PidLineCache.update_list(sc_)

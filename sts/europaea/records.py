@@ -1,5 +1,5 @@
 from . import sheets
-from .common import SC2D_MAP, STATE_MAP, LbLineCache, get_path, hyperlink
+from .common import SC2D_MAP, STATE_MAP, get_path, hyperlink, PidLineCache
 
 
 HL_COL_MAP = {
@@ -8,17 +8,17 @@ HL_COL_MAP = {
     'UJ': 'L',
     'HQ': 'M'}
 
-def set_hyperlink(sc, pos, id_):
+def set_hyperlink(pid, sc, id_):
     path = get_path(sc)
     path.col = HL_COL_MAP[sc]
-    path.row = pos
+    path.row = PidLineCache.get(sc, pid)
     sheets.set_values(path, [[hyperlink(id_, sc)]])
     return True
 
 def update_m_process_info(proj):
     path = get_path('LB')
     path.col = 'D:E'
-    path.row = LbLineCache.get(proj.pid)
+    path.row = PidLineCache.get('LB', proj.pid)
     list_name = proj['staff'].list_staff(sc_range=['FY', 'KP', 'PY', 'UJ', 'HQ'])
     staff_display = list()
     for sc in list_name:
@@ -28,10 +28,10 @@ def update_m_process_info(proj):
     sheets.set_values(path, [[proj.ssc_display, ' | '.join(staff_display)]])
     return True
 
-def update_s_state(proj, sc, pos):
+def update_s_state(proj, sc):
     path = get_path(sc)
     path.col = 'D:G'
-    path.row = pos
+    path.row = PidLineCache.get(sc, proj.pid)
     part_list_name = proj['staff'].list_staff(sc_range=[sc])[sc]
     sheets.set_values(path, [[
         STATE_MAP[proj['staff'].get_state(sc)],

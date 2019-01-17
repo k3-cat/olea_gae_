@@ -2,7 +2,7 @@ import random
 import time
 
 import firebase_admin
-from firebase_admin import firestore, credentials
+from firebase_admin import credentials, firestore
 
 from .files import clean
 
