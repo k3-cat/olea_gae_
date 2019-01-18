@@ -74,9 +74,9 @@ def edit_staff(request):
         req = proj[f'req.{i[1]}']
         rows = proj['staff'].detials(i[1])
         return render(request, 'es.html', {
-            'i': f'{i[0]},{i[1]}',
+            'i': {'p': i[0], 's': i[1]},
             'user1': user_info,
-            'edit': i[1] in user_info['groups'],
+            'joined': user_info['uid'] in proj[f'staff.{i[1]}'],
             'req': req,
             'rows': rows,
             'empty': ['']*(req-len(rows)),

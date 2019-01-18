@@ -31,12 +31,6 @@
             document.getElementById("form").submit()
         }
 
-        function change() {
-            document.getElementById("act_btn").onclick = editJob;
-            document.getElementById("act_btn").disabled = false;
-            document.getElementById("act_btn").innerHTML = "修改分工";
-        }
-
         function editJob() {
             var job = prompt("分工:");
             if (job == "" || job == null) {
@@ -46,6 +40,12 @@
             document.getElementById("data").value = job;
             document.getElementById("form").submit();
         }
+
+        {% if joined %}
+        document.getElementById("act_btn").onclick = editJob;
+        document.getElementById("act_btn").disabled = false;
+        document.getElementById("act_btn").innerHTML = "修改分工";
+        {% endif %}
     </script>
 
     <style type="text/css">
@@ -171,23 +171,29 @@
                 {% for row in rows %}
                 <tr>
                     {% if user1.uid == row.uid %}
-                    <td id="user_name" onload="change()">{{row.u}}</td>
-                    {% else %}
+
+                    <td id="user_name">{{row.u}}</td>
                     <td>{{row.u}}</td>
-                    {% endif %}
-                    <td>{{row.j}}</td>
                     {% if row.f %}
                     <td style="text-align:center">◯</td>
                     {% else %}
-                    {% if user1.uid == row.uid %}
                     <td style="text-align:center"><button class='fj' onclick="finishJob()">⌾</button></td>
+                    {% endif %}
+
+                    {% else %}
+
+                    <td>{{row.u}}</td>
+                    <td>{{row.u}}</td>
+                    {% if row.f %}
+                    <td style="text-align:center">◯</td>
                     {% else %}
                     <td style="text-align:center">✗</td>
                     {% endif %}
+
                     {% endif %}
                 </tr>
                 {% endfor %}
-                {% for i in empty %}
+                {% for j in empty %}
                 <tr>
                     <td colspan="3" style="text-align:center;color:#aaa"><I>------　缺人　------</I></td>
                 </tr>
@@ -197,7 +203,7 @@
             <p style="text-align: center; font-size: 18pt; color: orchid;">! 项目为初始状态 请先设定人数 !</p>
             <p style="height:3pt"></p>
             {% endif %}
-            {% if edit %}
+            {% if i.s in user1.groups %}
             <opt>
                 <button id="act_btn" onclick="addStaff()" {% if not empty %} disabled {% endif %}>接稿</button>
                 <button onclick="setReq()">设定人数</button>
@@ -208,7 +214,7 @@
 
     <form method='post' id="form">
         {% csrf_token %}
-        <input type="hidden" name="i" value="{{i}}">
+        <input type="hidden" name="i" value="{{i.p}},{{i.s}}">
         <input type="hidden" id="opt" name="opt">
         <input type="hidden" id="data" name="data">
     </form>
