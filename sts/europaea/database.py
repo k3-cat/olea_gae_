@@ -55,6 +55,15 @@ class PDict:
                 obj[key] = value
         self.temp[key_g] = value
 
+    def __delitem__(self, key_g):
+        kg = key_g.split('.')
+        obj = self.D
+        for i, key in enumerate(kg, 1):
+            if i != len(kg):
+                obj = obj[key]
+            else:
+                del obj[key]
+
     def __iter__(self):
         return self.D.__iter__()
 
