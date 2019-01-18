@@ -13,7 +13,7 @@
             }
             document.getElementById("opt").value = "A";
             document.getElementById("uid").value = uid;
-            document.getElementById("job").value = job;
+            document.getElementById("data").value = job;
             document.getElementById("form").submit()
         }
 
@@ -31,9 +31,22 @@
             var reg = /^[\d]+$/;
             if (!reg.test(req)) {
                 alert("! 无效数据 !");
+                return;
             }
-            document.getElementById("opt").value = req;
+            document.getElementById("opt").value = "R";
+            document.getElementById("data").value = req;
             document.getElementById("form").submit()
+        }
+
+        function editJob(lineNo) {
+            var job = prompt("分工:");
+            if (job == "" || job == null) {
+                return;
+            }
+            document.getElementById("opt").value = "E";
+            document.getElementById("uid").value = document.getElementById(lineNo).innerHTML;
+            document.getElementById("data").value = job;
+            document.getElementById("form").submit();
         }
     </script>
 
@@ -122,7 +135,7 @@
         outer {
             border: 2.4pt solid plum;
             border-radius: 15pt;
-            width: 560pt;
+            width: 570pt;
             padding: 18pt;
             margin: 30pt auto;
             display: block;
@@ -153,7 +166,7 @@
         <inner>
             <table>
                 <tr>
-                    <th style="width:40pt">uid</th>
+                    <th style="width:45pt">uid</th>
                     <th style="width:100pt">人员({{req}}人)</th>
                     <th style="width:350pt">分工</th>
                     <th>交稿</th>
@@ -162,7 +175,7 @@
                 <tr>
                     <td style="text-align:center" id="{{forloop.counter}}">{{row.uid}}</td>
                     <td>{{row.u}}</td>
-                    <td>{{row.j}}</td>
+                    <td onclick="editJob({{forloop.counter}})">{{row.j}}</td>
                     {% if row.f %}
                     <td style="text-align:center">◯</td>
                     {% else %}
@@ -170,7 +183,7 @@
                     {% endif %}
                 </tr>
                 {% endfor %}
-                {% for i in empty %}
+                {% for j in empty %}
                 <tr>
                     <td colspan="4" style="text-align:center;color:#aaa"><I>------　缺人　------</I></td>
                 </tr>
@@ -185,10 +198,10 @@
 
     <form method='post' id="form">
         {% csrf_token %}
-        <input type="hidden" name="i" value="{{i}}">
+        <input type="hidden" name="i" value="{{i.p}},{{i.s}}">
         <input type="hidden" id="opt" name="opt">
         <input type="hidden" id="uid" name="uid">
-        <input type="hidden" id="job" name="job">
+        <input type="hidden" id="data" name="data">
     </form>
 </body>
 
