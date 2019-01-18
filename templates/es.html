@@ -40,6 +40,12 @@
             document.getElementById("data").value = job;
             document.getElementById("form").submit();
         }
+
+        {% if joined %}
+        document.getElementById("act_btn").onclick = editJob;
+        document.getElementById("act_btn").disabled = false;
+        document.getElementById("act_btn").innerHTML = "修改分工";
+        {% endif %}
     </script>
 
     <style type="text/css">
