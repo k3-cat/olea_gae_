@@ -108,11 +108,11 @@ class Staff(PDict):
 
     def set_req(self, sc, req):
         req = int(req)
-        if req < 0 or req < len(self.proj[f'staff.{sc}']):
+        if req < 0 or req < len(self[sc]):
             return False
         self.proj[f'req.{sc}'] = req
-        if sc not in self.proj['staff']:
-            self.proj[f'staff.{sc}'] = dict()
+        if sc not in self:
+            self.proj[f'staff.{sc}'] = dict() # only Project can record the change
         return True
 
     def get_state(self, sc):
@@ -130,7 +130,7 @@ class Staff(PDict):
         return 0
 
     def add_staff(self, sc, uid, job):
-        if len(self[sc]) >= self.proj[f'req.{sc}'] or uid in self.proj[f'staff.{sc}']:
+        if len(self[sc]) >= self.proj[f'req.{sc}'] or uid in self[sc]:
             return False
         user = User(uid)
         if sc not in user.info()['groups']:
@@ -140,7 +140,16 @@ class Staff(PDict):
         self.proj[f'staff.{sc}.{uid}'] = job
         return True
 
-    def edit_staff(self, sc, uid, job):
+    def del_staff(self, sc, uid):
+        if uid not in self[sc]:
+            return False
+        user = User(uid)
+        user[f'proj.{sc}.{self.proj.pid}'] = firestore.DELETE_FIELD
+        del user[f'proj.{sc}.{self.proj.pid}']
+        self.proj[f'staff.{sc}.{uid}'] = firestore.DELETE_FIELD
+        del self.proj[f'staff.{sc}.{uid}']
+
+    def edit_job(self, sc, uid, job):
         if uid not in self[sc]:
             return False
         self.proj[f'staff.{sc}.{uid}'] = job

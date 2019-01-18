@@ -88,14 +88,16 @@ def edit_staff(request):
             return HttpResponseRedirect(f'/es?i={i[0]},{i[1]}')
         proj = Project(i[0])
         opt = request.POST.get('opt', None)
-        if opt[0] == "F":
+        if opt == "F":
             proj['staff'].finish_job(i[1], uid)
         elif opt == 'A':
             proj['staff'].add_staff(i[1], uid, request.POST['data'])
         elif opt == 'R':
             proj['staff'].set_req(i[1], request.POST['data'])
         elif opt == 'E':
-            proj['staff'].edit_staff(i[1], uid, request.POST['data'])
+            proj['staff'].edit_job(i[1], uid, request.POST['data'])
+        elif opt == 'D':
+            proj['staff'].del_staff(i[1], uid)
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj)
             proj.save()
@@ -156,14 +158,16 @@ def manage_staff(request):
         i = request.POST['i'].split(',')
         proj = Project(i[0])
         opt = request.POST.get('opt', None)
-        if opt[0] == "F":
+        if opt == "F":
             proj['staff'].finish_job(i[1], request.POST['uid'])
         elif opt == 'A':
             proj['staff'].add_staff(i[1], request.POST['uid'], request.POST['data'])
         elif opt == 'R':
             proj['staff'].set_req(i[1], request.POST['data'])
         elif opt == 'E':
-            proj['staff'].edit_staff(i[1], request.POST['uid'], request.POST['data'])
+            proj['staff'].edit_job(i[1], request.POST['uid'], request.POST['data'])
+        elif opt == 'D':
+            proj['staff'].del_staff(i[1], request.POST['uid'])
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj)
             proj.save()
