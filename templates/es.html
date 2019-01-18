@@ -25,6 +25,7 @@
             var reg = /^[\d]+$/;
             if (!reg.test(req)) {
                 alert("! 无效数据 !");
+                return;
             }
             document.getElementById("opt").value = "R";
             document.getElementById("data").value = req;
