@@ -46,16 +46,26 @@
             event.preventDefault();
             var uid = event.dataTransfer.getData("Text");
             alert(uid);
-            document.getElementById("opt").hidden = false;
-            document.getElementById("delbox").hidden = true;
         }
 
-        function drag(event) {
-            document.getElementById("opt").hidden = true;
-            document.getElementById("delbox").hidden = false;
+        function dragenter(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "move"
+            document.getElementById("delbox").style.color = "white";
+            document.getElementById("delbox").style.background = "red";
+        }
+
+        function dragstart(event) {
+            event.dataTransfer.effectAllowed = "move"
+            document.getElementById("opt").style.display = "none";
+            document.getElementById("delbox").style.display = "block";
             event.dataTransfer.setData("Text", event.target.innerHTML);
         }
 
+        function dragend(event) {
+            document.getElementById("opt").style.display = "grid";
+            document.getElementById("delbox").style.display = "none";
+        }
     </script>
 
     <style type="text/css">
@@ -140,16 +150,6 @@
             background-color: lightsalmon;
         }
 
-        .ds {
-            font-size: 16pt;
-            border: 1.5pt solid red;
-            color: red;
-        }
-
-        .ds:hover {
-            background-color: red;
-        }
-
         outer {
             border: 2.4pt solid pink;
             border-radius: 15pt;
@@ -174,10 +174,16 @@
             margin: 10pt 0 0 0;
         }
 
-        delbox {
-            display: block;
-            height: 35pt;
+        #delbox {
+            display: none;
+            border-radius: 12pt;
+            text-align: center;
+            height: 33pt;
+            line-height: 33pt;
             margin: 10pt 0 0 0;
+            font-size: 16pt;
+            border: 1.5pt solid red;
+            color: red;
         }
     </style>
 </head>
@@ -198,7 +204,7 @@
                 <tr>
                     {% if user1.uid == row.uid %}
 
-                    <td draggable="true" ondrag="drag(event)">{{row.u}}</td>
+                    <td draggable="true" ondragstart="dragstart(event)" ondragend="dragend(event)">{{row.u}}</td>
                     <td>{{row.j}}</td>
                     {% if row.f %}
                     <td style="text-align:center">◯</td>
@@ -230,9 +236,7 @@
             <p style="height:3pt"></p>
             {% endif %}
             {% if i.s in user1.groups %}
-            <delbox id="delbox" hidden>
-                <button class="ds" ondrop="deleteStaff(event)">删除该人员</button>
-            </delbox>
+            <div id="delbox" ondrop="deleteStaff(event)" ondragover="drageneter(event)">删除该人员</div>
             <opt id="opt">
                 {% if joined %}
                 <button onclick="editJob()">修改分工</button>
