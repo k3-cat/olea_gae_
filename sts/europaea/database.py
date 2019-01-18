@@ -176,7 +176,8 @@ class Staff(PDict):
             result.append({
                 'uid': uid,
                 'u': self.users[uid]['name'],
-                'j': self[sc][uid],
+                'j': self[sc][uid], # job
+                # it may be 0 (False), so test if is None
                 'f': self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] is not None})
         return result
 
