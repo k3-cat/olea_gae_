@@ -45,7 +45,7 @@
         function deleteStaff(event) {
             event.preventDefault();
             var name = event.dataTransfer.getData("Text");
-            if (!confirm("确定删除 "+name+" 吗?")) {
+            if (!confirm(name+" 确定要取消接稿吗?")) {
                 return;
             }
             document.getElementById("opt").value = "D";
@@ -244,7 +244,7 @@
             <p style="height:3pt"></p>
             {% endif %}
             {% if i.s in user1.groups %}
-            <div id="delbox" ondrop="deleteStaff(event)" ondragover="dragOver(event)" ondragleave="dragLeave(event)">拖放以删除该人员</div>
+            <div id="delbox" ondrop="deleteStaff(event)" ondragover="dragOver(event)" ondragleave="dragLeave(event)">拖放以取消接稿</div>
             <optbox id="optbox">
                 {% if joined %}
                 <button onclick="editJob()">修改分工</button>

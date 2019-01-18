@@ -52,7 +52,7 @@
         function deleteStaff(event) {
             event.preventDefault();
             var uid = event.dataTransfer.getData("Text");
-            if (!confirm("确定删除 "+uid+" 吗?")) {
+            if (!confirm("确定要从项目中删除 "+uid+" 吗?")) {
                 return;
             }
             document.getElementById("opt").value = "D";
@@ -235,7 +235,7 @@
                 </tr>
                 {% endfor %}
             </table>
-            <div id="delbox" ondrop="deleteStaff(event)" ondragover="dragOver(event)" ondragleave="dragLeave(event)">拖放以删除该人员</div>
+            <div id="delbox" ondrop="deleteStaff(event)" ondragover="dragOver(event)" ondragleave="dragLeave(event)">拖放以从项目中删除该人员</div>
             <optbox id="optbox">
                 <button onclick="addStaff()" {% if not empty %} disabled {% endif %}>接稿</button>
                 <button onclick="setReq()">设定人数</button>
