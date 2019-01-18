@@ -91,9 +91,11 @@ def edit_staff(request):
         if opt[0] == "F":
             proj['staff'].finish_job(i[1], uid)
         elif opt == 'A':
-            proj['staff'].add_staff(i[1], uid, request.POST['job'])
-        elif opt:
-            proj['staff'].set_req(i[1], opt)
+            proj['staff'].add_staff(i[1], uid, request.POST['data'])
+        elif opt == 'R':
+            proj['staff'].set_req(i[1], request.POST['data'])
+        elif opt == 'E':
+            proj['staff'].edit_staff(i[1], uid, request.POST['data'])
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj)
             proj.save()

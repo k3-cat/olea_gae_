@@ -140,6 +140,12 @@ class Staff(PDict):
         self.proj[f'staff.{sc}.{uid}'] = job
         return True
 
+    def edit_staff(self, sc, uid, job):
+        if uid not in self[sc]:
+            return False
+        self.proj[f'staff.{sc}.{uid}'] = job
+        return True
+
     def finish_job(self, sc, uid):
         now = time.time()
         if now - self.users[uid][f'proj.{sc}.{self.proj.pid}.start'] < 3600:
