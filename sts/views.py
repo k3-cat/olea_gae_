@@ -205,7 +205,7 @@ def login(request):
     if uid:
         return HttpResponseRedirect('/')
     if request.method == 'GET':
-        return render(request, 'login.html', {'r': request.GET['r']})
+        return render(request, 'login.html', {'r': request.GET.get('r', None)})
     if request.method == 'POST':
         name = request.POST['name']
         user = User.find_uid(name)
