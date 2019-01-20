@@ -181,7 +181,7 @@ class Staff(PDict):
                 continue
             staff = [[], []]
             for uid in self[sc]:
-                if self.users[uid][f'proj.{sc}.{self.proj.pid}.end']:
+                if self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] is not None:
                     staff[0].append(self.users[uid]['name'])
                 else:
                     staff[1].append(self.users[uid]['name'])
