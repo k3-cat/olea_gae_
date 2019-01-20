@@ -190,6 +190,8 @@ class Staff(PDict):
 
     def detials(self, sc):
         result = list()
+        if not self[sc]:
+            return []
         for uid in self[sc]:
             result.append({
                 'uid': uid,
