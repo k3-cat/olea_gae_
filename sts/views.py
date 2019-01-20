@@ -75,8 +75,8 @@ def edit_staff(request):
         if req is None:
             empty = []
         else:
+            rows = proj['staff'].detials(i[1])
             empty = ['']*(req-len(rows))
-        rows = proj['staff'].detials(i[1])
         return render(request, 'es.html', {
             'i': {'p': i[0], 's': i[1]},
             'user1': user_info,
