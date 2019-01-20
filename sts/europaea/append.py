@@ -52,7 +52,7 @@ def uj(proj):
         f'=IF(E{k}="0/0","",createF(C{k}))'
     ]]
     sheets.append(path, row)
-    PidLineCache.append('UJ', row[2])
+    PidLineCache.append('UJ', row[0][2])
     return True
 
 def py(proj):
@@ -68,7 +68,7 @@ def py(proj):
         f'=IF(E{k}="0/0","",createF(C{k}))'
     ]]
     sheets.append(path, row)
-    PidLineCache.append('PY', row[2])
+    PidLineCache.append('PY', row[0][2])
     return True
 
 def hq(proj, pic_url): # the url may not be the real url
@@ -86,7 +86,7 @@ def hq(proj, pic_url): # the url may not be the real url
         f'=IF(E{k}="0/0","",createF(C{k}))'
     ]]
     sheets.append(path, row)
-    PidLineCache.append('HQ', row[2])
+    PidLineCache.append('HQ', row[0][2])
     return True
 
 def lb(proj_infos):
