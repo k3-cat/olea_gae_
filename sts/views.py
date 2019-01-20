@@ -72,6 +72,10 @@ def edit_staff(request):
         if proj['ssc'] not in SAFE_RANGE[i[1]]:
             return HttpResponse('<script type="text/javascript">window.close()</script>')
         req = proj[f'req.{i[1]}']
+        if req is None:
+            empty = []
+        else:
+            empty = ['']*(req-len(rows))
         rows = proj['staff'].detials(i[1])
         return render(request, 'es.html', {
             'i': {'p': i[0], 's': i[1]},
@@ -79,7 +83,7 @@ def edit_staff(request):
             'joined': proj[f'staff.{i[1]}'] is not None and user_info['uid'] in proj[f'staff.{i[1]}'],
             'req': req,
             'rows': rows,
-            'empty': ['']*(req-len(rows)),
+            'empty': empty,
             'name': proj.name,
             'note': ''})
     if request.method == 'POST':
