@@ -76,7 +76,7 @@ def edit_staff(request):
         return render(request, 'es.html', {
             'i': {'p': i[0], 's': i[1]},
             'user1': user_info,
-            'joined': user_info['uid'] in proj[f'staff.{i[1]}'],
+            'joined': proj[f'staff.{i[1]}'] is not None and user_info['uid'] in proj[f'staff.{i[1]}'],
             'req': req,
             'rows': rows,
             'empty': ['']*(req-len(rows)),
