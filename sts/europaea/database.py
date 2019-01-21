@@ -117,7 +117,7 @@ class Staff(PDict):
 
     def set_req(self, sc, req):
         req = int(req)
-        if req < 0 or req < len(self[sc]):
+        if req < 0 or (sc in self and req < len(self[sc])):
             return False
         self.proj[f'req.{sc}'] = req
         if sc not in self:
