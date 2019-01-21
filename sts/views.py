@@ -73,6 +73,7 @@ def edit_staff(request):
             return HttpResponse('<script type="text/javascript">window.close()</script>')
         req = proj[f'req.{i[1]}']
         if req is None:
+            rows = []
             empty = []
         else:
             rows = proj['staff'].detials(i[1])
