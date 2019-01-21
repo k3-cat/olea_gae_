@@ -150,13 +150,18 @@ def manage_staff(request):
         if proj['ssc'] not in SAFE_RANGE[i[1]]:
             return HttpResponse('<script type="text/javascript">window.close()</script>')
         req = proj[f'req.{i[1]}']
-        rows = proj['staff'].detials(i[1])
+        if req is None:
+            rows = []
+            empty = []
+        else:
+            rows = proj['staff'].detials(i[1])
+            empty = ['']*(req-len(rows))
         return render(request, 'ms.html', {
             'i': {'p': i[0], 's': i[1]},
             'user1': user_info,
             'req': req,
             'rows': rows,
-            'empty': ['']*(req-len(rows)),
+            'empty': empty,
             'name': proj.name,
             'note': ''})
     if request.method == 'POST':
