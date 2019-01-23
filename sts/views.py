@@ -34,30 +34,24 @@ def push_(request):
     user_info = user.info()
     if request.method == 'GET':
         i = request.GET['i'].split(',')
-        if i[1] not in ('KP', 'UJ', 'LB'):
-            return HttpResponse(False)
         proj = Project(i[0])
         if proj['ssc'] not in SAFE_RANGE[i[1]]:
-            return HttpResponse('<script type="text/javascript">window.close()</script>')
+            return HttpResponseRedirect('/q')
         if i[1] == 'LB':
             return render('finish.html', {'i': i})
-        else:
+        elif i[1] in ('KP', 'UJ'):
             if i[1] not in user_info['groups'] and 'nimda' not in user_info['groups']:
-                return HttpResponse('<script type="text/javascript">window.close()</script>')
+                return HttpResponse(False)
             response = PUSH_MAP[i[1]](proj)
-        if not response:
-            return HttpResponse(False)
-        records.update_m_process_info(proj)
-        return HttpResponse('<script type="text/javascript">window.close()</script>')
-    if request.method == 'POST':
+            if not response:
+                return HttpResponse(False)
+    elif request.method == 'POST':
         i = request.POST['i'].split(',')
-        if 'nimda' not in user_info['groups']:
-            return HttpResponseRedirect('<script type="text/javascript">window.close()</script>')
-        response = push.lb(Project(i[0]), request.POST.get('vu'))
-        records.update_m_process_info(proj)
-        return HttpResponse(True)
+        if 'nimda' in user_info['groups']:
+            response = push.lb(Project(i[0]), request.POST['vu'])
+            return HttpResponse(True)
     proj.save()
-    return HttpResponse('<script type="text/javascript">window.close()</script>')
+    return HttpResponseRedirect('/q')
 
 
 def edit_staff(request):
@@ -70,7 +64,7 @@ def edit_staff(request):
         i = request.GET['i'].split(',')
         proj = Project(i[0])
         if proj['ssc'] not in SAFE_RANGE[i[1]]:
-            return HttpResponse('<script type="text/javascript">window.close()</script>')
+            return HttpResponseRedirect('/q')
         req = proj[f'req.{i[1]}']
         if req is None:
             rows = []
@@ -87,12 +81,12 @@ def edit_staff(request):
             'empty': empty,
             'name': proj.name,
             'note': ''})
-    if request.method == 'POST':
+    elif request.method == 'POST':
         i = request.POST['i'].split(',')
         if i[1] not in user_info['groups']:
             return HttpResponseRedirect(f'/es?i={i[0]},{i[1]}')
         proj = Project(i[0])
-        opt = request.POST.get('opt', None)
+        opt = request.POST['opt']
         if opt == "F":
             proj['staff'].finish_job(i[1], uid)
         elif opt == 'A':
@@ -103,16 +97,14 @@ def edit_staff(request):
             proj['staff'].edit_job(i[1], uid, request.POST['data'])
         elif opt == 'D':
             proj['staff'].del_staff(i[1], uid)
-        if proj['staff'].get_state(i[1]) == 0:
-            PUSH_MAP[i[1]](proj)
-            proj.save()
-            records.update_m_process_info(proj)
-            return HttpResponse('<script type="text/javascript">window.close()</script>')
         proj.save()
         records.update_s_state(proj, i[1])
         records.update_m_process_info(proj)
+        if proj['staff'].get_state(i[1]) == 0:
+            PUSH_MAP[i[1]](proj)
+            return HttpResponseRedirect('/q')
         return HttpResponseRedirect(f'/es?i={i[0]},{i[1]}')
-    return HttpResponse('<script type="text/javascript">window.close()</script>')
+    return HttpResponseRedirect('/q')
 
 
 def new_projs(request):
@@ -134,7 +126,7 @@ def new_projs(request):
         elif type_ in ('G', 'K'):
             append.kp(projs)
         return HttpResponse(True)
-    return HttpResponse('<script type="text/javascript">window.close()</script>')
+    return HttpResponseRedirect('/q')
 
 def manage_staff(request):
     uid = request.COOKIES.get('uid', None)
@@ -148,7 +140,7 @@ def manage_staff(request):
         i = request.GET['i'].split(',')
         proj = Project(i[0])
         if proj['ssc'] not in SAFE_RANGE[i[1]]:
-            return HttpResponse('<script type="text/javascript">window.close()</script>')
+            return HttpResponseRedirect('/q')
         req = proj[f'req.{i[1]}']
         if req is None:
             rows = []
@@ -164,10 +156,10 @@ def manage_staff(request):
             'empty': empty,
             'name': proj.name,
             'note': ''})
-    if request.method == 'POST':
+    elif request.method == 'POST':
         i = request.POST['i'].split(',')
         proj = Project(i[0])
-        opt = request.POST.get('opt', None)
+        opt = request.POST['opt']
         if opt == "F":
             proj['staff'].finish_job(i[1], request.POST['uid'])
         elif opt == 'A':
@@ -178,16 +170,14 @@ def manage_staff(request):
             proj['staff'].edit_job(i[1], request.POST['uid'], request.POST['data'])
         elif opt == 'D':
             proj['staff'].del_staff(i[1], request.POST['uid'])
-        if proj['staff'].get_state(i[1]) == 0:
-            PUSH_MAP[i[1]](proj)
-            proj.save()
-            records.update_m_process_info(proj)
-            return HttpResponse('<script type="text/javascript">window.close()</script>')
         proj.save()
         records.update_s_state(proj, i[1])
         records.update_m_process_info(proj)
+        if proj['staff'].get_state(i[1]) == 0:
+            PUSH_MAP[i[1]](proj)
+            return HttpResponseRedirect('/q')
         return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]}')
-    return HttpResponse('<script type="text/javascript">window.close()</script>')
+    return HttpResponseRedirect('/q')
 
 def update_info(request):
     uid = request.COOKIES.get('uid', None)
@@ -200,9 +190,9 @@ def update_info(request):
     i = request.GET['i'].split(',')
     proj = Project(i[0])
     records.update_m_process_info(proj)
-    if i[1] != '':
+    if i[1] in ('FY', 'KP', 'PY', 'UJ', 'HQ'):
         records.update_s_state(proj, i[1])
-    return HttpResponse('<script type="text/javascript">window.close()</script>')
+    return HttpResponseRedirect('/q')
 
 
 def create(request):
@@ -220,7 +210,7 @@ def login(request):
         return HttpResponseRedirect('/')
     if request.method == 'GET':
         return render(request, 'login.html', {'r': request.GET.get('r', None)})
-    if request.method == 'POST':
+    elif request.method == 'POST':
         name = request.POST['name']
         user = User.find_uid(name)
         if not user:
@@ -232,4 +222,8 @@ def login(request):
             response = redirect('/')
         response.set_cookie('uid', user.uid, max_age=90*86400)
         return response
+    return HttpResponseRedirect('/q')
+
+
+def quit_page(request):
     return HttpResponse('<script type="text/javascript">window.close()</script>')

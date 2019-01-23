@@ -127,14 +127,14 @@ class Staff(PDict):
     def get_state(self, sc):
         if sc not in self.proj[f'req']:
             return 5
-        if self.proj[f'req'] == 0:
+        if self.proj[f'req.{sc}'] == 0:
             return 4
-        if sc not in self.D:
+        if sc not in self:
             return 9
         if len(self[sc]) < self.proj[f'req.{sc}']:
             return 2
         for uid in self[sc]:
-            if self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] is None: # it may be 0 (False)
+            if 'end' not in self.users[uid][f'proj.{sc}.{self.proj.pid}']:
                 return 1
         return 0
 
@@ -180,7 +180,7 @@ class Staff(PDict):
                 continue
             staff = [[], []]
             for uid in self[sc]:
-                if self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] is not None:
+                if 'end' in self.users[uid][f'proj.{sc}.{self.proj.pid}']:
                     staff[0].append(self.users[uid]['name'])
                 else:
                     staff[1].append(self.users[uid]['name'])
@@ -196,7 +196,7 @@ class Staff(PDict):
                 'uid': uid,
                 'u': self.users[uid]['name'],
                 'j': self[sc][uid], # job
-                'f': self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] is not None})
+                'f': 'end' in self.users[uid][f'proj.{sc}.{self.proj.pid}']})
         return result
 
 class Project(PDict):

@@ -1,5 +1,6 @@
 from . import append, sheets
 from .common import PidLineCache, get_path, hyperlink
+from .records import update_m_process_info
 
 
 def fy(proj):
@@ -8,6 +9,7 @@ def fy(proj):
     path = get_path('FY')
     path.row = PidLineCache.get('FY', proj.pid)
     sheets.del_line(path)
+    update_m_process_info(proj)
     return True
 
 def kp(proj):
@@ -17,6 +19,7 @@ def kp(proj):
     path = get_path('KP')
     path.row = PidLineCache.get('KP', proj.pid)
     sheets.del_line(path)
+    update_m_process_info(proj)
     return True
 
 def uj(proj):
@@ -33,6 +36,7 @@ def uj(proj):
     path = get_path('UJ')
     path.row = PidLineCache.get('UJ', proj.pid)
     sheets.del_line(path)
+    update_m_process_info(proj)
     return True
 
 def py(proj):
@@ -51,6 +55,7 @@ def py(proj):
     path = get_path('PY')
     path.row = PidLineCache.get('PY', proj.pid)
     sheets.del_line(path)
+    update_m_process_info(proj)
     return True
 
 def hq(proj):
@@ -58,6 +63,7 @@ def hq(proj):
     path = get_path('HQ')
     path.row = PidLineCache.get('HQ', proj.pid)
     sheets.del_line(path)
+    update_m_process_info(proj)
     return True
 
 def lb(proj, vid_url):
@@ -74,4 +80,5 @@ def lb(proj, vid_url):
     else:
         site = 'BB'
     sheets.set_values(path, [[hyperlink(vid_url, site)]])
+    update_m_process_info(proj)
     return True
