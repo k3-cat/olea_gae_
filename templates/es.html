@@ -23,6 +23,8 @@
                 document.getElementById("data").value = 0;
             } else if (req == "" || req == null) {
                 return;
+            } else {
+                document.getElementById("data").value = req;
             }
             var reg = /^[\d]+$/;
             if (!reg.test(req)) {
@@ -30,7 +32,6 @@
                 return;
             }
             document.getElementById("opt").value = "R";
-            document.getElementById("data").value = req;
             document.getElementById("form").submit()
         }
 
