@@ -24,20 +24,17 @@
         }
 
         function setReq() {
-            var req = parseInt(prompt("所需人数:"));
-            if (req == "reset") {
-                document.getElementById("data").value = 0;
-            } else if (req == "" || req == null) {
+            var req = prompt("所需人数:");
+            if (req == null) {
                 return;
-            } else {
-                document.getElementById("data").value = req;
             }
-            var reg = /^[\d]+$/;
-            if (!reg.test(req)) {
-                alert("! 无效数据 !");
+            var rePattern = /^[\d]+$/;
+            if (!rePattern.test(req)) {
+                alert("! 输入无效 请输入一个非负整数 !");
                 return;
             }
             document.getElementById("opt").value = "R";
+            document.getElementById("data").value = req;
             document.getElementById("form").submit()
         }
 
