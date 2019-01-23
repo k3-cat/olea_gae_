@@ -25,7 +25,9 @@
 
         function setReq() {
             var req = parseInt(prompt("所需人数:"));
-            if (req == "" || req == null) {
+            if (req == "reset") {
+                document.getElementById("data").value = 0;
+            } else if (req == "" || req == null) {
                 return;
             }
             var reg = /^[\d]+$/;
