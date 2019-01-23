@@ -117,11 +117,11 @@ class Staff(PDict):
 
     def set_req(self, sc, req):
         req = int(req)
-        if req < 0 or (sc not in self and req < len(self[sc])):
-            return False
-        self.proj[f'req.{sc}'] = req
         if sc not in self:
             self.proj[f'staff.{sc}'] = dict() # only Project can record the change
+        if req < len(self[sc]):
+            return False
+        self.proj[f'req.{sc}'] = req
         return True
 
     def get_state(self, sc):
@@ -172,7 +172,6 @@ class Staff(PDict):
             self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = now
         return True
 
-
     def list_staff(self, sc_range):
         result = dict()
         for sc in sc_range:
@@ -197,7 +196,6 @@ class Staff(PDict):
                 'uid': uid,
                 'u': self.users[uid]['name'],
                 'j': self[sc][uid], # job
-                # it may be 0 (False), so test if is None
                 'f': self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] is not None})
         return result
 
