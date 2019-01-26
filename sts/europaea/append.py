@@ -52,7 +52,7 @@ def uj(proj):
         f'=IF(E{k}="0/0","",createF(C{k}))'
     ]]
     sheets.append(path, row)
-    PidLineCache.append('UJ', row[0][2][1:])
+    PidLineCache.append('UJ', proj.pid)
     return True
 
 def py(proj):
@@ -68,7 +68,7 @@ def py(proj):
         f'=IF(E{k}="0/0","",createF(C{k}))'
     ]]
     sheets.append(path, row)
-    PidLineCache.append('PY', row[0][2][1:])
+    PidLineCache.append('PY', proj.pid)
     return True
 
 def hq(proj, pic_url): # the url may not be the real url
@@ -86,20 +86,29 @@ def hq(proj, pic_url): # the url may not be the real url
         f'=IF(E{k}="0/0","",createF(C{k}))'
     ]]
     sheets.append(path, row)
-    PidLineCache.append('HQ', row[0][2][1:])
+    PidLineCache.append('HQ', proj.pid)
     return True
 
 def lb(proj_infos):
     path = get_path('LB')
     k = sheets.count_rows(path) + 1
-    path.col = 'A:C'
+    path.col = 'A:F'
     path.row = f'{k}:{k+len(proj_infos)}'
     rows = list()
     for pi in proj_infos:
-        rows.append([
-            f"'{pi[0]}", f"'{pi[1]}", f"'{pi[2]}", '初始', '',
-            f'=HYPERLINK("{URL}/p?i={pi[2]},LB","[设定链接]")'])
+        rows.append([f"'{pi[0]}", f"'{pi[1]}", f"'{pi[2]}", '初始', '', ''])
     sheets.append(path, rows)
     for row in rows:
         PidLineCache.append('LB', row[2][1:])
+    return True
+
+def up(proj):
+    path = get_path('UP')
+    k = sheets.count_rows(path) + 1
+    path.col = 'A:D'
+    path.row = k
+    row = [[f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}",
+            f'=HYPERLINK("{URL}/p?i={proj.pid},UP","[設定鏈接]")']]
+    sheets.append(path, row)
+    PidLineCache.append('UP', proj.pid)
     return True

@@ -23,7 +23,7 @@ SAFE_RANGE = {
     'PY': ('pu', 'PY'),
     'UJ': ('pu', 'hu'),
     'HQ': ('hu', 'HQ'),
-    'LB': ('UP')
+    'UP': ('UP')
 }
 
 def push_(request):
@@ -37,18 +37,18 @@ def push_(request):
         proj = Project(i[0])
         if proj['ssc'] not in SAFE_RANGE[i[1]]:
             return HttpResponseRedirect('/q')
-        if i[1] == 'LB':
+        if i[1] == 'UP':
             return render('finish.html', {'i': i})
         elif i[1] in ('KP', 'UJ'):
             if i[1] not in user_info['groups'] and 'nimda' not in user_info['groups']:
                 return HttpResponse(False)
             response = PUSH_MAP[i[1]](proj)
             if not response:
-                return HttpResponse(False)
+                return HttpResponse(False) # nessery return
     elif request.method == 'POST':
         i = request.POST['i'].split(',')
         if 'nimda' in user_info['groups']:
-            response = push.lb(Project(i[0]), request.POST['vu'])
+            response = push.up(Project(i[0]), request.POST['vu'])
             return HttpResponse(True)
     proj.save()
     return HttpResponseRedirect('/q')

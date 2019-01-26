@@ -62,23 +62,30 @@ def hq(proj):
     proj['ssc'] = 'UP'
     path = get_path('HQ')
     path.row = PidLineCache.get('HQ', proj.pid)
+    append.up(proj)
     sheets.del_line(path)
     update_m_process_info(proj)
     return True
 
-def lb(proj, vid_url):
-    proj['ssc'] = '00'
-    proj.finish()
-    path = get_path('LB')
-    path.col = 'F'
-    path.row = PidLineCache.get('LB', proj.pid)
+def up(proj, vid_url):
     if 'youtu.be' in vid_url:
         site = 'YT'
     elif 'youtube' in vid_url:
         vid_url = f'https://youtu.be/{vid_url[32:43]}'
         site = 'YT'
-    else:
+    elif 'bilibili.com' in vid_url:
         site = 'BB'
+    else:
+        return
+    proj['ssc'] = '00'
+    proj.finish()
+    path = get_path('LB')
+    path.col = 'F'
+    path.row = PidLineCache.get('LB', proj.pid)
     sheets.set_values(path, [[hyperlink(vid_url, site)]])
+
+    path_ = get_path('UP')
+    path_.row = PidLineCache.get('UP', proj.pid)
+    sheets.del_line(path_)
     update_m_process_info(proj)
     return True

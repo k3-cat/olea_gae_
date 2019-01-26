@@ -10,7 +10,8 @@ PATH_MAP = {'LB': ('1UAD7PSiVtuWazMakg7jDtHXu9PqC5CQBcx8YZ4H4o7U', '配音'),
             'KP': ('146lz1z0sAv7dpJh4FWWOHccVy0eeLYJVCJS2eiTnTbs', '接稿'),
             'UJ': ('1WhC9U3hm0FVdvynnK8VPcBJskmovUp8NnwOO3ZFbxsI', '接稿'),
             'PY': ('1zkLzY8vSFHPoc6RKddbUeb8e3DG1e8hlZPU2h9u3jLQ', '接稿'),
-            'HQ': ('1lsnWTV9IpUPmQpD3jijn5Tx9jkyHyD0wB-BrSNCm2Tg', '接稿')}
+            'HQ': ('1lsnWTV9IpUPmQpD3jijn5Tx9jkyHyD0wB-BrSNCm2Tg', '接稿'),
+            'UP': ('1hkI0jk0_PotXpgny69xoO_xXaVhJAJnYofygRsUrf7c', 'ALL0')}
 
 def get_path(code):
     return sheets.Path(id_=PATH_MAP[code][0], table=PATH_MAP[code][1])
