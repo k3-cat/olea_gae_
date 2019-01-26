@@ -71,7 +71,16 @@ def py(proj):
     PidLineCache.append('PY', proj.pid)
     return True
 
-def hq(proj, pic_url): # the url may not be the real url
+def hq(proj):
+    if proj['ssc'] in ('pu', 'hu'):
+        if proj['req.UJ'] is None or proj['req.UJ'] == 0:
+            pic_id = '{未知}'
+        elif proj['ids.pic'] is not None:
+            pic_id = '{绘制中}'
+        else:
+            pic_id = '{错误}'
+    else:
+        pic_id = proj['ids.pic']
     path = get_path('HQ')
     k = sheets.count_rows(path) + 1
     path.col = 'A:M'
@@ -82,7 +91,7 @@ def hq(proj, pic_url): # the url may not be the real url
         hyperlink(proj['ids.doc'], 'GG'),
         hyperlink(proj['ids.ext'], 'KP'),
         hyperlink(proj['ids.mic'], 'PY'),
-        hyperlink(pic_url, 'UJ'),
+        hyperlink(pic_id, 'UJ'),
         f'=IF(E{k}="0/0","",createF(C{k}))'
     ]]
     sheets.append(path, row)

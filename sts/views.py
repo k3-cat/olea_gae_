@@ -10,12 +10,21 @@ def hello(request):
     return HttpResponse(response)
 
 PUSH_MAP = {
-        'FY': push.fy,
-        'KP': push.kp,
-        'UJ': push.uj,
-        'PY': push.py,
-        'HQ': push.hq
-    }
+    'FY': push.fy,
+    'KP': push.kp,
+    'UJ': push.uj,
+    'PY': push.py,
+    'HQ': push.hq
+}
+
+APPEND_MAP = {
+    'FY': append.fy,
+    'KP': append.kp,
+    'UJ': append.uj,
+    'PY': append.py,
+    'HQ': append.hq,
+    'UP': append.up
+}
 
 SAFE_RANGE = {
     'FY': ('FY'),
@@ -179,7 +188,7 @@ def manage_staff(request):
         return HttpResponseRedirect(f'/ms?i={i[0]},{i[1]}')
     return HttpResponseRedirect('/q')
 
-def update_info(request):
+def back(request):
     uid = request.COOKIES.get('uid', None)
     if not uid:
         return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
@@ -189,8 +198,12 @@ def update_info(request):
         return HttpResponse(False)
     i = request.GET['i'].split(',')
     proj = Project(i[0])
+    if proj['ssc'] not in SAFE_RANGE[i[1]]:
+        return HttpResponse(False)
     records.update_m_process_info(proj)
-    if i[1] in ('FY', 'KP', 'PY', 'UJ', 'HQ'):
+    if i[1] in ('FY', 'KP', 'PY', 'UJ', 'HQ', 'UP'):
+        if request.get('b', None) is not None:
+            APPEND_MAP[i[1]](proj)
         records.update_s_state(proj, i[1])
     return HttpResponseRedirect('/q')
 

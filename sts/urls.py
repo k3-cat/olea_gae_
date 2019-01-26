@@ -10,7 +10,7 @@ urlpatterns = [
 
     path('np', views.new_projs, name='new_projs'),
     path('ms', views.manage_staff, name='manage_staff'),
-    path('update_info', views.update_info, name='update_info'),
+    path('back', views.back, name='back'),
 
     path('login', views.login, name='login'),
     path('q', views.quit_page, name='quit_page'),

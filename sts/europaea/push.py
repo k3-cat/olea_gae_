@@ -27,12 +27,11 @@ def uj(proj):
         proj['ssc'] = 'PY'
     elif proj['ssc'] == 'hu':
         proj['ssc'] = 'HQ'
+
         path_ = get_path('HQ')
         path_.col = 'K'
         path_.row = PidLineCache.get('HQ', proj.pid)
         sheets.set_values(path_, [[hyperlink(proj['ids.pic'], 'UJ')]])
-    else:
-        return False
     path = get_path('UJ')
     path.row = PidLineCache.get('UJ', proj.pid)
     sheets.del_line(path)
@@ -42,16 +41,9 @@ def uj(proj):
 def py(proj):
     if proj['ssc'] == 'pu':
         proj['ssc'] = 'hu'
-        if not proj['ids.pic']:  # 进度开始后一定会创建文件夹
-            pic_id_ = '{未知}'
-        else:   # 状态带s说明一定未完成
-            pic_id_ = '{绘制中}'
     elif proj['ssc'] == 'PY':
         proj['ssc'] = 'HQ'
-        pic_id_ = proj['ids.pic']
-    else:
-        return False
-    append.hq(proj, pic_id_)
+    append.hq(proj)
     path = get_path('PY')
     path.row = PidLineCache.get('PY', proj.pid)
     sheets.del_line(path)
@@ -76,7 +68,7 @@ def up(proj, vid_url):
     elif 'bilibili.com' in vid_url:
         site = 'BB'
     else:
-        return
+        return False
     proj['ssc'] = '00'
     proj.finish()
     path = get_path('LB')
