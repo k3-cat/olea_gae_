@@ -60,10 +60,10 @@ def hq(proj):
     return True
 
 def up(proj, vid_url):
-    if 'youtu.be' in vid_url:
-        site = 'YT'
-    elif 'youtube' in vid_url:
+    if 'youtube.com' in vid_url:
         vid_url = f'https://youtu.be/{vid_url[32:43]}'
+        site = 'YT'
+    elif 'youtu.be' in vid_url:
         site = 'YT'
     elif 'bilibili.com' in vid_url:
         site = 'BB'
