@@ -68,7 +68,7 @@ def up(proj, vid_url):
     elif 'bilibili.com' in vid_url:
         site = 'BB'
     else:
-        return False
+        return '無效的鏈接'
     proj['ssc'] = '00'
     proj.finish()
     path = get_path('LB')

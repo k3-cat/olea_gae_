@@ -140,10 +140,10 @@ class Staff(PDict):
 
     def add_staff(self, sc, uid, job):
         if len(self[sc]) >= self.proj[f'req.{sc}'] or uid in self[sc]:
-            return False
+            return f'项目满或{uid}已加入'
         user = User(uid)
         if sc not in user.info()['groups']:
-            return False
+            return f'{user["name"]}({uid})不在对应的部门内'
         user[f'proj.{sc}.{self.proj.pid}.start'] = time.time()
         self.users[uid] = user
         self.proj[f'staff.{sc}.{uid}'] = job
@@ -151,7 +151,7 @@ class Staff(PDict):
 
     def del_staff(self, sc, uid):
         if uid not in self[sc]:
-            return False
+            return f'{uid}未加入'
         user = User(uid)
         user[f'proj.{sc}.{self.proj.pid}'] = firestore.DELETE_FIELD
         del user[f'proj.{sc}.{self.proj.pid}']
@@ -160,7 +160,7 @@ class Staff(PDict):
 
     def edit_job(self, sc, uid, job):
         if uid not in self[sc]:
-            return False
+            return f'{uid}未加入'
         self.proj[f'staff.{sc}.{uid}'] = job
         return True
 
