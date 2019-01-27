@@ -47,7 +47,7 @@ def push_(request):
         if proj['ssc'] not in SAFE_RANGE[i[1]]:
             return HttpResponseRedirect('/q')
         if i[1] == 'UP':
-            return render(request, 'finish.html', {'i': i})
+            return render(request, 'finish.html', {'i': i[0]})
         elif i[1] in ('KP', 'UJ'):
             if i[1] not in user_info['groups'] and 'nimda' not in user_info['groups']:
                 return HttpResponse(False)
@@ -55,9 +55,9 @@ def push_(request):
             if not response:
                 return HttpResponse(False) # nessery return
     elif request.method == 'POST':
-        i = request.POST['i'].split(',')
+        i = request.POST['i']
         if 'nimda' in user_info['groups']:
-            response = push.up(Project(i[0]), request.POST['vu'])
+            response = push.up(Project(i), request.POST['vu'])
             return HttpResponse(True)
     proj.save()
     return HttpResponseRedirect('/q')
