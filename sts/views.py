@@ -118,7 +118,10 @@ def edit_staff(request):
         records.update_m_process_info(proj)
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj)
-        return HttpResponseRedirect(f'/es?i={",".join(i)}&m={response}')
+            proj.save()
+        if response != True:
+            return HttpResponseRedirect(f'/es?i={",".join(i)}&m={response}')
+        return HttpResponseRedirect(f'/es?i={",".join(i)}')
     return HttpResponseRedirect('/q')
 
 

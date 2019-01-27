@@ -120,7 +120,7 @@ class Staff(PDict):
         if sc not in self:
             self.proj[f'staff.{sc}'] = dict() # only Project can record the change
         if req < len(self[sc]):
-            return False
+            return f'数据({req})无效'
         self.proj[f'req.{sc}'] = req
         return True
 
@@ -166,6 +166,8 @@ class Staff(PDict):
 
     def finish_job(self, sc, uid):
         now = time.time()
+        if uid not in self[sc]:
+            return f'{uid}未加入'
         if now - self.users[uid][f'proj.{sc}.{self.proj.pid}.start'] < 3600:
             self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = 0
         else:
