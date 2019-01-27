@@ -115,28 +115,17 @@ class Staff(PDict):
                 self.users[uid] = User(uid)
         super().__init__(dict_)
 
-    def set_req(self, sc, req):
+    def set_req(self, sc, uid, req):
         req = int(req)
         if sc not in self:
             self.proj[f'staff.{sc}'] = dict() # only Project can record the change
         if req < len(self[sc]):
             return f'数据({req})无效'
+        user = User(uid)
+        if sc not in user['groups'] and 'nimda' not in user['groups']:
+            return f'{user["name"]}({uid})不在对应的部门内'
         self.proj[f'req.{sc}'] = req
         return True
-
-    def get_state(self, sc):
-        if sc not in self.proj[f'req']:
-            return 5
-        if self.proj[f'req.{sc}'] == 0:
-            return 4
-        if sc not in self:
-            return 9
-        if len(self[sc]) < self.proj[f'req.{sc}']:
-            return 2
-        for uid in self[sc]:
-            if 'end' not in self.users[uid][f'proj.{sc}.{self.proj.pid}']:
-                return 1
-        return 0
 
     def add_staff(self, sc, uid, job):
         if len(self[sc]) >= self.proj[f'req.{sc}'] or uid in self[sc]:
@@ -149,7 +138,7 @@ class Staff(PDict):
         self.proj[f'staff.{sc}.{uid}'] = job
         return True
 
-    def del_staff(self, sc, uid):
+    def del_staff(self, sc, uid, unused):
         if uid not in self[sc]:
             return f'{uid}未加入'
         user = User(uid)
@@ -157,6 +146,7 @@ class Staff(PDict):
         del user[f'proj.{sc}.{self.proj.pid}']
         self.proj[f'staff.{sc}.{uid}'] = firestore.DELETE_FIELD
         del self.proj[f'staff.{sc}.{uid}']
+        return True
 
     def edit_job(self, sc, uid, job):
         if uid not in self[sc]:
@@ -164,7 +154,7 @@ class Staff(PDict):
         self.proj[f'staff.{sc}.{uid}'] = job
         return True
 
-    def finish_job(self, sc, uid):
+    def finish_job(self, sc, uid, unused):
         now = time.time()
         if uid not in self[sc]:
             return f'{uid}未加入'
@@ -188,6 +178,20 @@ class Staff(PDict):
                     staff[1].append(self.users[uid]['name'])
             result[sc] = staff
         return result
+
+    def get_state(self, sc):
+        if sc not in self.proj[f'req']:
+            return 5
+        if self.proj[f'req.{sc}'] == 0:
+            return 4
+        if sc not in self:
+            return 9
+        if len(self[sc]) < self.proj[f'req.{sc}']:
+            return 2
+        for uid in self[sc]:
+            if 'end' not in self.users[uid][f'proj.{sc}.{self.proj.pid}']:
+                return 1
+        return 0
 
     def detials(self, sc):
         result = list()

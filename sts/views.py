@@ -103,16 +103,14 @@ def edit_staff(request):
         opt = request.POST['opt']
         if len(i) > 2:
             uid = request.POST['uid']
-        if opt == "F":
-            response = proj['staff'].finish_job(i[1], uid)
-        elif opt == 'A':
-            response = proj['staff'].add_staff(i[1], uid, request.POST['data'])
-        elif opt == 'R':
-            response = proj['staff'].set_req(i[1], request.POST['data'])
-        elif opt == 'E':
-            response = proj['staff'].edit_job(i[1], uid, request.POST['data'])
-        elif opt == 'D':
-            response = proj['staff'].del_staff(i[1], uid)
+        OPT_MAP = {
+            "F": proj['staff'].finish_job,
+            'A': proj['staff'].add_staff,
+            'R': proj['staff'].set_req,
+            'E': proj['staff'].edit_job,
+            'D': proj['staff'].del_staff
+        }
+        response = OPT_MAP[opt](i[1], uid, request.POST.get('data', None))
         proj.save()
         records.update_s_state(proj, i[1])
         records.update_m_process_info(proj)
