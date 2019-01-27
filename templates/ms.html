@@ -206,6 +206,7 @@
 
 <body>
     <p style="text-align: center; font-size: 18pt; color: pink; margin: 30pt auto;"> 管理专用 ヾ(≧O≦)〃嗷~ </p>
+    <p style="text-align: center; font-size: 18pt; color: red; margin: 30pt auto;">{{message}}</p>
     <outer>
         <name>{{name}}</name>
         <note>{{note}}</note>
@@ -213,7 +214,7 @@
             <table>
                 <tr>
                     <th style="width:45pt">uid</th>
-                    <th style="width:100pt">人员({{req}}人)</th>
+                    <th style="width:100pt">人员({{ rows | length }}人)</th>
                     <th style="width:350pt">分工</th>
                     <th>交稿</th>
                 </tr>
@@ -245,7 +246,7 @@
 
     <form method='post' id="form">
         {% csrf_token %}
-        <input type="hidden" name="i" value="{{i.p}},{{i.s}}">
+        <input type="hidden" name="i" value="{{i.p}},{{i.s}},1">
         <input type="hidden" id="opt" name="opt">
         <input type="hidden" id="uid" name="uid">
         <input type="hidden" id="data" name="data">
