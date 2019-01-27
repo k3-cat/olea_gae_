@@ -9,7 +9,6 @@ urlpatterns = [
     path('es', views.edit_staff, name='edit_staff'),
 
     path('np', views.new_projs, name='new_projs'),
-    path('ms', views.manage_staff, name='manage_staff'),
     path('back', views.back, name='back'),
 
     path('login', views.login, name='login'),
