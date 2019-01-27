@@ -47,7 +47,7 @@ def push_(request):
         if proj['ssc'] not in SAFE_RANGE[i[1]]:
             return HttpResponseRedirect('/q')
         if i[1] == 'UP':
-            return render('finish.html', {'i': i})
+            return render(request, 'finish.html', {'i': i})
         elif i[1] in ('KP', 'UJ'):
             if i[1] not in user_info['groups'] and 'nimda' not in user_info['groups']:
                 return HttpResponse(False)
