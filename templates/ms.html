@@ -250,7 +250,7 @@
         {% csrf_token %}
         <input type="hidden" name="i" value="{{i.p}},{{i.s}},1">
         <input type="hidden" id="opt" name="opt">
-        <input type="hidden" id="uid" name="uid">
+        <input type="hidden" id="uid" name="uid" value="{{user1.uid}}">
         <input type="hidden" id="data" name="data">
     </form>
 </body>
