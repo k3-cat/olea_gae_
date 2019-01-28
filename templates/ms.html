@@ -38,8 +38,8 @@
             document.getElementById("form").submit()
         }
 
-        function editJob(uid) {
-            var job = prompt("分工:");
+        function editJob(uid, old_job) {
+            var job = prompt("分工:", old_job);
             if (job == "" || job == null) {
                 return;
             }
@@ -49,10 +49,10 @@
             document.getElementById("form").submit();
         }
 
-        function deleteStaff(event) {
+        delbox.ondrop = function(event) {
             event.preventDefault();
             var uid = event.dataTransfer.getData("Text");
-            if (!confirm("确定要从项目中删除 "+uid+" 吗?")) {
+            if (!confirm("确定要从项目中删除"+uid+"吗?")) {
                 return;
             }
             document.getElementById("opt").value = "D";
@@ -60,13 +60,13 @@
             document.getElementById("form").submit();
         }
 
-        function dragOver(event) {
+        delbox.ondragenter = function(event) {
             event.preventDefault();
             document.getElementById("delbox").style.color = "white";
             document.getElementById("delbox").style.background = "red";
         }
 
-        function dragLeave(event) {
+        delbox.ondragleave = function(event) {
             document.getElementById("delbox").style.color = "red";
             document.getElementById("delbox").style.background = "white";
         }
@@ -224,7 +224,7 @@
                 <tr>
                     <td style="text-align:center">{{row.uid}}</td>
                     <td id="{{row.uid}}" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)">{{row.u}}</td>
-                    <td onclick="editJob('{{row.uid}}')">{{row.j}}</td>
+                    <td onclick="editJob('{{row.uid}}', '{{row.j}}')">{{row.j}}</td>
                     {% if row.f %}
                     <td style="text-align:center">◯</td>
                     {% else %}
@@ -238,7 +238,7 @@
                 </tr>
                 {% endfor %}
             </table>
-            <div id="delbox" ondrop="deleteStaff(event)" ondragover="dragOver(event)" ondragleave="dragLeave(event)">拖放以从项目中删除该人员</div>
+            <div id="delbox">拖放以从项目中删除该人员</div>
             <optbox id="optbox">
                 <button onclick="addStaff()" {% if not empty %} disabled {% endif %}>接稿</button>
                 <button onclick="setReq()">设定人数</button>
