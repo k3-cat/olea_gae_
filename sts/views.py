@@ -72,7 +72,7 @@ def edit_staff(request):
     if request.method == 'GET':
         i = request.GET['i'].split(',')
         if len(i) > 2 and 'ms' not in user_info['groups'] and 'nimda' not in user_info['groups']:
-            return HttpResponse('不是相应的用户组成员')
+            return HttpResponseRedirect(f'/es?i={i[0]},{i[1]}')
         proj = Project(i[0])
         if proj['ssc'] not in SAFE_RANGE[i[1]]:
             return HttpResponseRedirect('/q')
