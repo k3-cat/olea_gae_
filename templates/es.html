@@ -42,9 +42,7 @@
             document.getElementById("form").submit();
         }
 
-        var delbox = document.getElementById("delbox");
-
-        delbox.ondrop = function(event) {
+        function delStaff(event) {
             event.preventDefault();
             var name = event.dataTransfer.getData("Text");
             if (!confirm(name+" 确定要取消接稿吗?")) {
@@ -54,13 +52,13 @@
             document.getElementById("form").submit();
         }
 
-        delbox.ondragenter = function(event) {
+        function onDragOver(event) {
             event.preventDefault();
             document.getElementById("delbox").style.color = "white";
             document.getElementById("delbox").style.background = "red";
         }
 
-        delbox.ondragleave = function(event) {
+        function onDragLeave(event) {
             document.getElementById("delbox").style.color = "red";
             document.getElementById("delbox").style.background = "white";
         }
@@ -80,7 +78,6 @@
 
     <style type="text/css">
         body {
-            font-size: 12pt;
             margin: 0;
             word-wrap: break-word;
             color: #444;
@@ -247,7 +244,7 @@
             {% else %}
             <p style="text-align: center; font-size: 18pt; color: orchid;">! 项目为初始状态 请先设定人数 !</p>
             {% endif %}
-            <div id="delbox">拖放以取消接稿</div>
+            <div id="delbox" ondrag="delStaff(event)" ondragenter="onDragOver(event)" ondragleave="onDragLeave(event)">拖放以取消接稿</div>
             {% if i.s in user1.groups %}
             <optbox id="optbox">
                 {% if joined %}

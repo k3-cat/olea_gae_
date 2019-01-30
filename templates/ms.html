@@ -49,9 +49,7 @@
             document.getElementById("form").submit();
         }
 
-        var delbox = document.getElementById("delbox");
-
-        delbox.ondrop = function(event) {
+        function delStaff(event) {
             event.preventDefault();
             var uid = event.dataTransfer.getData("Text");
             if (!confirm("确定要从项目中删除"+uid+"吗?")) {
@@ -62,13 +60,13 @@
             document.getElementById("form").submit();
         }
 
-        delbox.ondragover = function(event) {
+        function onDragOver(event) {
             event.preventDefault();
-            delbox.style.color = "white";
+            document.getElementById("delbox").style.color = "white";
             document.getElementById("delbox").style.background = "red";
         }
 
-        delbox.ondragleave = function(event) {
+        function onDragLeave(event) {
             document.getElementById("delbox").style.color = "red";
             document.getElementById("delbox").style.background = "white";
         }
@@ -240,7 +238,7 @@
                 </tr>
                 {% endfor %}
             </table>
-            <div id="delbox">拖放以从项目中删除该人员</div>
+            <div id="delbox" ondrag="delStaff(event)" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)">拖放以从项目中删除该人员</div>
             <optbox id="optbox">
                 <button onclick="addStaff()" {% if not empty %} disabled {% endif %}>接稿</button>
                 <button onclick="setReq()">设定人数</button>
