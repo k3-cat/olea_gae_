@@ -54,6 +54,9 @@
 
         function onDragOver(event) {
             event.preventDefault();
+        }
+
+        function onDragEnter(event) {
             document.getElementById("delbox").style.color = "white";
             document.getElementById("delbox").style.background = "red";
         }
@@ -244,7 +247,7 @@
             {% else %}
             <p style="text-align: center; font-size: 18pt; color: orchid;">! 项目为初始状态 请先设定人数 !</p>
             {% endif %}
-            <div id="delbox" ondrag="delStaff(event)" ondragenter="onDragOver(event)" ondragleave="onDragLeave(event)">拖放以取消接稿</div>
+            <div id="delbox" ondrag="delStaff(event)" ondragover="onDragOver(event)" ondragenter="onDragEnter(event)" ondragleave="onDragLeave(event)">拖放以取消接稿</div>
             {% if i.s in user1.groups %}
             <optbox id="optbox">
                 {% if joined %}

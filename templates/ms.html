@@ -62,6 +62,9 @@
 
         function onDragOver(event) {
             event.preventDefault();
+        }
+
+        function onDragEnter(event) {
             document.getElementById("delbox").style.color = "white";
             document.getElementById("delbox").style.background = "red";
         }
@@ -238,7 +241,7 @@
                 </tr>
                 {% endfor %}
             </table>
-            <div id="delbox" ondrag="delStaff(event)" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)">拖放以从项目中删除该人员</div>
+            <div id="delbox" ondrag="delStaff(event)" ondragover="onDragOver(event)" ondragenter="onDragEnter(event)" ondragleave="onDragLeave(event)">拖放以从项目中删除该人员</div>
             <optbox id="optbox">
                 <button onclick="addStaff()" {% if not empty %} disabled {% endif %}>接稿</button>
                 <button onclick="setReq()">设定人数</button>
