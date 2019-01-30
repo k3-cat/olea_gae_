@@ -42,6 +42,8 @@
             document.getElementById("form").submit();
         }
 
+        var delbox = document.getElementById("delbox");
+
         delbox.ondrop = function(event) {
             event.preventDefault();
             var name = event.dataTransfer.getData("Text");
@@ -52,27 +54,27 @@
             document.getElementById("form").submit();
         }
 
-        delbox.ondragover = function(event) {
+        delbox.ondragenter = function(event) {
             event.preventDefault();
-            document.getElementById("delbox").style.color = "white";
-            document.getElementById("delbox").style.background = "red";
+            delbox.style.color = "white";
+            delbox.style.background = "red";
         }
 
         delbox.ondragleave = function(event) {
-            document.getElementById("delbox").style.color = "red";
-            document.getElementById("delbox").style.background = "white";
+            delbox.style.color = "red";
+            delbox.style.background = "white";
         }
 
         function dragStart(event) {
             event.dataTransfer.effectAllowed = "move"
             document.getElementById("optbox").style.display = "none";
-            document.getElementById("delbox").style.display = "block";
+            delbox.style.display = "block";
             event.dataTransfer.setData("Text", event.target.innerHTML);
         }
 
         function dragEnd(event) {
             document.getElementById("optbox").style.display = "grid";
-            document.getElementById("delbox").style.display = "none";
+            delbox.style.display = "none";
         }
     </script>
 
