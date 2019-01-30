@@ -56,25 +56,25 @@
 
         delbox.ondragenter = function(event) {
             event.preventDefault();
-            delbox.style.color = "white";
-            delbox.style.background = "red";
+            document.getElementById("delbox").style.color = "white";
+            document.getElementById("delbox").style.background = "red";
         }
 
         delbox.ondragleave = function(event) {
-            delbox.style.color = "red";
-            delbox.style.background = "white";
+            document.getElementById("delbox").style.color = "red";
+            document.getElementById("delbox").style.background = "white";
         }
 
         function dragStart(event) {
             event.dataTransfer.effectAllowed = "move"
             document.getElementById("optbox").style.display = "none";
-            delbox.style.display = "block";
+            document.getElementById("delbox").style.display = "block";
             event.dataTransfer.setData("Text", event.target.innerHTML);
         }
 
         function dragEnd(event) {
             document.getElementById("optbox").style.display = "grid";
-            delbox.style.display = "none";
+            document.getElementById("delbox").style.display = "none";
         }
     </script>
 
