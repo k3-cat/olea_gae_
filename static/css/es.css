@@ -1,4 +1,5 @@
 body {
+    font-size: 12pt;
     margin: 0;
     word-wrap: break-word;
     color: #444;
@@ -81,7 +82,7 @@ button:hover:disabled {
 outer {
     border: 2.4pt solid pink;
     border-radius: 15pt;
-    width: 520pt;
+    width: 570pt;
     padding: 18pt;
     margin: 30pt auto;
     display: block;
