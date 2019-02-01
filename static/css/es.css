@@ -82,7 +82,7 @@ button:hover:disabled {
 outer {
     border: 2.4pt solid pink;
     border-radius: 15pt;
-    width: 570pt;
+    width: 520pt;
     padding: 18pt;
     margin: 30pt auto;
     display: block;
