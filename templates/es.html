@@ -12,7 +12,7 @@
         <name>{{name}}</name>
         <note>{{note}}</note>
         <inner>
-            {% if rows %}
+            {% if rows or empty %}
             <table>
                 <tr>
                     <th style="width:100pt">人员({{ rows | length }}人)</th>
