@@ -1,14 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 
+from .common import SCP_CN_SITE
 
-HEADERS = {
-    'User-Agent': (
-        'Mozilla/5.0 (Windows NT 6.3; WOW64) '
-        'AppleWebKit/537.36 (KHTML, like Gecko) '
-        'Chrome/57.0.2987.110 Safari/537.36'),
-    'referer': 'www.mmjpg.com'}
-SCP_CN_SITE = 'http://scp-wiki-cn.wikidot.com'
 
 class Cache:
     PAGE_CONTANT_SOUP = dict()
@@ -24,7 +18,7 @@ def fetch_title_by_item_no(item_no_):
             url = f'{SCP_CN_SITE}/scp-series'
         else:
             url = f'{SCP_CN_SITE}/scp-series-{i_item_no_}'
-        html = requests.get(url, headers=HEADERS)
+        html = requests.get(url)
         _soup = BeautifulSoup(html.text, 'lxml')
         Cache.PAGE_CONTANT_SOUP[i_item_no_] = _soup.find_all(
             name='div',
@@ -40,7 +34,7 @@ def fetch_title_by_item_no(item_no_):
     return ele_title.parent.text.split(' - ')[1]
 
 def fetch_title_by_url(doc_id):
-    html = requests.get(f'{SCP_CN_SITE}/{doc_id}', headers=HEADERS)
+    html = requests.get(f'{SCP_CN_SITE}/{doc_id}')
     _soup = BeautifulSoup(html.text, 'lxml')
     ele_title = _soup.find(id='page-title')
     if not ele_title:

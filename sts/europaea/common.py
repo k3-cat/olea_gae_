@@ -4,6 +4,7 @@ from . import sheets
 
 
 URL = 'https://olea-db.appspot.com'
+SCP_CN_SITE = 'http://scp-wiki-cn.wikidot.com'
 
 PATH_MAP = {'LB': ('1UAD7PSiVtuWazMakg7jDtHXu9PqC5CQBcx8YZ4H4o7U', '配音'),
             'FY': ('1kSGUUmzjNk3NTuE8EU6LBuToz9NV3m430ZgxEkMnd7Q', '接稿'),

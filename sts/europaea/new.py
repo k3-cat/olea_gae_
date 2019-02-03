@@ -1,6 +1,6 @@
-from .append import lb, fy, kp
-from .database import Project
+from .append import fy, kp, lb
 from .auto_title import fetch_title_by_item_no, fetch_title_by_url
+from .database import Project
 
 
 def projects(items, type_):
