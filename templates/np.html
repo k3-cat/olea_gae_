@@ -1,6 +1,7 @@
 <html>
 
 <body>
+    {% if errors == 0 %}
     类型：<select name="t" form="form">
         <option value="G">普通</option>
         <option value="T">翻译</option>
@@ -12,7 +13,13 @@
         <textarea rows="20" name="d"></textarea>
         <input type="submit">
     </form>
-
+    {% elif errors %}
+    {% for err in errors %}
+    <p>{% for info in err %}{{info}}{% if not forloop.last %}; {% endif %}{% endfor %}</p>
+    {% endfor %}
+    {% else %}
+    True
+    {% endif %}
 </body>
 
 </html>

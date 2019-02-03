@@ -9,13 +9,17 @@ URLS_MAP = {
     'HQ': ('1reTVn0P6iHAcTQV5GtRS3veBj_TmuF9q', 'aep')
 }
 
-def create(proj, sc, type_):
+def create(proj, sc):
     name = proj.name
     if '}' in name:
         return False
     if proj[f'ids.{URLS_MAP[sc][1]}']:
         id_ = proj[f'ids.{URLS_MAP[sc][1]}']
     else:
+        if sc == 'KP':
+            type_ = 'doc'
+        elif sc in ('UJ', 'PY', 'HQ'):
+            type_ = 'folder'
         id_ = drive.new(name, type_, URLS_MAP[sc][0])
         proj[f'ids.{URLS_MAP[sc][1]}'] = id_
         proj.save()

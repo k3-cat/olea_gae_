@@ -4,7 +4,7 @@ import time
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-from .files import clean
+from .files import clean, create
 
 
 cred = credentials.ApplicationDefault()
@@ -77,9 +77,9 @@ class PDict:
 class User(PDict):
     @staticmethod
     def find_uid(name):
-        docs = db.collection(u'users').where('name', '==', name).get() # return a generator
+        docs = db.collection('users').where('name', '==', name).get() # return a generator
         for doc in docs:
-            return User(doc.id, dict_=doc.to_dict())
+            return doc.id
 
     def __init__(self, uid, dict_=None):
         self.uid = uid
@@ -122,7 +122,7 @@ class Staff(PDict):
         if req < len(self[sc]):
             return f'数据({req})无效'
         user = User(uid)
-        if sc not in user['groups'] and 'nimda' not in user['groups']:
+        if sc not in user['groups'] and 'ms' not in user['groups'] and 'nimda' not in user['groups']:
             return f'{user["name"]}({uid})不在对应的部门内'
         self.proj[f'req.{sc}'] = req
         return True
@@ -133,6 +133,8 @@ class Staff(PDict):
         user = User(uid)
         if sc not in user.info()['groups']:
             return f'{user["name"]}({uid})不在对应的部门内'
+        if not self[sc]:
+            create(self.proj, sc)
         user[f'proj.{sc}.{self.proj.pid}.start'] = time.time()
         self.users[uid] = user
         self.proj[f'staff.{sc}.{uid}'] = job
@@ -235,6 +237,12 @@ class Project(PDict):
             'req': {},
             'staff': {}
         }
+
+    @staticmethod
+    def find_pid(title):
+        docs = db.collection('projects').where('title', '==', title).get() # return a generator
+        for doc in docs:
+            return doc.id
 
     def __init__(self, pid, info=None):
         super().__init__()

@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import HttpResponseRedirect, redirect, render
 
-from .europaea import append, files, new, push, records
+from .europaea import append, new, push, records
 from .europaea.database import Project, User
 
 
@@ -132,16 +132,10 @@ def new_projs(request):
     if 'nimda' not in user_info['groups']:
         return HttpResponse('不是相应的用户组成员')
     if request.method == 'GET':
-        return render(request, 'np.html')
+        return render(request, 'np.html', {'errors': 0})
     if request.method == 'POST':
-        items = request.POST['d'].split('\r\n')
-        type_ = request.POST['t']
-        projs = new.proj(items)
-        if type_ == 'T':
-            append.fy(projs)
-        elif type_ in ('G', 'K'):
-            append.kp(projs)
-        return HttpResponse(True)
+        response = new.projects(request.POST['d'].split('\r\n'), request.POST['t'])
+        return render(request, 'np.html', {'errors': response})
     return HttpResponseRedirect('/q')
 
 def back(request):
@@ -164,15 +158,6 @@ def back(request):
     return HttpResponseRedirect('/q')
 
 
-def create(request):
-    i = request.GET['i'].split(',')
-    proj = Project(i[0])
-    if i[1] == 'KP':
-        response = files.create(proj, i[1], 'doc')
-    elif i[1] in ('UJ', 'PY', 'HQ'):
-        response = files.create(proj, i[1], 'folder')
-    return HttpResponse(response)
-
 def login(request):
     uid = request.COOKIES.get('uid', None)
     if uid:
@@ -181,15 +166,15 @@ def login(request):
         return render(request, 'login.html', {'r': request.GET.get('r', None)})
     elif request.method == 'POST':
         name = request.POST['name']
-        user = User.find_uid(name)
-        if not user:
+        uid = User.find_uid(name)
+        if not uid:
             return render(request, 'login.html', {'err': True})
         url = request.POST.get('r', None)
         if url:
             response = redirect(url)
         else:
             response = redirect('/')
-        response.set_cookie('uid', user.uid, max_age=90*86400)
+        response.set_cookie('uid', uid, max_age=90*86400, httponly=True, secure=True)
         return response
     return HttpResponseRedirect('/q')
 

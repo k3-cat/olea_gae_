@@ -12,7 +12,5 @@ urlpatterns = [
     path('back', views.back, name='back'),
 
     path('login', views.login, name='login'),
-    path('q', views.quit_page, name='quit_page'),
-
-    path('c', views.create, name='create')
+    path('q', views.quit_page, name='quit_page')
 ]
