@@ -12,7 +12,8 @@ def fy(projs):
         rows.append([
             f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
             f'=HYPERLINK("{URL}/es?i={proj.pid},FY","[0000]")',
-            hyperlink(proj['ids.doc'], 'FY'), ''
+            hyperlink(proj['ids.doc'], 'FY'),
+            ''
         ])
     sheets.append(path, rows)
     for row in rows:
@@ -31,7 +32,7 @@ def kp(projs):
             f'=IF(D{i}="{STATE_MAP[5]}",HYPERLINK("{URL}/p?i={proj.pid},KP","[跳过]"),"")',
             f'=HYPERLINK("{URL}/es?i={proj.pid},KP","[0000]")',
             hyperlink(proj['ids.doc'], 'GG'),
-            f'=IF(E{i}="0/0","",createD(C{i}))'
+            ''
         ])
     sheets.append(path, rows)
     for row in rows:
@@ -49,7 +50,7 @@ def uj(proj):
         f'=HYPERLINK("{URL}/es?i={proj.pid},UJ","[0000]")',
         hyperlink(proj['ids.doc'], 'GG'),
         hyperlink(proj['ids.ext'], 'KP'),
-        f'=IF(E{k}="0/0","",createF(C{k}))'
+        ''
     ]]
     sheets.append(path, row)
     PidLineCache.append('UJ', proj.pid)
@@ -65,7 +66,7 @@ def py(proj):
         f'=HYPERLINK("{URL}/es?i={proj.pid},PY","[0000]")',
         hyperlink(proj['ids.doc'], 'GG'),
         hyperlink(proj['ids.ext'], 'KP'),
-        f'=IF(E{k}="0/0","",createF(C{k}))'
+        ''
     ]]
     sheets.append(path, row)
     PidLineCache.append('PY', proj.pid)
@@ -92,7 +93,7 @@ def hq(proj):
         hyperlink(proj['ids.ext'], 'KP'),
         hyperlink(proj['ids.mic'], 'PY'),
         hyperlink(pic_id, 'UJ'),
-        f'=IF(E{k}="0/0","",createF(C{k}))'
+        ''
     ]]
     sheets.append(path, row)
     PidLineCache.append('HQ', proj.pid)
