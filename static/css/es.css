@@ -48,7 +48,7 @@ button {
     border: 1.5pt solid lightskyblue;
     border-radius: 11pt;
     font-size: 16pt;
-    transition-duration: 0.5s;
+    transition-duration: 0.4s;
     cursor: pointer;
     color: rgb(75, 186, 255);
     background-color: white;
@@ -113,4 +113,12 @@ optbox {
     font-size: 24pt;
     border: 2pt dashed red;
     color: red;
+}
+
+.ta_c {
+    text-align: center;
+}
+
+.msg {
+    font-size: 18pt;
 }

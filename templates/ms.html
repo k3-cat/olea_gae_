@@ -5,10 +5,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/es.css' %}"/>
 </head>
 <body>
-    <p style="text-align:center;font-size:20pt;color:plum;margin:32pt auto;"> 管理专用 ヾ(≧O≦)〃嗷~ </p>
-    {% if message %}
-    <p style="text-align:center;font-size:18pt;color:red;margin:30pt auto;">{{message}}</p>
-    {% endif %}
+    {% if message %}<p class="ta_c msg" style="color:red;margin:30pt auto">{{message}}</p>{% endif %}
+    <p class="ta_c" style="font-size:20pt;color:plum;margin:32pt auto"> 管理专用 ヾ(≧O≦)〃嗷~ </p>
     <outer>
         <name>{{name}}</name>
         <note>{{note}}</note>
@@ -22,19 +20,15 @@
                 </tr>
                 {% for row in rows %}
                 <tr>
-                    <td style="text-align:center">{{row.uid}}</td>
+                    <td class="ta_c">{{row.uid}}</td>
                     <td id="{{row.uid}}" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)">{{row.u}}</td>
                     <td onclick="editJob('{{row.uid}}', '{{row.j}}')">{{row.j}}</td>
-                    {% if row.f %}
-                    <td style="text-align:center">◯</td>
-                    {% else %}
-                    <td style="text-align:center"><button class='fj' onclick="finishJob('{{row.uid}}')">⌾</button></td>
-                    {% endif %}
+                    {% if row.f %}<td class="ta_c">◯</td>{% else %}<td class="ta_c"><button class='fj' onclick="finishJob('{{row.uid}}')">⌾</button></td>{% endif %}
                 </tr>
                 {% endfor %}
                 {% for j in empty %}
                 <tr>
-                    <td colspan="4" style="text-align:center;color:#aaa"><I>------　缺人　------</I></td>
+                    <td colspan="4" class="ta_c" style="color: gray"><I>------　缺人　------</I></td>
                 </tr>
                 {% endfor %}
             </table>

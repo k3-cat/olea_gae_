@@ -5,9 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/es.css' %}"/>
 </head>
 <body>
-    {% if message %}
-    <p style="text-align:center;font-size:18pt;color:red;margin:30pt auto;">{{message}}</p>
-    {% endif %}
+    {% if message %}<p class="ta_c msg" style="color:red;margin:30pt auto">{{message}}</p>{% endif %}
     <outer>
         <name>{{name}}</name>
         <note>{{note}}</note>
@@ -25,33 +23,25 @@
 
                     <td draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)">{{row.u}}</td>
                     <td id="{{row.uid}}">{{row.j}}</td>
-                    {% if row.f %}
-                    <td style="text-align:center">◯</td>
-                    {% else %}
-                    <td style="text-align:center"><button class='fj' onclick="finishJob()">⌾</button></td>
-                    {% endif %}
+                    {% if row.f %}<td class="ta_c">◯</td>{% else %}<td class="ta_c"><button class='fj' onclick="finishJob()">⌾</button></td>{% endif %}
 
                     {% else %}
 
                     <td>{{row.u}}</td>
                     <td>{{row.j}}</td>
-                    {% if row.f %}
-                    <td style="text-align:center">◯</td>
-                    {% else %}
-                    <td style="text-align:center">✗</td>
-                    {% endif %}
+                    {% if row.f %}<td class="ta_c">◯</td>{% else %}<td class="ta_c">✗</td>{% endif %}
 
                     {% endif %}
                 </tr>
                 {% endfor %}
                 {% for j in empty %}
                 <tr>
-                    <td colspan="3" style="text-align:center;color:#aaa"><I>------　缺人　------</I></td>
+                    <td colspan="3" class="ta_c" style="color: gray"><I>------　缺人　------</I></td>
                 </tr>
                 {% endfor %}
             </table>
             {% else %}
-            <p style="text-align: center; font-size: 18pt; color: orchid;">! 项目为初始状态 请先设定人数 !</p>
+            <p class="ta_c msg" style="color: orchid">! 项目为初始状态 请先设定人数 !</p>
             {% endif %}
             <div id="delbox" ondrop="delStaff(event)" ondragover="onDragOver(event)" ondragenter="onDragEnter(event)" ondragleave="onDragLeave(event)">拖放以取消接稿</div>
             {% if i.s in user1.groups %}
