@@ -8,26 +8,26 @@ class Cache:
     PAGE_CONTANT_SOUP = dict()
 
 
-def fetch_title_by_item_no(item_no_):
+def fetch_title_by_item_no(item_no):
     try:
-        i_item_no_ = int(int(item_no_)/1000)+1
+        i_item_no = int(int(item_no)/1000)+1
     except ValueError:
         return '[E] invalid item#'
-    if i_item_no_ not in Cache.PAGE_CONTANT_SOUP:
-        if i_item_no_ == 1:
+    if i_item_no not in Cache.PAGE_CONTANT_SOUP:
+        if i_item_no == 1:
             url = f'{SCP_CN_SITE}/scp-series'
         else:
-            url = f'{SCP_CN_SITE}/scp-series-{i_item_no_}'
+            url = f'{SCP_CN_SITE}/scp-series-{i_item_no}'
         html = requests.get(url)
         _soup = BeautifulSoup(html.text, 'lxml')
-        Cache.PAGE_CONTANT_SOUP[i_item_no_] = _soup.find_all(
+        Cache.PAGE_CONTANT_SOUP[i_item_no] = _soup.find_all(
             name='div',
             attrs={'class': 'content-panel standalone series'},
             limit=1)[0]
-    main_contant = Cache.PAGE_CONTANT_SOUP[i_item_no_]
+    main_contant = Cache.PAGE_CONTANT_SOUP[i_item_no]
     ele_title = main_contant.find_all(
         name='a',
-        text=f'SCP-{item_no_}',
+        text=f'SCP-{item_no}',
         limit=1)[0]
     if not ele_title:
         return '[E] cannot find title'
@@ -40,3 +40,6 @@ def fetch_title_by_url(doc_id):
     if not ele_title:
         return '[E] cannot find title'
     return ele_title.text.strip()
+
+def clear_cache():
+    Cache.PAGE_CONTANT_SOUP.clear()

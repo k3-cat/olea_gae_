@@ -146,7 +146,7 @@ class Staff(PDict):
         self.proj[f'staff.{sc}.{uid}'] = job
         return True
 
-    def del_staff(self, sc, uid, unused):
+    def del_staff(self, sc, uid, unused=None):
         if uid not in self[sc]:
             return f'{uid}未加入'
         user = User(uid)
@@ -162,7 +162,7 @@ class Staff(PDict):
         self.proj[f'staff.{sc}.{uid}'] = job
         return True
 
-    def finish_job(self, sc, uid, unused):
+    def finish_job(self, sc, uid, unused=None):
         now = time.time()
         if uid not in self[sc]:
             return f'{uid}未加入'

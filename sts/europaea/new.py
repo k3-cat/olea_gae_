@@ -1,5 +1,5 @@
+from . import auto_title
 from .append import fy, kp, lb
-from .auto_title import fetch_title_by_item_no, fetch_title_by_url
 from .database import Project
 
 
@@ -13,9 +13,9 @@ def projects(items, type_):
         item = item_.split(';')
         if item[1] == '':
             if item[0] != '':
-                item[1] = fetch_title_by_item_no(item[0])
+                item[1] = auto_title.fetch_title_by_item_no(item[0])
             elif item[1] != '':
-                item[1] = fetch_title_by_url(item[1])
+                item[1] = auto_title.fetch_title_by_url(item[1])
             else:
                 item[1] = '[E]'
             if '[E]' in item[1]:
@@ -33,6 +33,7 @@ def projects(items, type_):
                 continue
         projs.append(Project(pid=None, info=(item[0], item[1], item[2])))
         rows.append([item[0], item[1], projs[-1].pid])
+    auto_title.clear_cache()
     lb(rows)
     if type_ == 'T':
         fy(projs)
