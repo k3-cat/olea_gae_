@@ -5,3 +5,4 @@ firebase_admin
 google-cloud-firestore
 requests[security]
 bs4
+lxml
