@@ -28,7 +28,7 @@ def kp(projs):
     for i, proj in enumerate(projs, k):
         rows.append([
             f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
-            f'=IF(D{i}="{STATE_MAP[5]}",HYPERLINK("{URL}/p?i={proj.pid},KP,","[跳过]"),"")',
+            f'=IF(D{i}="{STATE_MAP[5]}",HYPERLINK("{URL}/p?i={proj.pid},KP","[跳过]"),"")',
             f'=HYPERLINK("{URL}/es?i={proj.pid},KP","[0000]")',
             hyperlink(proj['ids.doc'], 'GG'),
             f'=IF(E{i}="0/0","",createD(C{i}))'
@@ -45,7 +45,7 @@ def uj(proj):
     path.row = k
     row = [[
         f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", STATE_MAP[5], '0/0', '', '',
-        f'=IF(D{k}="{STATE_MAP[5]}",HYPERLINK("{URL}/p?i={proj.pid},UJ,","[跳过]"),"")',
+        f'=IF(D{k}="{STATE_MAP[5]}",HYPERLINK("{URL}/p?i={proj.pid},UJ","[跳过]"),"")',
         f'=HYPERLINK("{URL}/es?i={proj.pid},UJ","[0000]")',
         hyperlink(proj['ids.doc'], 'GG'),
         hyperlink(proj['ids.ext'], 'KP'),
