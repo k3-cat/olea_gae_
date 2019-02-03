@@ -15,7 +15,7 @@ firebase_admin.initialize_app(cred, {
 db = firestore.client()
 
 
-PID_ALPHABET = (
+ID_ALPHABET = (
     '0123456789aAbBcC'
     'dDeEfFgGhHiIjJkK'
     'lLmMnNoOpPqQrRsS'
@@ -227,7 +227,7 @@ class Project(PDict):
 
     @staticmethod
     def generate_pid():
-        return ''.join(random.choices(PID_ALPHABET, k=5))
+        return ''.join(random.choices(ID_ALPHABET, k=5))
 
     @staticmethod
     def get_empty_proj(info):
