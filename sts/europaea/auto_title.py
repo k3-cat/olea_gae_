@@ -14,7 +14,7 @@ class Cache:
     PAGE_CONTANT_SOUP = dict()
 
 
-def fetch_title(item_no_):
+def fetch_title_by_item_no(item_no_):
     try:
         i_item_no_ = int(int(item_no_)/1000)+1
     except ValueError:
@@ -37,4 +37,12 @@ def fetch_title(item_no_):
         limit=1)[0]
     if not ele_title:
         return '[E] cannot find title'
-    return ele_title.next_sibling[3:]
+    return ele_title.parent.text.split(' - ')[1]
+
+def fetch_title_by_url(doc_id):
+    html = requests.get(f'{SCP_CN_SITE}/{doc_id}', headers=HEADERS)
+    _soup = BeautifulSoup(html.text, 'lxml')
+    ele_title = _soup.find(id='page-title')
+    if not ele_title:
+        return '[E] cannot find title'
+    return ele_title.text.strip()

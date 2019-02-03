@@ -106,6 +106,12 @@ class User(PDict):
         user_info['uid'] = self.uid
         return user_info
 
+    def in_groups(self, groups):
+        for group in groups:
+            if group in self.D['groups']:
+                return True
+        return False
+
 class Staff(PDict):
     def __init__(self, proj, dict_):
         self.proj = proj
@@ -122,7 +128,7 @@ class Staff(PDict):
         if req < len(self[sc]):
             return f'数据({req})无效'
         user = User(uid)
-        if sc not in user['groups'] and 'ms' not in user['groups'] and 'nimda' not in user['groups']:
+        if not user.in_groups((sc, 'ms', 'nimda')):
             return f'{user["name"]}({uid})不在对应的部门内'
         self.proj[f'req.{sc}'] = req
         return True
@@ -131,7 +137,7 @@ class Staff(PDict):
         if len(self[sc]) >= self.proj[f'req.{sc}'] or uid in self[sc]:
             return f'项目满或{uid}已加入'
         user = User(uid)
-        if sc not in user.info()['groups']:
+        if not user.in_groups((sc)):
             return f'{user["name"]}({uid})不在对应的部门内'
         if not self[sc]:
             create(self.proj, sc)

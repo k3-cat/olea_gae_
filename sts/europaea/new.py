@@ -1,6 +1,6 @@
 from .append import lb, fy, kp
 from .database import Project
-from .auto_title import fetch_title
+from .auto_title import fetch_title_by_item_no, fetch_title_by_url
 
 
 def projects(items, type_):
@@ -12,17 +12,25 @@ def projects(items, type_):
             continue
         item = item_.split(';')
         if item[1] == '':
-            item[1] = fetch_title(item[0])
+            if item[0] != '':
+                item[1] = fetch_title_by_item_no(item[0])
+            elif item[1] != '':
+                item[1] = fetch_title_by_url(item[1])
+            else:
+                item[1] = '[E]'
             if '[E]' in item[1]:
                 errors.append(item[0], None, item[2], item[1])
                 continue
         pid = Project.find_pid(item[1])
         if pid:
-            errors.append(item[0], item[1], item[2], pid)
+            errors.append(item[0], item[1], item[2], f'exist: {pid}')
             continue
         if item[2] == '':
             if item[0] != '':
                 item[2] = f'scp-{item[0]}'
+            else:
+                errors.append(None, item[1], None, 'miss url')
+                continue
         projs.append(Project(pid=None, info=(item[0], item[1], item[2])))
         rows.append([item[0], item[1], projs[-1].pid])
     lb(rows)

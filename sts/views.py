@@ -40,7 +40,6 @@ def push_(request):
     if not uid:
         return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
-    user_info = user.info()
     if request.method == 'GET':
         i = request.GET['i'].split(',')
         proj = Project(i[0])
@@ -49,14 +48,14 @@ def push_(request):
         if i[1] == 'UP':
             return render(request, 'finish.html', {'i': i[0]})
         elif i[1] in ('KP', 'UJ'):
-            if i[1] not in user_info['groups'] and 'nimda' not in user_info['groups']:
+            if not user.in_groups((i[1], 'nimda')):
                 return HttpResponse('不是相应的用户组成员')
             response = PUSH_MAP[i[1]](proj)
-            if response != True:
+            if isinstance(response, str):
                 return HttpResponse(f'项目错误: {response}') # nessery return
     elif request.method == 'POST':
         i = request.POST['i']
-        if 'nimda' in user_info['groups']:
+        if user.in_groups(('nimda')):
             response = push.up(Project(i), request.POST['vu'])
             return HttpResponse(response)
     proj.save()
@@ -71,7 +70,7 @@ def edit_staff(request):
     user_info = user.info()
     if request.method == 'GET':
         i = request.GET['i'].split(',')
-        if len(i) > 2 and 'ms' not in user_info['groups'] and 'nimda' not in user_info['groups']:
+        if len(i) > 2 and not user.in_groups(('ms', 'nimda')):
             return HttpResponseRedirect(f'/es?i={i[0]},{i[1]}')
         proj = Project(i[0])
         if proj['ssc'] not in SAFE_RANGE[i[1]]:
@@ -101,7 +100,7 @@ def edit_staff(request):
         i = request.POST['i'].split(',')
         proj = Project(i[0])
         opt = request.POST['opt']
-        if len(i) > 2 and ('ms' in user_info['groups'] or 'nimda' in user_info['groups']):
+        if len(i) > 2 and user.in_groups(('ms', 'nimda')):
             uid = request.POST['uid']
         OPT_MAP = {
             "F": proj['staff'].finish_job,
@@ -117,7 +116,7 @@ def edit_staff(request):
         if proj['staff'].get_state(i[1]) == 0:
             PUSH_MAP[i[1]](proj)
             proj.save()
-        if response != True:
+        if isinstance(response, str):
             return HttpResponseRedirect(f'/es?i={",".join(i)}&m={response}')
         return HttpResponseRedirect(f'/es?i={",".join(i)}')
     return HttpResponseRedirect('/q')
@@ -128,8 +127,7 @@ def new_projs(request):
     if not uid:
         return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
-    user_info = user.info()
-    if 'nimda' not in user_info['groups']:
+    if not user.in_groups(('nimda')):
         return HttpResponse('不是相应的用户组成员')
     if request.method == 'GET':
         return render(request, 'np.html', {'errors': 0})
@@ -143,8 +141,7 @@ def back(request):
     if not uid:
         return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
-    user_info = user.info()
-    if 'nimda' not in user_info['groups']:
+    if not user.in_groups(('nimda')):
         return HttpResponse(False)
     i = request.GET['i'].split(',')
     proj = Project(i[0])
