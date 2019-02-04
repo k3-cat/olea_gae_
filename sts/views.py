@@ -55,7 +55,7 @@ def push_(request):
                 return HttpResponse(f'项目错误: {response}') # nessery return
     elif request.method == 'POST':
         i = request.POST['i']
-        if user.in_groups(('nimda')):
+        if user.in_groups(['nimda']):
             response = push.up(Project(i), request.POST['vu'])
             return HttpResponse(response)
     proj.save()
@@ -127,7 +127,7 @@ def new_projs(request):
     if not uid:
         return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
-    if not user.in_groups(('nimda')):
+    if not user.in_groups(['nimda']):
         return HttpResponse('不是相应的用户组成员')
     if request.method == 'GET':
         return render(request, 'np.html', {'errors': 0})
@@ -141,7 +141,7 @@ def back(request):
     if not uid:
         return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
-    if not user.in_groups(('nimda')):
+    if not user.in_groups(['nimda']):
         return HttpResponse('不是相应的用户组成员')
     i = request.GET['i'].split(',')
     proj = Project(i[0])
