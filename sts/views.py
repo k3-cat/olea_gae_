@@ -142,11 +142,11 @@ def back(request):
         return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
     user = User(uid)
     if not user.in_groups(('nimda')):
-        return HttpResponse(False)
+        return HttpResponse('不是相应的用户组成员')
     i = request.GET['i'].split(',')
     proj = Project(i[0])
     if proj['ssc'] not in SAFE_RANGE[i[1]]:
-        return HttpResponse(False)
+        return HttpResponse('项目错误')
     records.update_m_process_info(proj)
     if i[1] in ('FY', 'KP', 'PY', 'UJ', 'HQ', 'UP'):
         if request.get('b', None) is not None:
