@@ -149,7 +149,7 @@ def back(request):
         return HttpResponse('项目错误')
     records.update_m_process_info(proj)
     if i[1] in ('FY', 'KP', 'PY', 'UJ', 'HQ', 'UP'):
-        if request.get('b', None) is not None:
+        if len(i) > 2:
             APPEND_MAP[i[1]](proj)
         records.update_s_state(proj, i[1])
     return HttpResponseRedirect('/q')
