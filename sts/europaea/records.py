@@ -33,9 +33,13 @@ def update_s_state(proj, sc):
     path.col = 'D:G'
     path.row = PidLineCache.get(sc, proj.pid)
     part_list_name = proj['staff'].list_staff(sc_range=[sc])[sc]
+    if sc in proj['staff']:
+        count = f"'{len(proj[f'staff.{sc}'])}/{proj[f'req.{sc}']}"
+    else:
+        count = '0/0'
     sheets.set_values(path, [[
         STATE_MAP[proj['staff'].get_state(sc)],
-        f"'{len(proj[f'staff.{sc}'])}/{proj[f'req.{sc}']}",
+        count,
         ', '.join(part_list_name[0]),
         ', '.join(part_list_name[1])]])
     return True
