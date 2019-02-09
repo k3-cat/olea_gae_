@@ -4,6 +4,7 @@ import time
 import firebase_admin
 from firebase_admin import credentials, firestore
 
+from .common import SSC2D_MAP
 from .files import clean, create
 
 
@@ -84,7 +85,9 @@ class User(PDict):
     def __init__(self, uid, dict_=None):
         self.uid = uid
         self.Irec = db.collection('users').document(uid)
+        dict_ = self.Irec.get().to_dict()
         if not dict_:
+            self.Irec = db.collection('del_users').document(uid)
             dict_ = self.Irec.get().to_dict()
             if not dict_:
                 return
@@ -124,7 +127,7 @@ class Staff(PDict):
     def set_req(self, sc, uid, req):
         req = int(req)
         if sc not in self:
-            self.proj[f'staff.{sc}'] = dict() # only Project can record the change
+            self[sc] = dict()
         if req < len(self[sc]):
             return f'数据({req})无效'
         user = User(uid)
@@ -143,7 +146,7 @@ class Staff(PDict):
             create(self.proj, sc)
         user[f'proj.{sc}.{self.proj.pid}.start'] = time.time()
         self.users[uid] = user
-        self.proj[f'staff.{sc}.{uid}'] = job
+        self[f'{sc}.{uid}'] = job
         return True
 
     def del_staff(self, sc, uid, unused=None):
@@ -152,14 +155,14 @@ class Staff(PDict):
         user = User(uid)
         user[f'proj.{sc}.{self.proj.pid}'] = firestore.DELETE_FIELD
         del user[f'proj.{sc}.{self.proj.pid}']
-        self.proj[f'staff.{sc}.{uid}'] = firestore.DELETE_FIELD
-        del self.proj[f'staff.{sc}.{uid}']
+        self[f'{sc}.{uid}'] = firestore.DELETE_FIELD
+        del self[f'{sc}.{uid}']
         return True
 
     def edit_job(self, sc, uid, job):
         if uid not in self[sc]:
             return f'{uid}未加入'
-        self.proj[f'staff.{sc}.{uid}'] = job
+        self[f'{sc}.{uid}'] = job
         return True
 
     def finish_job(self, sc, uid, unused=None):
@@ -214,35 +217,21 @@ class Staff(PDict):
         return result
 
 class Project(PDict):
-    SSC2D_MAP = {
-        'FY': '翻译',
-        'KP': '编篡文案',
-        'PY': '配音',
-        'pu': '配音+绘图',
-        'HQ': '后期',
-        'hu': '后期+绘图',
-        'UP': '上传',
-        '00': '完成'
-    }
-
     @staticmethod
-    def generate_pid():
-        return ''.join(random.choices(ID_ALPHABET, k=5))
-
-    @staticmethod
-    def get_empty_proj(info):
+    def create_proj(info):
         if info[2] == '':
             doc_id = None
         else:
             doc_id = info[2]
-        return {
+        pid = ''.join(random.choices(ID_ALPHABET, k=5))
+        db.collection('projects').document(pid).set({
             'ino': info[0],
             'title': info[1],
             'ssc': '',
             'ids': {'doc': doc_id},
             'req': {},
             'staff': {}
-        }
+        })
 
     @staticmethod
     def find_pid(title):
@@ -250,21 +239,18 @@ class Project(PDict):
         for doc in docs:
             return doc.id
 
-    def __init__(self, pid, info=None):
-        super().__init__()
-        if not pid:
-            pid = Project.generate_pid()
+    def __init__(self, pid):
         self.pid = pid
         self.Irec = db.collection('projects').document(pid)
-        self.Itemp = dict()
         dict_ = self.Irec.get().to_dict()
         if not dict_:
-            dict_ = Project.get_empty_proj(info)
-            self.Irec.set(dict_)
+            return
         dict_['staff'] = Staff(self, dict_['staff'])
-        self.D = dict_
+        super().__init__(dict_)
 
     def save(self):
+        for changed_key in self['staff'].temp:
+            self.temp[f'staff.{changed_key}'] = self['staff'].temp[changed_key]
         if not self.temp:
             return
         self.Irec.update(self.temp)
@@ -273,15 +259,16 @@ class Project(PDict):
     def finish(self):
         clean(self)
         self.D['fin_time'] = time.time()
+        self.D['staff'] = self.D['staff'].D
         db.collection('fin_projects').document(self.pid).set(self.D)
         db.collection('projects').document(self.pid).delete()
 
     @property
     def ssc_display(self):
-        return Project.SSC2D_MAP[self['ssc']]
+        return SSC2D_MAP[self['ssc']]
 
     @property
     def name(self):
-        if self['ino'] == '':
+        if not self['ino']:
             return self['title']
         return f'SCP-{self["ino"]} - {self["title"]}'

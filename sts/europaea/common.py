@@ -51,6 +51,16 @@ SC2D_MAP = {
     'HQ': '后期'
 }
 
+SSC2D_MAP = {
+    'FY': '翻译',
+    'KP': '编篡文案',
+    'PY': '配音',
+    'pu': '配音+绘图',
+    'HQ': '后期',
+    'hu': '后期+绘图',
+    'UP': '上传',
+    '00': '完成'
+}
 
 class PidLineCache:
     pid_map = dict()
