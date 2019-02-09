@@ -29,6 +29,8 @@ def update_m_process_info(proj):
     return True
 
 def update_s_state(proj, sc):
+    if sc == 'UP':
+        return 'SKIP'
     path = get_path(sc)
     path.col = 'D:G'
     path.row = PidLineCache.get(sc, proj.pid)
