@@ -272,6 +272,9 @@ class Project(PDict):
 
     def finish(self):
         clean(self)
+        self.D['fin_time'] = time.time()
+        db.collection('fin_projects').document(self.pid).set(self.D)
+        db.collection('projects').document(self.pid).delete()
 
     @property
     def ssc_display(self):
