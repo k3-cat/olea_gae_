@@ -218,20 +218,21 @@ class Staff(PDict):
 
 class Project(PDict):
     @staticmethod
-    def create_proj(info):
-        if info[2] == '':
+    def create_proj(item_no, title, doc_id):
+        if not doc_id == '':
             doc_id = None
-        else:
-            doc_id = info[2]
         pid = ''.join(random.choices(ID_ALPHABET, k=5))
         db.collection('projects').document(pid).set({
-            'ino': info[0],
-            'title': info[1],
+            'ino': item_no,
+            'title': title,
             'ssc': '',
-            'ids': {'doc': doc_id},
+            'ids': {
+                'doc': doc_id
+            },
             'req': {},
             'staff': {}
         })
+        return Project(pid)
 
     @staticmethod
     def find_pid(title):

@@ -31,7 +31,7 @@ def projects(items, type_):
             else:
                 errors.append(None, item[1], None, 'miss url')
                 continue
-        projs.append(Project(pid=None, info=(item[0], item[1], item[2])))
+        projs.append(Project.create_proj(item[0], item[1], item[2]))
         rows.append([item[0], item[1], projs[-1].pid])
     auto_title.clear_cache()
     lb(rows)

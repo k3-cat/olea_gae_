@@ -3,7 +3,7 @@ import httplib2
 from googleapiclient import discovery
 from oauth2client.service_account import ServiceAccountCredentials
 
-from ..sa_cerds import SA_CREDS
+from .sa_cerds import SA_CREDS
 
 
 CURRENT_DIR = os.path.dirname(__file__)
