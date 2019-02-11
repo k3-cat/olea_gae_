@@ -1,31 +1,10 @@
-import time
+from .global_value import HL_MAP, PATH_MAP
+from .google_io import sheets
 
-from . import sheets
-
-
-URL = 'https://olea-db.appspot.com'
-SCP_CN_SITE = 'http://scp-wiki-cn.wikidot.com'
-
-PATH_MAP = {'LB': ('1UAD7PSiVtuWazMakg7jDtHXu9PqC5CQBcx8YZ4H4o7U', '配音'),
-            'FY': ('1kSGUUmzjNk3NTuE8EU6LBuToz9NV3m430ZgxEkMnd7Q', '接稿'),
-            'KP': ('146lz1z0sAv7dpJh4FWWOHccVy0eeLYJVCJS2eiTnTbs', '接稿'),
-            'UJ': ('1WhC9U3hm0FVdvynnK8VPcBJskmovUp8NnwOO3ZFbxsI', '接稿'),
-            'PY': ('1zkLzY8vSFHPoc6RKddbUeb8e3DG1e8hlZPU2h9u3jLQ', '接稿'),
-            'HQ': ('1lsnWTV9IpUPmQpD3jijn5Tx9jkyHyD0wB-BrSNCm2Tg', '接稿'),
-            'UP': ('1hkI0jk0_PotXpgny69xoO_xXaVhJAJnYofygRsUrf7c', 'ALL0')}
 
 def get_path(code):
     return sheets.Path(id_=PATH_MAP[code][0], table=PATH_MAP[code][1])
 
-
-HL_MAP = {'GG': ('http://scp-wiki-cn.wikidot.com/', '='),
-          'FY': ('http://www.scp-wiki.net/', '-'),
-          'KP': ('https://docs.google.com/document/d/', '~'),
-          'PY': ('https://drive.google.com/drive/folders/', '<'),
-          'UJ': ('https://drive.google.com/drive/folders/', '+'),
-          'HQ': ('https://drive.google.com/drive/folders/', '#'),
-          'YT': ('', 'X'),
-          'BB': ('', 'O')}
 
 def hyperlink(url_, type_):
     if not url_:
@@ -33,77 +12,3 @@ def hyperlink(url_, type_):
     if '{' in url_:
         return url_
     return f'=HYPERLINK("{HL_MAP[type_][0]}{url_}","[{HL_MAP[type_][1]*4}]")'
-
-STATE_MAP = {
-    0: '0 - 完成',
-    1: '1 - 施工中',
-    2: '2 - 缺人',
-    4: '4 - 重置',
-    5: '5 - 初始',
-    9: '9 - 错误'
-}
-
-SC2D_MAP = {
-    'FY': '翻译',
-    'KP': '科普',
-    'PY': '配音',
-    'UJ': '设计',
-    'HQ': '后期'
-}
-
-SSC2D_MAP = {
-    'FY': '翻译',
-    'KP': '编篡文案',
-    'PY': '配音',
-    'pu': '配音+绘图',
-    'HQ': '后期',
-    'hu': '后期+绘图',
-    'UP': '上传',
-    '00': '完成'
-}
-
-class PidLineCache:
-    pid_map = dict()
-    pid_list = dict()
-    time = dict()
-
-    @classmethod
-    def update_list(cls, sc):
-        cls.time[sc] = time.time()
-        cls.pid_list[sc] = list()
-        path = get_path(sc)
-        path.col = 'C'
-        path.row = '2:'
-        for line in sheets.get_values(path):
-            if not line:
-                cls.pid_list[sc].append(None)
-            else:
-                cls.pid_list[sc].append(line[0])
-
-    @classmethod
-    def update(cls, sc):
-        now = time.time()
-        if sc not in cls.time or now - cls.time[sc] > 900:
-            cls.update_list(sc)
-        cls.pid_map[sc] = dict()
-        for k, pid in enumerate(cls.pid_list[sc], 2):
-            if pid:
-                cls.pid_map[sc][pid] = k
-
-    @classmethod
-    def append(cls, sc, pid):
-        cls.pid_list[sc].append(pid)
-        cls.update(sc)
-
-    @classmethod
-    def delete(cls, sc, pid):
-        cls.pid_list[sc].remove(pid)
-        cls.update(sc)
-
-    @classmethod
-    def get(cls, sc, pid):
-        return cls.pid_map[sc][pid]
-
-# actually, this is not a proper way
-for sc_ in PATH_MAP:
-    PidLineCache.update(sc_)

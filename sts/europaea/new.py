@@ -1,5 +1,5 @@
-from . import auto_title
-from .append import fy, kp, lb
+from . import append, auto_title
+from .cache import PageCache
 from .database import Project
 
 
@@ -11,6 +11,7 @@ def projects(items, type_):
         if ';' not in item_:
             continue
         item = item_.split(';')
+        item[0] = item[0].upper()
         if item[1] == '':
             if item[0] != '':
                 item[1] = auto_title.fetch_title_by_item_no(item[0])
@@ -33,10 +34,10 @@ def projects(items, type_):
                 continue
         projs.append(Project.create_proj(item[0], item[1], item[2]))
         rows.append([item[0], item[1], projs[-1].pid])
-    auto_title.clear_cache()
-    lb(rows)
+    PageCache.clear_cache()
+    append.lb(rows)
     if type_ == 'T':
-        fy(projs)
+        append.fy(projs)
     elif type_ in ('G', 'K'):
-        kp(projs)
+        append.kp(projs)
     return errors

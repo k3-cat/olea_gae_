@@ -1,13 +1,7 @@
-from . import drive
+from .global_value import URLS_MAP
+from .google_io import drive
 from .records import set_hyperlink
 
-
-URLS_MAP = {
-    'KP': ('15B4w3PMbrqCPSKYvTHlSvEEOA-1ioEgL', 'ext', '1QH0uMkhhCfWVq8Cq0CdV7Tb4damKqagw'),
-    'UJ': ('13rnCWi9nwNWH4fXLRvxSsN5nxaWPR3V4', 'pic', '1Xh2ynRMm3aDtNYFQRo9z9re8Cxo9dKI_'),
-    'PY': ('1e4zS1wVm5umIUOShaZx0GN2M4fEgV1en', 'mic'),
-    'HQ': ('1reTVn0P6iHAcTQV5GtRS3veBj_TmuF9q', 'aep')
-}
 
 def create(proj, sc):
     name = proj.name
@@ -25,6 +19,7 @@ def create(proj, sc):
         proj.save()
     set_hyperlink(proj.pid, sc, id_)
     return True
+
 
 def clean(proj):
     if proj[f'ids.{URLS_MAP["KP"][1]}']:

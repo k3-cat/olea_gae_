@@ -1,5 +1,7 @@
-from . import append, sheets
-from .common import PidLineCache, get_path, hyperlink
+from . import append
+from .cache import PidLineCache
+from .common import get_path, hyperlink
+from .google_io import sheets
 from .records import update_m_process_info
 
 
@@ -12,8 +14,9 @@ def fy(proj):
     update_m_process_info(proj)
     return True
 
+
 def kp(proj):
-    proj['ssc'] = 'pu'
+    proj['ssc'] = 'PY+UJ'
     append.py(proj)
     append.uj(proj)
     path = get_path('KP')
@@ -22,33 +25,30 @@ def kp(proj):
     update_m_process_info(proj)
     return True
 
-def uj(proj):
-    if proj['ssc'] == 'pu':
-        proj['ssc'] = 'PY'
-    elif proj['ssc'] == 'hu':
-        proj['ssc'] = 'HQ'
 
+def uj(proj):
+    if 'HQ' in proj['ssc']:
         path_ = get_path('HQ')
         path_.col = 'K'
         path_.row = PidLineCache.get('HQ', proj.pid)
         sheets.set_values(path_, [[hyperlink(proj['ids.pic'], 'UJ')]])
+    proj['ssc'] = '+'.join(proj['ssc'].split('+').remove('UJ'))
     path = get_path('UJ')
     path.row = PidLineCache.get('UJ', proj.pid)
     sheets.del_line(path)
     update_m_process_info(proj)
     return True
 
+
 def py(proj):
-    if proj['ssc'] == 'pu':
-        proj['ssc'] = 'hu'
-    elif proj['ssc'] == 'PY':
-        proj['ssc'] = 'HQ'
+    proj['ssc'] = '+'.join(proj['ssc'].split('+').remove('PY').append('HQ'))
     append.hq(proj)
     path = get_path('PY')
     path.row = PidLineCache.get('PY', proj.pid)
     sheets.del_line(path)
     update_m_process_info(proj)
     return True
+
 
 def hq(proj):
     proj['ssc'] = 'UP'
@@ -58,6 +58,7 @@ def hq(proj):
     sheets.del_line(path)
     update_m_process_info(proj)
     return True
+
 
 def up(proj, vid_url):
     if 'youtube.com' in vid_url:

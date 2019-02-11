@@ -4,9 +4,8 @@ import time
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-from .common import SSC2D_MAP
-from .files import clean, create
-
+from . import files
+from .global_value import SC2D_MAP
 
 cred = credentials.ApplicationDefault()
 firebase_admin.initialize_app(cred, {
@@ -15,13 +14,10 @@ firebase_admin.initialize_app(cred, {
 
 db = firestore.client()
 
-
-ID_ALPHABET = (
-    '0123456789aAbBcC'
-    'dDeEfFgGhHiIjJkK'
-    'lLmMnNoOpPqQrRsS'
-    'tTuUvVwWxXyYzZ_'
-)
+ID_ALPHABET = ('0123456789aAbBcC'
+               'dDeEfFgGhHiIjJkK'
+               'lLmMnNoOpPqQrRsS'
+               'tTuUvVwWxXyYzZ_')
 
 
 class PDict:
@@ -78,7 +74,8 @@ class PDict:
 class User(PDict):
     @staticmethod
     def find_uid(name):
-        docs = db.collection('users').where('name', '==', name).get() # return a generator
+        # docs is a generator
+        docs = db.collection('users').where('name', '==', name).get()
         for doc in docs:
             return doc.id
 
@@ -115,6 +112,7 @@ class User(PDict):
                 return True
         return False
 
+
 class Staff(PDict):
     def __init__(self, proj, dict_):
         self.proj = proj
@@ -143,7 +141,7 @@ class Staff(PDict):
         if not user.in_groups((sc)):
             return f'{user["name"]}({uid})不在对应的部门内'
         if not self[sc]:
-            create(self.proj, sc)
+            files.create(self.proj, sc)
         user[f'proj.{sc}.{self.proj.pid}.start'] = time.time()
         self.users[uid] = user
         self[f'{sc}.{uid}'] = job
@@ -212,9 +210,11 @@ class Staff(PDict):
             result.append({
                 'uid': uid,
                 'u': self.users[uid]['name'],
-                'j': self[sc][uid], # job
-                'f': 'end' in self.users[uid][f'proj.{sc}.{self.proj.pid}']})
+                'j': self[sc][uid],  # job
+                'f': 'end' in self.users[uid][f'proj.{sc}.{self.proj.pid}']
+            })
         return result
+
 
 class Project(PDict):
     @staticmethod
@@ -236,7 +236,8 @@ class Project(PDict):
 
     @staticmethod
     def find_pid(title):
-        docs = db.collection('projects').where('title', '==', title).get() # return a generator
+        # docs is a generator
+        docs = db.collection('projects').where('title', '==', title).get()
         for doc in docs:
             return doc.id
 
@@ -258,15 +259,17 @@ class Project(PDict):
         self.clear_temp()
 
     def finish(self):
-        clean(self)
+        files.clean(self)
         self.D['fin_time'] = time.time()
         self.D['staff'] = self.D['staff'].D
         db.collection('fin_projects').document(self.pid).set(self.D)
         db.collection('projects').document(self.pid).delete()
 
-    @property
-    def ssc_display(self):
-        return SSC2D_MAP[self['ssc']]
+    def display_ssc(self):
+        result = self['ssc']
+        for sc in SC2D_MAP:
+            result = result.replace(sc, SC2D_MAP[sc])
+        return result
 
     @property
     def name(self):
