@@ -251,8 +251,8 @@ class Project(PDict):
         super().__init__(dict_)
 
     def save(self):
-        for changed_key in self['staff'].temp:
-            self.temp[f'staff.{changed_key}'] = self['staff'].temp[changed_key]
+        for changed_key, changed in self['staff'].temp.items():
+            self.temp[f'staff.{changed_key}'] = changed
         if not self.temp:
             return
         self.Irec.update(self.temp)

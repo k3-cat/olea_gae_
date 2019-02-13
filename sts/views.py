@@ -4,12 +4,6 @@ from django.shortcuts import HttpResponseRedirect, redirect, render
 from .europaea import append, new, push, records
 from .europaea.database import Project, User
 
-
-def hello(request):
-    response = '欢迎使用olea'
-    return HttpResponse(response)
-
-
 PUSH_MAP = {
     'FY': push.fy,
     'KP': push.kp,
@@ -28,11 +22,24 @@ APPEND_MAP = {
 }
 
 
-def push_(request):
-    uid = request.COOKIES.get('uid', None)
-    if not uid:
-        return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
-    user = User(uid)
+def req_login(func):
+    def wrapper(request):
+        uid = request.COOKIES.get('uid', None)
+        if not uid:
+            return HttpResponseRedirect(
+                f'/login?r={request.get_full_path()}')
+        return func(request, User(uid))
+    return wrapper
+
+
+@req_login
+def hello(request, user):
+    response = f'{user.name} 欢迎使用olea'
+    return HttpResponse(response)
+
+
+@req_login
+def push_(request, user):
     if request.method == 'GET':
         i = request.GET['i'].split(',')
         proj = Project(i[0])
@@ -55,12 +62,8 @@ def push_(request):
     return HttpResponseRedirect('/q')
 
 
-def edit_staff(request):
-    uid = request.COOKIES.get('uid', None)
-    if not uid:
-        return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
-    user = User(uid)
-    user_info = user.info()
+@req_login
+def edit_staff(request, user):
     if request.method == 'GET':
         i = request.GET['i'].split(',')
         if len(i) > 2 and not user.in_groups(('ms', 'nimda')):
@@ -80,7 +83,7 @@ def edit_staff(request):
                 'p': i[0],
                 's': i[1]
             },
-            'user1': user_info,
+            'user1': user.info(),
             'rows': rows,
             'empty': empty,
             'name': proj.name,
@@ -91,7 +94,7 @@ def edit_staff(request):
             return render(request, 'ms.html', parm)
         else:
             parm['joined'] = (proj[f'staff.{i[1]}'] is not None
-                              and user_info['uid'] in proj[f'staff.{i[1]}'])
+                              and user.uid in proj[f'staff.{i[1]}'])
             return render(request, 'es.html', parm)
     elif request.method == 'POST':
         i = request.POST['i'].split(',')
@@ -119,11 +122,8 @@ def edit_staff(request):
     return HttpResponseRedirect('/q')
 
 
-def new_projs(request):
-    uid = request.COOKIES.get('uid', None)
-    if not uid:
-        return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
-    user = User(uid)
+@req_login
+def new_projs(request, user):
     if not user.in_groups(['nimda']):
         return HttpResponse('不是相应的用户组成员')
     if request.method == 'GET':
@@ -135,11 +135,8 @@ def new_projs(request):
     return HttpResponseRedirect('/q')
 
 
-def back(request):
-    uid = request.COOKIES.get('uid', None)
-    if not uid:
-        return HttpResponseRedirect(f'/login?r={request.get_full_path()}')
-    user = User(uid)
+@req_login
+def back(request, user):
     if not user.in_groups(['nimda']):
         return HttpResponse('不是相应的用户组成员')
     i = request.GET['i'].split(',')
