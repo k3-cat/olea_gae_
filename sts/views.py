@@ -34,7 +34,7 @@ def req_login(func):
 
 @req_login
 def hello(request, user):
-    response = f'{user.name} 欢迎使用olea'
+    response = f'{user["name"]} 欢迎使用olea'
     return HttpResponse(response)
 
 
