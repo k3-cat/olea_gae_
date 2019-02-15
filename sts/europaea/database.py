@@ -241,6 +241,7 @@ class Project(PDict):
     def find_pid(title):
         # docs is a generator
         docs = db.collection('projects').where('title', '==', title).get()
+        docs.extend(db.collection('fin_projects').where('title', '==', title).get())
         for doc in docs:
             return doc.id
 
