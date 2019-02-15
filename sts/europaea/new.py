@@ -63,23 +63,21 @@ FILL_MAP = {'K': fill_K, 'C': fill_C, 'T': fill_G, 'G': fill_G}
 
 
 def projects(items, type_):
-    rows = list()
     projs = list()
     errs, valids = FILL_MAP[type_](items, type_)
-    for item in valids:
-        pid = Project.find_pid(item[1])
+    for proj_info in valids:
+        pid = Project.find_pid(proj_info[1])
         if pid:
-            errs.append((item[0], item[1], item[2], f'[E] exist: {pid}'))
+            errs.append((proj_info[0], proj_info[1], proj_info[2], f'[E] exist: {pid}'))
             continue
-        projs.append(Project.create_proj(item[0], item[1], item[2]))
-        rows.append((item[0], item[1], projs[-1].pid))
+        projs.append(Project.create_proj(proj_info[0], proj_info[1], proj_info[2]))
     PageCache.clear_cache()
     if type_ == 'T':
-        append.lbcb(rows, sc='LB')
+        append.lbcb(projs, sc='LB')
         append.fy(projs)
     elif type_ in ('G', 'K'):
-        append.lbcb(rows, sc='LB')
+        append.lbcb(projs, sc='LB')
         append.kp(projs)
     elif type_ == 'C':
-        append.lbcb(rows, sc='CB')
+        append.lbcb(projs, sc='CB')
     return errs

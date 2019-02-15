@@ -5,7 +5,7 @@ from .google_io import sheets
 
 
 def fy(projs):
-    path = get_path('KP')
+    path = get_path('FY')
     k = sheets.count_rows(path) + 1
     path.col = 'A:K'
     path.row = f'{k}:{k+len(projs)}'
@@ -17,9 +17,8 @@ def fy(projs):
             f'=HYPERLINK("{URL}/es?i={proj.pid},FY","[0000]")',
             hyperlink(proj['ids.doc'], 'FY'), ''
         ])
+        PidLineCache.append('FY', proj.pid)
     sheets.append(path, rows)
-    for row in rows:
-        PidLineCache.append('FY', row[2][1:])
     return True
 
 
@@ -37,9 +36,8 @@ def kp(projs):
             f'=HYPERLINK("{URL}/es?i={proj.pid},KP","[0000]")',
             hyperlink(proj['ids.doc'], 'GG'), ''
         ])
+        PidLineCache.append('KP', proj.pid)
     sheets.append(path, rows)
-    for row in rows:
-        PidLineCache.append('KP', row[2][1:])
     return True
 
 
@@ -78,7 +76,7 @@ def py(proj):
 
 
 def hq(proj):
-    if proj['ssc'] in ('pu', 'hu'):
+    if 'UJ' in proj['ssc']:
         if proj['req.UJ'] is None or proj['req.UJ'] == 0:
             pic_id = '{未知}'
         elif proj['ids.pic'] is not None:
@@ -104,17 +102,16 @@ def hq(proj):
     return True
 
 
-def lbcb(proj_infos, sc='LB'):
+def lbcb(projs, sc):
     path = get_path(sc)
     k = sheets.count_rows(path) + 1
     path.col = 'A:F'
-    path.row = f'{k}:{k+len(proj_infos)}'
+    path.row = f'{k}:{k+len(projs)}'
     rows = list()
-    for pi in proj_infos:
-        rows.append([f"'{pi[0]}", f"'{pi[1]}", f"'{pi[2]}", '初始', '', ''])
+    for proj in projs:
+        rows.append([f"'{proj['ino']}", f"'{proj['title']}", f"'{proj.pid}", '初始', '', ''])
+        PidLineCache.append(sc, proj.pid)
     sheets.append(path, rows)
-    for row in rows:
-        PidLineCache.append(sc, row[2][1:])
     return True
 
 
