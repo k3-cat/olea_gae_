@@ -225,9 +225,12 @@ class Project(PDict):
         db.collection('projects').document(pid).set({
             'ino': item_no,
             'title': title,
-            'ssc': '',
+            'ssc': [],
             'ids': {
                 'doc': doc_id
+            },
+            'time': {
+                'create': time.time()
             },
             'req': {},
             'staff': {}
@@ -260,10 +263,18 @@ class Project(PDict):
 
     def finish(self):
         files.clean(self)
-        self.D['fin_time'] = time.time()
-        self.D['staff'] = self.D['staff'].D
+        self['time.finish'] = time.time()
+        self['staff'] = self['staff'].D
         db.collection('fin_projects').document(self.pid).set(self.D)
         db.collection('projects').document(self.pid).delete()
+
+    def add_ssc(self, sc):
+        self['ssc'] = '+'.join(self['ssc'].split('+').append(sc))
+        self[f'time.{sc}_start'] = time.time()
+
+    def remove_ssc(self, sc):
+        self['ssc'] = '+'.join(self['ssc'].split('+').remove(sc))
+        self[f'time.{sc}_end'] = time.time()
 
     def display_ssc(self):
         result = self['ssc']

@@ -104,8 +104,8 @@ def hq(proj):
     return True
 
 
-def lb(proj_infos):
-    path = get_path('LB')
+def lbcb(proj_infos, sc='LB'):
+    path = get_path(sc)
     k = sheets.count_rows(path) + 1
     path.col = 'A:F'
     path.row = f'{k}:{k+len(proj_infos)}'
@@ -114,7 +114,7 @@ def lb(proj_infos):
         rows.append([f"'{pi[0]}", f"'{pi[1]}", f"'{pi[2]}", '初始', '', ''])
     sheets.append(path, rows)
     for row in rows:
-        PidLineCache.append('LB', row[2][1:])
+        PidLineCache.append(sc, row[2][1:])
     return True
 
 

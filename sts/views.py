@@ -1,3 +1,5 @@
+import time
+
 from django.http import HttpResponse
 from django.shortcuts import HttpResponseRedirect, redirect, render
 
@@ -28,7 +30,9 @@ def req_login(func):
         if not uid:
             return HttpResponseRedirect(
                 f'/login?r={request.get_full_path()}')
-        return func(request, User(uid))
+        user = User(uid)
+        user['la'] = time.time()
+        return func(request, user)
     return wrapper
 
 
@@ -55,7 +59,7 @@ def push_(request, user):
                 return HttpResponse(f'项目错误: {response}')  # nessery return
     elif request.method == 'POST':
         i = request.POST['i']
-        if user.in_groups(['nimda']):
+        if user.in_groups(('nimda',)):
             response = push.up(Project(i), request.POST['vu'])
             return HttpResponse(response)
     proj.save()
@@ -124,7 +128,7 @@ def edit_staff(request, user):
 
 @req_login
 def new_projs(request, user):
-    if not user.in_groups(['nimda']):
+    if not user.in_groups(('nimda',)):
         return HttpResponse('不是相应的用户组成员')
     if request.method == 'GET':
         return render(request, 'np.html', {'errors': 0})
@@ -137,7 +141,7 @@ def new_projs(request, user):
 
 @req_login
 def back(request, user):
-    if not user.in_groups(['nimda']):
+    if not user.in_groups(('nimda',)):
         return HttpResponse('不是相应的用户组成员')
     i = request.GET['i'].split(',')
     proj = Project(i[0])

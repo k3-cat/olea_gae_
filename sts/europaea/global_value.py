@@ -4,6 +4,7 @@ CN_SITE_URL = 'http://scp-wiki-cn.wikidot.com'
 
 PATH_MAP = {
     'LB': ('1UAD7PSiVtuWazMakg7jDtHXu9PqC5CQBcx8YZ4H4o7U', '配音'),
+    'CB': ('1UAD7PSiVtuWazMakg7jDtHXu9PqC5CQBcx8YZ4H4o7U', '原创'),
     'FY': ('1kSGUUmzjNk3NTuE8EU6LBuToz9NV3m430ZgxEkMnd7Q', '接稿'),
     'KP': ('146lz1z0sAv7dpJh4FWWOHccVy0eeLYJVCJS2eiTnTbs', '接稿'),
     'UJ': ('1WhC9U3hm0FVdvynnK8VPcBJskmovUp8NnwOO3ZFbxsI', '接稿'),

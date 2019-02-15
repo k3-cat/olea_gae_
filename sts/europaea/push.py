@@ -6,8 +6,8 @@ from .records import update_m_process_info
 
 
 def fy(proj):
-    proj['ssc'] = 'KP'
-    append.kp((proj))
+    proj.add_ssc('KP')
+    append.kp((proj,))
     path = get_path('FY')
     path.row = PidLineCache.get('FY', proj.pid)
     sheets.del_line(path)
@@ -16,7 +16,9 @@ def fy(proj):
 
 
 def kp(proj):
-    proj['ssc'] = 'PY+UJ'
+    proj.add_ssc('PY')
+    proj.add_ssc('UJ')
+    proj.remove_ssc('KP')
     append.py(proj)
     append.uj(proj)
     path = get_path('KP')
@@ -32,7 +34,7 @@ def uj(proj):
         path_.col = 'K'
         path_.row = PidLineCache.get('HQ', proj.pid)
         sheets.set_values(path_, [[hyperlink(proj['ids.pic'], 'UJ')]])
-    proj['ssc'] = '+'.join(proj['ssc'].split('+').remove('UJ'))
+    proj.remove_ssc('UJ')
     path = get_path('UJ')
     path.row = PidLineCache.get('UJ', proj.pid)
     sheets.del_line(path)
@@ -41,7 +43,8 @@ def uj(proj):
 
 
 def py(proj):
-    proj['ssc'] = '+'.join(proj['ssc'].split('+').remove('PY').append('HQ'))
+    proj.add_ssc('HQ')
+    proj.remove_ssc('PY')
     append.hq(proj)
     path = get_path('PY')
     path.row = PidLineCache.get('PY', proj.pid)
@@ -51,7 +54,8 @@ def py(proj):
 
 
 def hq(proj):
-    proj['ssc'] = 'UP'
+    proj.add_ssc('UP')
+    proj.remove_ssc('HQ')
     path = get_path('HQ')
     path.row = PidLineCache.get('HQ', proj.pid)
     append.up(proj)
@@ -70,7 +74,8 @@ def up(proj, vid_url):
         site = 'BB'
     else:
         return '無效的鏈接'
-    proj['ssc'] = '00'
+    proj.add_ssc('00')
+    proj.remove_ssc('UP')
     proj.finish()
     path = get_path('LB')
     path.col = 'F'
