@@ -225,7 +225,7 @@ class Project(PDict):
         db.collection('projects').document(pid).set({
             'ino': item_no,
             'title': title,
-            'ssc': [],
+            'ssc,
             'ids': {
                 'doc': doc_id
             },
