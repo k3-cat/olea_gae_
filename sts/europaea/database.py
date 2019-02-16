@@ -138,7 +138,7 @@ class Staff(PDict):
         if len(self[sc]) >= self.proj[f'req.{sc}'] or uid in self[sc]:
             return f'项目满或{uid}已加入'
         user = User(uid)
-        if not user.in_groups((sc)):
+        if not user.in_groups((sc,)):
             return f'{user["name"]}({uid})不在对应的部门内'
         if not self[sc]:
             files.create(self.proj, sc)
