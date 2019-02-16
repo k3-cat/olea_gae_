@@ -167,10 +167,11 @@ class Staff(PDict):
         now = time.time()
         if uid not in self[sc]:
             return f'{uid}未加入'
-        if now - self.users[uid][f'proj.{sc}.{self.proj.pid}.start'] < 3600:
-            self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = 0
+        diff = now - self.users[uid][f'proj.{sc}.{self.proj.pid}.start']
+        if diff < 3600:
+            self.users[uid][f'proj.{sc}.{self.proj.pid}.used'] = 0
         else:
-            self.users[uid][f'proj.{sc}.{self.proj.pid}.end'] = now
+            self.users[uid][f'proj.{sc}.{self.proj.pid}.used'] = diff
         return True
 
     def list_staff(self, sc_range):
@@ -270,11 +271,13 @@ class Project(PDict):
         db.collection('projects').document(self.pid).delete()
 
     def add_ssc(self, sc):
-        self['ssc'] = '+'.join(self['ssc'].split('+').append(sc))
+        new_ssc = self['ssc'].split('+').append(sc)
+        self['ssc'] = '+'.join(new_ssc)
         self[f'time.{sc}_start'] = time.time()
 
     def remove_ssc(self, sc):
-        self['ssc'] = '+'.join(self['ssc'].split('+').remove(sc))
+        new_ssc = self['ssc'].split('+').append(sc)
+        self['ssc'] = '+'.join(new_ssc)
         self[f'time.{sc}_end'] = time.time()
 
     def display_ssc(self):
