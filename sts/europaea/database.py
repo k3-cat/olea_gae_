@@ -271,13 +271,15 @@ class Project(PDict):
         db.collection('projects').document(self.pid).delete()
 
     def add_ssc(self, sc):
-        new_ssc = self['ssc'].split('+').append(sc)
-        self['ssc'] = '+'.join(new_ssc)
+        ssc = self['ssc'].split('+')
+        ssc.append(sc)
+        self['ssc'] = '+'.join(ssc)
         self[f'time.{sc}_start'] = time.time()
 
     def remove_ssc(self, sc):
-        new_ssc = self['ssc'].split('+').append(sc)
-        self['ssc'] = '+'.join(new_ssc)
+        ssc = self['ssc'].split('+')
+        ssc.remove(sc)
+        self['ssc'] = '+'.join(ssc)
         self[f'time.{sc}_end'] = time.time()
 
     def display_ssc(self):
