@@ -182,7 +182,7 @@ class Staff(PDict):
                 continue
             staff = [[], []]
             for uid in self[sc]:
-                if 'end' in self.users[uid][f'proj.{sc}.{self.proj.pid}']:
+                if 'used' in self.users[uid][f'proj.{sc}.{self.proj.pid}']:
                     staff[0].append(self.users[uid]['name'])
                 else:
                     staff[1].append(self.users[uid]['name'])
@@ -199,7 +199,7 @@ class Staff(PDict):
         if len(self[sc]) < self.proj[f'req.{sc}']:
             return 2
         for uid in self[sc]:
-            if 'end' not in self.users[uid][f'proj.{sc}.{self.proj.pid}']:
+            if 'used' not in self.users[uid][f'proj.{sc}.{self.proj.pid}']:
                 return 1
         return 0
 
@@ -212,7 +212,7 @@ class Staff(PDict):
                 'uid': uid,
                 'u': self.users[uid]['name'],
                 'j': self[sc][uid],  # job
-                'f': 'end' in self.users[uid][f'proj.{sc}.{self.proj.pid}']
+                'f': 'used' in self.users[uid][f'proj.{sc}.{self.proj.pid}']
             })
         return result
 
