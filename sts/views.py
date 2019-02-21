@@ -104,6 +104,7 @@ def edit_staff(request, user):
         i = request.POST['i'].split(',')
         proj = Project(i[0])
         opt = request.POST['opt']
+        uid = user.uid
         if len(i) > 2 and user.in_groups(('ms', 'nimda')):
             uid = request.POST['uid']
         OPT_MAP = {
