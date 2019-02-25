@@ -4,7 +4,7 @@ from .database import Project
 
 
 def check(func):
-    def wrapper(lines):
+    def wrapper(lines, type_):
         items = list()
         for line in lines:
             if line.count(';') != 2:
