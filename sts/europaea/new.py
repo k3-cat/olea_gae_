@@ -3,19 +3,10 @@ from .cache import PageCache
 from .database import Project
 
 
-def check(func):
-    def wrapper(lines, type_):
-        items = list()
-        for line in lines:
-            if line.count(';') != 2:
-                continue
-            items.append(line.split(';'))
-        func(items, list(), list())
-    return wrapper
 
-
-@check
-def fill_G(items, errs, valids):
+def fill_G(items):
+    errs = list()
+    valids = list()
     for item in items:
         if not item[1]:
             if item[0]:
@@ -36,8 +27,9 @@ def fill_G(items, errs, valids):
     return errs, valids
 
 
-@check
-def fill_C(items, errs, valids):
+def fill_C(items):
+    errs = list()
+    valids = list()
     for item in items:
         if not item[1]:
             errs.append(('C', None, item[1], None, '[E] miss title'))
@@ -46,8 +38,9 @@ def fill_C(items, errs, valids):
     return errs, valids
 
 
-@check
-def fill_K(items, errs, valids):
+def fill_K(items):
+    errs = list()
+    valids = list()
     for item in items:
         if not item[1]:
             errs.append(('K', None, item[1], None, '[E] miss title'))
@@ -62,9 +55,14 @@ def fill_K(items, errs, valids):
 FILL_MAP = {'K': fill_K, 'C': fill_C, 'T': fill_G, 'G': fill_G}
 
 
-def projects(items, type_):
+def projects(lines, type_):
     projs = list()
-    errs, valids = FILL_MAP[type_](items, type_)
+    items = list()
+    for line in lines:
+        if line.count(';') != 2:
+            continue
+        items.append(line.split(';'))
+    errs, valids = FILL_MAP[type_](items)
     for proj_info in valids:
         pid = Project.find_pid(proj_info[1])
         if pid:
