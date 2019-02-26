@@ -220,7 +220,7 @@ class Staff(PDict):
 class Project(PDict):
     @staticmethod
     def create_proj(item_no, title, doc_id):
-        if not doc_id == '':
+        if not doc_id:
             doc_id = None
         pid = ''.join(random.choices(ID_ALPHABET, k=5))
         db.collection('projects').document(pid).set({
